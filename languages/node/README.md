@@ -77,9 +77,7 @@ app.listen(PORT, async () => {
 # Installation
 
 ```console
-
 $ npm install @infisical/sdk
-
 ```
 
 # Configuration
@@ -112,19 +110,15 @@ const client = new InfisicalClient({
 
 ### Options
 
+We currently provide two ways to authenticate using Machine Identities. Either provide a direct access token that you can obtain from the [authentication API](https://infisical.com/docs/api-reference/endpoints/universal-auth/login), or provide your Machine Identity Client ID and client secret.
+
 | Parameter | Type | Description |
-
-| ---------- | --------- | -------------------------------------------------------------------------- |
-
+| --- | --- | --- |
 | `clientId` | `string` | Your machine identity client ID. |
-
 | `clientSecret` | `string` | Your machine identity client secret. |
-
-| `accessToken` | `string` | OPTIONAL: An access token obtained from the machine identity login endpoint. |
-
-| `siteUrl` | `string` | Your self-hosted Infisical site URL. Default: `https://app.infisical.com`. |
-
-| `logLevel` | `enum` | The level of logs you wish to log The logs are derived from Rust, as we have written our base SDK in Rust. Default: `Error`. |
+| `accessToken` | `string (optional)` | An access token obtained from the machine identity login endpoint. |
+| `siteUrl` | `string (optional)` | Your self-hosted Infisical site URL. Default: `https://app.infisical.com`. |
+| `logLevel` | `enum (optional)` | The level of logs you wish to log The logs are derived from Rust, as we have written our base SDK in Rust. Default: `Error`. |
 
 # Secrets
 
@@ -141,15 +135,15 @@ const secrets = await client.listSecrets({
 
 Retrieve all secrets within a given environment and folder path. The service token used must have access to the given path and environment.
 
-### Parameters
+### Options
 
-All parameters are passed as options (an object).
-
--   `environment` The slug name (dev, prod, etc) of the environment from where secrets should be fetched from
--   `projectId` (string): The project ID where the secret lives in.
--   `secretName` The name of the secret you want to get.
--   `path` The path from where secrets should be fetched from
--   `includeImports` (boolean, optional): Whether or not to include imported secrets from the current path. Read about [secret import](https://infisical.com/docs/documentation/platform/secret-reference#import-entire-folders).
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `environment` | `string` | The slug name (dev, prod, etc) of the environment from where secrets should be fetched from. |
+| `projectId` | `string` | The project ID where the secret lives in. |
+| `secretName` | `string` | The name of the secret you want to get. |
+| `path` | `string (optional)` | The path from where secrets should be fetched from. |
+| `includeImports` | `boolean, (optional)` | Whether or not to include imported secrets from the current path. Read about [secret import](https://infisical.com/docs/documentation/platform/secret-reference#import-entire-folders). |
 
 ## Get Secret
 
@@ -183,15 +177,15 @@ const secret = await client.getSecret({
 const value = secret.secretValue; // get its value
 ```
 
-### Parameters
+### Options
 
-All parameters are passed as options (an object).
-
--   `secretName`: The key of the secret to retrieve.
--   `projectId`: The project ID where the secret lives in.
--   `environment` The slug name (dev, prod, etc) of the environment from where secrets should be fetched from
--   `path` The path from where secrets should be fetched from
--   `type` (string, optional): The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared".
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `secretName` | `string` | The key of the secret to retrieve. |
+| `projectId` | `string` | The project ID where the secret lives in. |
+| `environment` | `string` | The slug name (dev, prod, etc) of the environment from where secrets should be fetched from. |
+| `path` | `string (optional)` | The path from where secrets should be fetched from. |
+| `type` | `string (optional)` | The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". |
 
 ## Create Secret
 
@@ -208,16 +202,16 @@ const newApiKey = await client.createSecret({
 });
 ```
 
-### Parameters
+### Options
 
-All parameters are passed as options (an object).
-
--   `secretName` (string): The key of the secret to create.
--   `secretValue` (string): The value of the secret.
--   `projectId` (string): The project ID where the secret lives in.
--   `environment` The slug name (dev, prod, etc) of the environment where secret should be created
--   `path` The path from where secret should be created.
--   `type` (string, optional): The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". A personal secret can only be created if a shared secret with the same name exists.
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `secretName` | `string` | The key of the secret to create. |
+| `secretValue` | `string` | The value of the secret. |
+| `projectId` | `string` | The project ID where the secret lives in. |
+| `environment` | `string` | The slug name (dev, prod, etc) of the environment where secret should be created |
+| `path` | `string (optional)` | The path from where secret should be created. |
+| `type` | `string, (optional)` | The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". A personal secret can only be created if a shared secret with the same name exists. |
 
 ## Update Secret
 
@@ -234,16 +228,16 @@ const updatedApiKey = await client.updateSecret({
 });
 ```
 
-### Parameters
+### Options
 
-All parameters are passed as options (an object).
-
--   `secretName` (string): The key of the secret to update.
--   `secretValue` (string): The new value of the secret.
--   `environment` The slug name (dev, prod, etc) of the environment where secret should be updated.
--   `projectId` (string): The project ID where the secret lives in.
--   `path` The path from where secret should be updated.
--   `type` (string, optional): The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared".
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `secretName` | `string` | The key of the secret to update. |
+| `secretValue` | `string` | The new value of the secret. |
+| `environment` | `string` | The slug name (dev, prod, etc) of the environment where secret should be updated. |
+| `projectId` | `string` | The project ID where the secret lives in. |
+| `path` | `string (optional)` | The path from where secret should be updated. |
+| `type` | `string (optional)` | The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". |
 
 ## Delete Secret
 
@@ -261,16 +255,15 @@ const deletedSecret = await client.deleteSecret({
 });
 ```
 
-### Parameters
+### Options
 
-All parameters are passed as options (an object).
-
--   `secretName` (string): The key of the secret to delete.
--   `projectId` (string): The project ID where the secret lives in.
--   `options` (object, optional): An options object to specify the type of secret to delete.
--   `environment` The slug name (dev, prod, etc) of the environment where secret should be deleted.
--   `path` The path from where secret should be deleted.
--   `type` (string, optional): The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". Note that deleting a shared secret also deletes all associated personal secrets.
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `secretName` | `string` | The key of the secret to delete. |
+| `projectId` | `string` | The project ID where the secret lives in. |
+| `environment` | `string` | The slug name (dev, prod, etc) of the environment where secret should be deleted. |
+| `path` | `string (optional)` | The path from where secret should be deleted. |
+| `type` | `string, (optional)` | The type of the secret. Valid options are "shared" or "personal". If not specified, the default value is "shared". Note that deleting a shared secret also deletes all associated personal secrets. |
 
 # License
 
