@@ -1,5 +1,5 @@
 # .goreleaser.yaml
-
+#! WIP
 monorepo:
     tag_prefix: sdk/
     dir: languages/go/infisical_client
