@@ -1,0 +1,28 @@
+name: Test Base SDK
+run-name: Test Base SDK
+
+on:
+    workflow_call:
+
+jobs:
+    test:
+        name: Test Base SDK
+        runs-on: ubuntu-latest
+        environment: infisical-test-workspace
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install Rust
+              uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7 # stable
+              with:
+                  toolchain: stable
+
+            - name: 📦 Cargo test
+              uses: actions-rs/cargo@v1
+              env:
+                  INFISICAL_UNIVERSAL_CLIENT_SECRET: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_SECRET }}"
+                  INFISICAL_UNIVERSAL_CLIENT_ID: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_ID }}"
+                  INFISICAL_PROJECT_ID: "${{ vars.INFISICAL_PROJECT_ID }}"
+              with:
+                  command: test

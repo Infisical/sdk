@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+
+members = ["crates/*"]
+
+# Compile all dependencies with some optimizations when building this crate on debug
+# This slows down clean builds by about 50%, but the resulting binaries can be orders of magnitude faster
+# As clean builds won't occur very often, this won't slow down the development process
+[profile.dev.package."*"]
+opt-level = 2
+
+# Turn on a small amount of optimisation in development mode. This might interfere when trying to use a debugger
+# if the compiler decides to optimize some code away, if that's the case, it can be set to 0 or commented out
+[profile.dev]
+opt-level = 1
+
+# Turn on LTO on release mode
+[profile.release]
+lto = "thin"
+codegen-units = 1
+# Stripping the binary reduces the size by ~30%, but the stacktraces won't be usable anymore.
+# This is fine as long as we don't have any unhandled panics, but let's keep it disabled for now
+# strip = true
+
+# Using git dependency temporarily to add support for immutable records in generated code
+[patch.crates-io]
+uniffi = { git = "https://github.com/mozilla/uniffi-rs", rev = "0a03b713306d6ce3de033157fc2ce92a238c2e24" }
+uniffi_build = { git = "https://github.com/mozilla/uniffi-rs", rev = "0a03b713306d6ce3de033157fc2ce92a238c2e24" }
+uniffi_bindgen = { git = "https://github.com/mozilla/uniffi-rs", rev = "0a03b713306d6ce3de033157fc2ce92a238c2e24" }
+uniffi_core = { git = "https://github.com/mozilla/uniffi-rs", rev = "0a03b713306d6ce3de033157fc2ce92a238c2e24" }
+uniffi_macros = { git = "https://github.com/mozilla/uniffi-rs", rev = "0a03b713306d6ce3de033157fc2ce92a238c2e24" }

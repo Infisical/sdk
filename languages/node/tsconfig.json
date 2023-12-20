@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "declaration": true,
+        "outDir": "./lib",
+        "rootDir": "src",
+        "strict": true,
+        "resolveJsonModule": true,
+        "removeComments": true,
+        "esModuleInterop": true
+    },
+    "include": [".", "/infisical_client"]
+}

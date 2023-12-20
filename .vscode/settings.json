@@ -1,0 +1,14 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "crates/infisical-json/Cargo.toml",
+        "crates/infisical-napi/Cargo.toml",
+        "crates/infisical/Cargo.toml",
+        "./crates/infisical/Cargo.toml",
+        "./crates/infisical/Cargo.toml",
+        "./crates/sdk-schemas/Cargo.toml",
+        "./crates/infisical-wasm/Cargo.toml",
+        "./crates/infisical-napi/Cargo.toml",
+        "./crates/infisical-c/Cargo.toml",
+        "./crates/infisical-py/Cargo.toml"
+    ]
+}

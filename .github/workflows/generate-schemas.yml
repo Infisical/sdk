@@ -1,0 +1,79 @@
+name: Build Type Definitions
+run-name: Build Type Definitions
+
+on:
+    workflow_call:
+
+env:
+    CARGO_TERM_COLOR: always
+
+jobs:
+    schemas:
+        name: Generate schemas
+        runs-on: ubuntu-22.04
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+            - name: Install Rust
+              uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7 # stable
+              with:
+                  toolchain: stable
+
+            - name: Set up Node.js
+              uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+              with:
+                  cache: "npm"
+                  cache-dependency-path: "package-lock.json"
+                  node-version: "16"
+
+            - name: NPM Setup
+              run: npm ci
+
+            - name: Cache cargo registry
+              uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+
+            - name: NPM Schemas
+              run: npm run schemas
+
+            - name: Upload Typescript schemas artifact
+              uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+              with:
+                  name: schemas.ts
+                  path: ${{ github.workspace }}/languages/node/src/infisical_client/schemas.ts
+                  if-no-files-found: error
+
+            # - name: Upload CSharp schemas artifact
+            #  uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+            #  with:
+            #       name: schemas.cs
+            #      path: ${{ github.workspace }}/languages/csharp/Infisical.Sdk/schemas.cs
+            #      if-no-files-found: error
+
+            - name: Upload Python schemas artifact
+              uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+              with:
+                  name: schemas.py
+                  path: ${{ github.workspace }}/crates/infisical-py/infisical_client/schemas.py
+                  if-no-files-found: error
+
+            - name: Upload JSON schemas artifact
+              uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+              with:
+                  name: sdk-schemas-json
+                  path: ${{ github.workspace }}/support/schemas/*
+                  if-no-files-found: error
+
+            - name: Upload Go schemas artifact
+              uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+              with:
+                  name: schemas.go
+                  path: ${{ github.workspace }}/languages/go/infisical_client/schema.go
+
+            # - name: Upload Java schemas artifact
+            #  uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+            #   with:
+            #      name: sdk-schemas-java
+            #     path: ${{ github.workspace }}/languages/java/src/main/java/com/infisical/sdk/schema/*
+            #    if-no-files-found: error

@@ -1,0 +1,28 @@
+[package]
+name = "infisical-napi"
+version = "0.1.0"
+authors = ["Infisical"]
+license-file = "LICENSE"
+description = """
+N-API bindings for the Infisical Secrets Manager SDK
+"""
+keywords = ["infisical", "secrets manager"]
+edition = "2021"
+rust-version = "1.57"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+env_logger = "0.10.1"
+log = "0.4.20"
+napi = { version = "2", features = ["async"] }
+napi-derive = "2"
+
+infisical-json = { path = "../infisical-json", version = "0.1.0" }
+
+[build-dependencies]
+napi-build = "2.1.0"
+
+[profile.release]
+lto = true

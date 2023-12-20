@@ -1,0 +1,62 @@
+[build-system]
+requires = ["maturin>=0.14,<0.15"]
+build-backend = "maturin"
+
+[tool.poetry]
+name = "infisical-python"
+version = "1.0.1"
+description = 'Official Infisical SDK for Python (New)'
+authors = ["Daniel Hougaard <daniel@infisical.com>"]
+
+[tool.poetry_bumpversion.file."infisical_client/__init__.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.poetry_bumpversion.replacements]]
+files = ['Cargo.toml']
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+
+[project]
+name = "infisical-python"
+requires-python = ">=3.7"
+maintainers = [
+  { name = "Daniel Hougaard", email = "daniel@infisical.com" },
+]
+readme = "README.md"
+description = 'Official Infisical SDK for Python (New)'
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+dynamic = ["version"]
+
+
+[project.urls]
+Documentation = "https://github.com/Infisical/sdk/tree/main/crates/infisical-py#readme"
+Issues = "https://github.com/infisical/sdk/issues"
+Source = "https://github.com/infisical/sdk"
+
+[tool.maturin]
+include = ["./infisical_client/schemas.py"] # we need the schemas!
+features = ["pyo3/extension-module"]
+python="infisical_client/infisical_client"
+module-name = "infisical_client.infisical_py"

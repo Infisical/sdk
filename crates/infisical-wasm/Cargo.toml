@@ -1,0 +1,22 @@
+[package]
+name = "infisical-wasm"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.57"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+console_log = { version = "1.0.0", features = ["color"] }
+js-sys = "0.3.63"
+log = "0.4.20"
+serde = { version = "1.0.193", features = ["derive"] }
+wasm-bindgen = { version = "=0.2.87", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4.36"
+
+infisical-json = { path = "../infisical-json" }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.36"

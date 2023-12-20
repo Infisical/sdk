@@ -1,0 +1,83 @@
+# .goreleaser.yaml
+
+monorepo:
+    tag_prefix: sdk/
+    dir: languages/go/infisical_client
+
+builds:
+    - id: darwin-build
+      no_main_check: true
+
+      binary: infisical
+      flags:
+          - -trimpath
+      env:
+          - CGO_ENABLED=1
+          - CC=/home/runner/work/osxcross/target/bin/o64-clang
+          - CXX=/home/runner/work/osxcross/target/bin/o64-clang++
+      goos:
+          - darwin
+      ignore:
+          - goos: darwin
+            goarch: "386"
+
+    - id: all-other-builds
+      no_main_check: true
+      env:
+          - CGO_ENABLED=1
+      binary: infisical
+      flags:
+          - -trimpath
+      goos:
+          - freebsd
+          - linux
+          - netbsd
+          - openbsd
+          - windows
+      goarch:
+          - "386"
+          - amd64
+          - arm
+          - arm64
+      goarm:
+          - "6"
+          - "7"
+      ignore:
+          - goos: windows
+            goarch: "386"
+          - goos: freebsd
+            goarch: "386"
+
+archives:
+    - format_overrides:
+          - goos: windows
+            format: zip
+      files:
+          - ../README*
+          - ../LICENSE*
+
+release:
+    replace_existing_draft: true
+    mode: "replace"
+
+checksum:
+    name_template: "checksums.txt"
+
+snapshot:
+    name_template: "{{ .Version }}-devel"
+# publishers:
+#   - name: fury.io
+#     ids:
+#       - infisical
+#     dir: "{{ dir .ArtifactPath }}"
+#     cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/infisical/
+
+# dockers:
+#   - dockerfile: cli/docker/Dockerfile
+#     goos: linux
+#     goarch: amd64
+#     ids:
+#       - infisical
+#     image_templates:
+#       - "infisical/cli:{{ .Version }}"
+#       - "infisical/cli:latest"
