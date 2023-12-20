@@ -42,6 +42,13 @@ We chose Rust as the foundation for our SDK based on several key factors, primar
 Rust's extensive libraries simplify the process of building for multiple languages, with somewhat easy cross-architecture compilation. This robust ecosystem streamlines the creation of cross-language SDKs, optimizing the entire development process.
 Our research indicated that Rust is one of the most battle-tested languages for this purpose.
 
+
+## Current SDK's
+
+- **[Node.js SDK](https://github.com/Infisical/sdk/tree/main/languages/node) — [(NPM)](https://www.npmjs.com/package/@infisical/sdk)**
+- **[Python SDK](https://github.com/Infisical/sdk/tree/main/crates/infisical-py) — [(PyPI)](https://pypi.org/project/infisical-python/)**
+- Many more to come!
+
 ## Security
 
 Please do not file GitHub issues or post on our public forum for security vulnerabilities, as they are public!
