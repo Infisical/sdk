@@ -1,36 +1,23 @@
-<h1  align="center">
-
-<a  href="https://github.com/Infisical/sdk">
-
-<img  width="300"  src="../../resources/logo.svg#gh-dark-mode-only"  alt="infisical">
-
-</a>
-
+<h1 align="center">
+    <a href="https://github.com/Infisical/infisical">
+        <img width="300" src="https://raw.githubusercontent.com/Infisical/infisical-node/main/img/logoname-white.svg#gh-dark-mode-only" alt="infisical">
+    </a>
 </h1>
 
-<p  align="center">
-
-<p  align="center">Open-source, end-to-end encrypted tool to manage secrets and configs across your team and infrastructure.</p>
-
+<p align="center">
+  <p align="center">Open-source, end-to-end encrypted tool to manage secrets and configs across your team and infrastructure.</p>
 </p>
 
 # Table of Contents
 
 -   [Links](#links)
-
 -   [Basic Usage](#basic-usage)
-
 -   [Secrets](#working-with-secrets)
-
--   [Get Secrets](#get-secrets)
-
--   [Get Secret](#get-secret)
-
--   [Create Secret](#create-secret)
-
--   [Update Secret](#update-secret)
-
--   [Delete Secret](#delete-secret)
+    -   [Get Secrets](#get-secrets)
+    -   [Get Secret](#get-secret)
+    -   [Create Secret](#create-secret)
+    -   [Update Secret](#update-secret)
+    -   [Delete Secret](#delete-secret)
 
 # Links
 
