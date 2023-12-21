@@ -13,12 +13,16 @@ jobs:
     build_rust:
         uses: ./.github/workflows/build-c-bindings.yml
 
+    test-rust-crate:
+        uses: ./.github/workflows/rust-test.yml
+
     build_java:
         name: Build Java
         runs-on: ubuntu-22.04
         needs:
             - generate_schemas
             - build_rust
+            - test-rust-crate
 
         steps:
             - name: Checkout Repository
