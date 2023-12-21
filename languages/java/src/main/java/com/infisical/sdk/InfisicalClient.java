@@ -36,10 +36,11 @@ public class InfisicalClient implements AutoCloseable {
                 InfisicalClient.throwingFunctionWrapper(Converter::ResponseForGetSecretResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
+
         return response.getData().getSecret();
     }
 
-    public ListSecretsResponse listSecrets(ListSecretsOptions options) {
+    public SecretElement[] listSecrets(ListSecretsOptions options) {
         Command command = new Command();
         command.setListSecrets(options);
 
@@ -47,10 +48,11 @@ public class InfisicalClient implements AutoCloseable {
                 InfisicalClient.throwingFunctionWrapper(Converter::ResponseForListSecretsResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
-        return response.getData();
+
+        return response.getData().getSecrets();
     }
 
-    public CreateSecretResponse createSecret(CreateSecretOptions options) {
+    public CreateSecretResponseSecret createSecret(CreateSecretOptions options) {
         Command command = new Command();
         command.setCreateSecret(options);
 
@@ -58,10 +60,10 @@ public class InfisicalClient implements AutoCloseable {
                 InfisicalClient.throwingFunctionWrapper(Converter::ResponseForCreateSecretResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
-        return response.getData();
+        return response.getData().getSecret();
     }
 
-    public UpdateSecretResponse updateSecret(UpdateSecretOptions options) {
+    public UpdateSecretResponseSecret updateSecret(UpdateSecretOptions options) {
         Command command = new Command();
         command.setUpdateSecret(options);
 
@@ -69,10 +71,10 @@ public class InfisicalClient implements AutoCloseable {
                 InfisicalClient.throwingFunctionWrapper(Converter::ResponseForUpdateSecretResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
-        return response.getData();
+        return response.getData().getSecret();
     }
 
-    public DeleteSecretResponse deleteSecret(DeleteSecretOptions options) {
+    public DeleteSecretResponseSecret deleteSecret(DeleteSecretOptions options) {
         Command command = new Command();
         command.setDeleteSecret(options);
 
@@ -80,7 +82,7 @@ public class InfisicalClient implements AutoCloseable {
                 InfisicalClient.throwingFunctionWrapper(Converter::ResponseForDeleteSecretResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
-        return response.getData();
+        return response.getData().getSecret();
     }
 
     private void errorCheck(boolean success, String errorMessage) {
