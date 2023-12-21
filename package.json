@@ -12,7 +12,8 @@
         "lint": "prettier --check .",
         "prettier": "prettier --write .",
         "schemas": "rimraf ./support/schemas && cargo run --bin sdk-schemas --all-features && ts-node ./support/scripts/schemas.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build-dev-c-crates": "cargo build --manifest-path crates/infisical-c/Cargo.toml --release && cp ./target/release/libinfisical_c.* languages/java/build/resources"
     },
     "devDependencies": {
         "@openapitools/openapi-generator-cli": "2.7.0",
@@ -22,5 +23,9 @@
         "rimraf": "5.0.5",
         "ts-node": "10.9.1",
         "typescript": "5.2.2"
+    },
+    "dependencies": {
+        "@types/fs-extra": "^11.0.4",
+        "fs-extra": "^11.2.0"
     }
 }
