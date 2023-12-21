@@ -22,8 +22,7 @@
 # Links
 
 -   [Infisical](https://github.com/Infisical/infisical)
-
-# Installation
+-   [Package](https://github.com/Infisical/sdk/packages/2019741)
 
 # Basic Usage
 
