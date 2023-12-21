@@ -128,7 +128,6 @@ Retrieve all secrets within a given environment and folder path. The service tok
 | --- | --- | --- |
 | `environment` | `string` | The slug name (dev, prod, etc) of the environment from where secrets should be fetched from. |
 | `projectId` | `string` | The project ID where the secret lives in. |
-| `secretName` | `string` | The name of the secret you want to get. |
 | `path` | `string (optional)` | The path from where secrets should be fetched from. |
 | `includeImports` | `boolean, (optional)` | Whether or not to include imported secrets from the current path. Read about [secret import](https://infisical.com/docs/documentation/platform/secret-reference#import-entire-folders). |
 
