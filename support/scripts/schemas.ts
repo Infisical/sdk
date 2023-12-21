@@ -1,6 +1,6 @@
-import { quicktype, InputData, JSONSchemaInput, FetchingJSONSchemaStore } from "quicktype-core";
+import { quicktype, quicktypeMultiFile, InputData, JSONSchemaInput, FetchingJSONSchemaStore } from "quicktype-core";
 
-import fs from "fs";
+import fs, { ensureDir } from "fs-extra";
 import path from "path";
 
 async function* walk(dir: string): AsyncIterable<string> {
@@ -38,6 +38,7 @@ async function main() {
         lang: "typescript",
         rendererOptions: {}
     });
+    await ensureDir("./languages/node/src/infisical_client");
     writeToFile("./languages/node/src/infisical_client/schemas.ts", ts.lines);
 
     const python = await quicktype({
@@ -47,6 +48,7 @@ async function main() {
             "python-version": "3.7"
         }
     });
+    await ensureDir("./crates/infisical-py/infisical_client");
     writeToFile("./crates/infisical-py/infisical_client/schemas.py", python.lines);
 
     /*
@@ -59,7 +61,9 @@ async function main() {
             "csharp-version": "6"
         }
     });
+    await ensureDir("./languages/csharp/Infisical.Sdk");
     writeToFile("./languages/csharp/Infisical.Sdk/schemas.cs", csharp.lines);
+    */
 
     const java = await quicktypeMultiFile({
         inputData,
@@ -71,11 +75,9 @@ async function main() {
     });
 
     const javaDir = "./languages/java/src/main/java/com/infisical/sdk/schema/";
-    if (!fs.existsSync(javaDir)) {
-        fs.mkdirSync(javaDir);
-    }
+    await ensureDir(javaDir);
+
     java.forEach((file, path) => writeToFile(javaDir + path, file.lines));
-    */
 }
 
 main();

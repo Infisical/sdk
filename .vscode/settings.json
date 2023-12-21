@@ -10,5 +10,7 @@
         "./crates/infisical-napi/Cargo.toml",
         "./crates/infisical-c/Cargo.toml",
         "./crates/infisical-py/Cargo.toml"
-    ]
+    ],
+    "cSpell.words": ["infisical", "libinfisical", "openapi", "openapitools", "quicktype"],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
