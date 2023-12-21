@@ -33,21 +33,18 @@
 
 **[Infisical](https://infisical.com)** is the open source secret management platform that teams use to centralize their secrets like API keys, database credentials, and configurations.
 
-The motive behind creating a cross-language SDK was the overhead that comes with maintaining a large collection of SDK's.
-By having an easily portable SDK written in one singular language, we greatly cut down on the amount of duplicate code across the different SDK's
+The motive behind creating a cross-language SDK was the overhead that comes with maintaining a large collection of SDK's. By having an easily portable SDK written in one singular language, we greatly cut down on the amount of duplicate code across the different SDK's
 
 Sometimes you may notice that an SDK in one language is missing features that an SDK for another language has. By writing all the SDK logic in a single language, that issue will no longer be relevant, as porting functionality should take less than a minute.
 
-We chose Rust as the foundation for our SDK based on several key factors, primarily its exceptional performance and versatility.
-Rust's extensive libraries simplify the process of building for multiple languages, with somewhat easy cross-architecture compilation. This robust ecosystem streamlines the creation of cross-language SDKs, optimizing the entire development process.
-Our research indicated that Rust is one of the most battle-tested languages for this purpose.
-
+We chose Rust as the foundation for our SDK based on several key factors, primarily its exceptional performance and versatility. Rust's extensive libraries simplify the process of building for multiple languages, with somewhat easy cross-architecture compilation. This robust ecosystem streamlines the creation of cross-language SDKs, optimizing the entire development process. Our research indicated that Rust is one of the most battle-tested languages for this purpose.
 
 ## Current SDK's
 
-- **[Node.js SDK](https://github.com/Infisical/sdk/tree/main/languages/node) — [(NPM)](https://www.npmjs.com/package/@infisical/sdk)**
-- **[Python SDK](https://github.com/Infisical/sdk/tree/main/crates/infisical-py) — [(PyPI)](https://pypi.org/project/infisical-python/)**
-- Many more to come!
+-   **[Node.js SDK](https://github.com/Infisical/sdk/tree/main/languages/node) — [(NPM)](https://www.npmjs.com/package/@infisical/sdk)**
+-   **[Python SDK](https://github.com/Infisical/sdk/tree/main/crates/infisical-py) — [(PyPI)](https://pypi.org/project/infisical-python/)**
+-   **[Java SDK](https://github.com/Infisical/sdk/tree/main/languages/java) — [(GitHub Maven Registry)](https://github.com/Infisical/sdk/packages/2019741)**
+-   Many more to come!
 
 ## Security
 
