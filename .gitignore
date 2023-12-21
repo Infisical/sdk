@@ -175,3 +175,9 @@ __pycache__
 
 infisical_py.so
 .venv
+
+# Java language
+languages/java/src/main/java/com/infisical/sdk/schema/*.java
+languages/java/build
+languages/java/.gradle
+languages/java/src/main/resources/*
