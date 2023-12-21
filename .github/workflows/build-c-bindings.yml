@@ -38,7 +38,7 @@ jobs:
             - name: Build Rust
               env:
                   RUSTFLAGS: "-D warnings"
-              run: cargo build --target ${{ matrix.settings.target }} --release
+              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py # We have to exclude python due to a bug in pyo3 causing the build to fail on macos. We don't need the python bindings for the CI anyways.
 
             - name: Upload Artifact
               uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
