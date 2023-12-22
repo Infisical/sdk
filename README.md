@@ -2,7 +2,7 @@
   <img width="300" src="/resources/logo.svg#gh-dark-mode-only" alt="infisical">
 </h1>
 <p align="center">
-  <p align="center"><b>Infisical cross-language SDK </p>
+  <p align="center"><b>Infisical cross-language SDK </b></p>
 <h4 align="center">
   <a href="https://infisical.com/slack">Slack</a> |
   <a href="https://infisical.com/">Infisical Cloud</a> |
