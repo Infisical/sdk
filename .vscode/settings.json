@@ -11,6 +11,6 @@
         "./crates/infisical-c/Cargo.toml",
         "./crates/infisical-py/Cargo.toml"
     ],
-    "cSpell.words": ["infisical", "libinfisical", "openapi", "openapitools", "quicktype"],
+    "cSpell.words": ["infisical", "libinfisical", "openapi", "openapitools", "quicktype", "reqwest"],
     "java.configuration.updateBuildConfiguration": "interactive"
 }
