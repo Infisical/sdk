@@ -171,6 +171,7 @@ languages/node/**/lib
 InfisicalClient.egg-info
 
 __pycache__
+crates/infisical-py/infisical_client/schemas.py
 
 
 infisical_py.so
