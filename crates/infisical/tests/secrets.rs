@@ -84,6 +84,7 @@ fn create_client() -> Client {
         client_secret: Some(client_secret.unwrap()),
         access_token: None,
         site_url: None,
+        cache_ttl: None,
     };
 
     let client = Client::new(Some(settings));
@@ -198,6 +199,7 @@ mod tests {
             project_id: project_id.to_string(),
             path: None,
             include_imports: None,
+            attach_to_process_env: None,
         };
 
         let dummy_secret = create_dummy_secret(&mut client).await;
