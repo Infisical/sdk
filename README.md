@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
   </a>
   <a href="https://github.com/Infisical/infisical/issues">
-    <img src="https://img.shields.io/github/commit-activity/m/infisical/infisical" alt="git commit activity" />
+    <img src="https://img.shields.io/github/commit-activity/m/infisical/sdk" alt="git commit activity" />
   </a>
   <a href="https://infisical.com/slack">
     <img src="https://img.shields.io/badge/chat-on%20Slack-blueviolet" alt="Slack community channel" />
