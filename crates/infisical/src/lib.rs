@@ -1,6 +1,8 @@
 pub mod api;
 pub use api::access_token;
 
+pub mod cache;
+
 pub mod auth;
 pub mod client;
 pub mod error;
