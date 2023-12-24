@@ -45,6 +45,14 @@ pub async fn list_secrets_request(
     if status == StatusCode::OK {
         let response = response.json::<ListSecretsResponse>().await?;
 
+        if input.attach_to_process_env.unwrap_or(false) == true {
+            let secrets = response.secrets.clone();
+
+            for secret in secrets {
+                std::env::set_var(secret.secret_key, secret.secret_value);
+            }
+        }
+
         Ok(response)
     } else {
         let err = api_error_handler(status, response, None, false).await?;

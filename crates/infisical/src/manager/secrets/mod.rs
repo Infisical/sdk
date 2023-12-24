@@ -13,7 +13,7 @@ pub use update::{UpdateSecretOptions, UpdateSecretResponse};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[derive(Serialize, Deserialize, Debug, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Secret {
     pub version: i32,

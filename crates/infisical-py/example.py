@@ -1,40 +1,23 @@
 from infisical_client import InfisicalClient, GetSecretOptions, ClientSettings, DeleteSecretOptions, CreateSecretOptions, UpdateSecretOptions, ListSecretsOptions
-
+import time
 client = InfisicalClient(ClientSettings(
-    client_id="77719230-a0b6-4590-8fbd-376e8b0898a0",
-    client_secret="4c9730a338dc64222114c473e8895311e5d34a1547e111fc173a67e418aed3a0",
-    site_url="http://localhost:8080" # This is optional. If not provided, it will default to https://app.infisical.com
+    client_id="92e6dae7-38ab-485d-8625-945a4f72c899",
+    client_secret="082ca0e72bfb8391acb834a7471e52773fab90cb61a95d10764ade9327ef347e",
+    site_url="http://localhost:8080", # This is optional. If not provided, it will default to https://app.infisical.com
+    cache_ttl=5,
 ))
 
-client.createSecret(options=CreateSecretOptions(
-    secret_name="API_KEY",
-    secret_value="Some API Key",
+client.getSecret(options=GetSecretOptions(
     environment="dev",
-    project_id="658066938ffb84aa0aa507f6"
+    project_id="6587ff06fe3abf0cb8bf1742",
+    secret_name="TEST"
 ))
 
-secret = client.getSecret(options=GetSecretOptions(
-    environment="dev",
-    project_id="658066938ffb84aa0aa507f6",
-    secret_name="API_KEY",
-    type="personal"
-))
-
-
-client.updateSecret(options=UpdateSecretOptions(
-    secret_name="API_KEY",
-    secret_value="new secret value!",
-    environment="dev",
-    project_id="658066938ffb84aa0aa507f6"
-))
-
-
-client.listSecrets(options=ListSecretsOptions(
-    environment="dev",
-    project_id="658066938ffb84aa0aa507f6",
-))
-client.deleteSecret(options=DeleteSecretOptions(
-    environment="dev",
-    project_id="658066938ffb84aa0aa507f6",
-    secret_name="API_KEY"
-))
+# Test rust multi threaded cache (should be super fast)
+while True:
+    secret = client.getSecret(options=GetSecretOptions(
+        environment="dev",
+        project_id="6587ff06fe3abf0cb8bf1742",
+        secret_name="TEST"
+    ))
+    print(secret.secret_value)

@@ -7,6 +7,7 @@ from .schemas import UpdateSecretOptions, ResponseForUpdateSecretResponse
 from .schemas import DeleteSecretOptions, ResponseForDeleteSecretResponse
 from .schemas import CreateSecretOptions, ResponseForCreateSecretResponse
 import infisical_py
+import os
 
 class InfisicalClient:
     def __init__(self, settings: ClientSettings = None):
@@ -36,7 +37,13 @@ class InfisicalClient:
     def listSecrets(self, options: ListSecretsOptions) -> List[SecretElement]:
         result = self._run_command(Command(list_secrets=options))
 
-        return ResponseForListSecretsResponse.from_dict(result).data.secrets
+        secrets = ResponseForListSecretsResponse.from_dict(result).data.secrets
+
+        # Setting the env in Rust is not enough for Python apparently, so we have to do this as well.
+        for secret in secrets:
+            if(options.attach_to_process_env):
+                os.environ[secret.secret_key] = secret.secret_value
+
     
     def updateSecret(self, options: UpdateSecretOptions) -> SecretElement:
         result = self._run_command(Command(update_secret=options))

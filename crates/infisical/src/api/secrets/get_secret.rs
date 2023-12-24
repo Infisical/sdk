@@ -1,3 +1,4 @@
+use crate::cache::{add_to_cache, create_cache_key, get_secret_from_cache};
 use crate::error::api_error_handler;
 use crate::helper::{build_base_request, build_url};
 use crate::manager::secrets::{GetSecretOptions, GetSecretResponse};
@@ -12,16 +13,31 @@ pub async fn get_secret_request(
     let base_url = format!(
         "{}/api/v3/secrets/raw/{}",
         client.site_url.clone(),
-        input.secret_name
+        &input.secret_name
     );
 
-    let json = &serde_json::json!({
+    let json: &serde_json::Value = &serde_json::json!({
         "workspaceId": input.project_id,
         "environment": input.environment,
         "secretPath": input.path.as_ref().unwrap_or(&"/".to_string()), // default is "/"
         "type": input.r#type.as_ref().unwrap_or(&"shared".to_string()), // default is shared
         "include_imports": input.include_imports.as_ref().unwrap_or(&false), // default is false
     });
+
+    let secret_type = match input.r#type.as_ref() {
+        Some(r#type) => r#type,
+        None => "shared",
+    };
+    let cached_secret = get_secret_from_cache(
+        client,
+        &create_cache_key(&input.secret_name, secret_type, &input.environment),
+    );
+
+    if cached_secret.is_some() {
+        return Ok(GetSecretResponse {
+            secret: cached_secret.unwrap(),
+        });
+    }
 
     let url = build_url(base_url, json);
 
@@ -48,6 +64,8 @@ pub async fn get_secret_request(
 
     if status == StatusCode::OK {
         let response = response.json::<GetSecretResponse>().await?;
+
+        add_to_cache(client, &response.secret);
 
         Ok(response)
     } else {
