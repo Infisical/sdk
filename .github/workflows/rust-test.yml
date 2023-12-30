@@ -1,12 +1,15 @@
-name: Test Base SDK
-run-name: Test Base SDK
+name: Test
+run-name: Test
 
 on:
+    pull_request:
+        types: [opened, synchronize]
+
     workflow_call:
 
 jobs:
     test:
-        name: Test Base SDK
+        name: Functional tests
         runs-on: ubuntu-latest
         environment: infisical-test-workspace
         steps:
