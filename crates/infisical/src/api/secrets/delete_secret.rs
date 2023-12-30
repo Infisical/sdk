@@ -1,3 +1,4 @@
+use crate::cache::remove_from_cache;
 use crate::error::api_error_handler;
 use crate::helper::build_base_request;
 use crate::manager::secrets::{DeleteSecretOptions, DeleteSecretResponse};
@@ -43,6 +44,15 @@ pub async fn delete_secret_request(
 
     if status == StatusCode::OK {
         let response = response.json::<DeleteSecretResponse>().await?;
+
+        // Remove secret from cache after deletion
+        remove_from_cache(
+            client,
+            &response.secret.secret_key,
+            &response.secret.r#type,
+            &response.secret.environment,
+        );
+
         Ok(response)
     } else {
         let err =
