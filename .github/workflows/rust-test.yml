@@ -27,5 +27,6 @@ jobs:
                   INFISICAL_UNIVERSAL_CLIENT_SECRET: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_SECRET }}"
                   INFISICAL_UNIVERSAL_CLIENT_ID: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_ID }}"
                   INFISICAL_PROJECT_ID: "${{ vars.INFISICAL_PROJECT_ID }}"
+                  INFISICAL_SITE_URL: "${{ vars.INFISICAL_SITE_URL }}"
               with:
                   command: test
