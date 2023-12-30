@@ -67,6 +67,30 @@ pub fn add_to_cache(client: &mut Client, secret: &Secret) {
     } // Mutex lock guard is dropped here when it goes out of scope
 }
 
+pub fn remove_from_cache(
+    client: &mut Client,
+    secret_key: &str,
+    secret_type: &str,
+    environment: &str,
+) {
+    if client.cache_ttl == 0 {
+        debug!("[CACHE]: Cache TTL is set to 0, not removing secret from cache.");
+        return;
+    }
+
+    let key = create_cache_key(&secret_key, &secret_type, &environment);
+
+    let mut cache = client.cache.lock().unwrap();
+
+    if let Some(index) = cache.iter().position(|x| x.key == key) {
+        cache.remove(index);
+        debug!(
+            "[CACHE]: {} removed from cache, removed index: {:?}",
+            secret_key, index
+        );
+    }
+}
+
 // We only start this thread if the cache_ttl is greater than 0.
 pub fn cache_thread(cache: Arc<Mutex<Vec<CachedSecret>>>) {
     let cloned_cache = Arc::clone(&cache);
