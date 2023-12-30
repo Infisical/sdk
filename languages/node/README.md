@@ -9,5 +9,4 @@
 </p>
 
 # Documentation
-
-[You can find the documentation here](https://infisical.com/docs/sdks/languages/node){:target="_blank" rel="noopener"}
+[You can find the documentation here](https://infisical.com/docs/sdks/languages/node)
