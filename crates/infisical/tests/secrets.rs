@@ -1,19 +1,19 @@
 use rand::{distributions::Alphanumeric, Rng};
-use std::env;
 
+use dotenv::dotenv;
 use infisical::manager::client_secrets::{create_secret, delete_secret};
 use infisical::manager::secrets::{CreateSecretOptions, DeleteSecretOptions, Secret};
 use infisical::{client::client_settings::ClientSettings, Client};
 
 async fn create_dummy_secret(client: &mut Client) -> Secret {
-    let project_id = &get_project_id();
+    let variables = &get_environment_variables();
     let environment = &"dev";
 
     let options = CreateSecretOptions {
         secret_name: random_string(),
         secret_value: random_string(),
         environment: environment.to_string(),
-        project_id: project_id.to_string(),
+        project_id: variables.project_id.to_string(),
         path: None,
         secret_comment: None,
         r#type: Some("shared".to_string()),
@@ -33,13 +33,13 @@ async fn create_dummy_secret(client: &mut Client) -> Secret {
 }
 
 async fn delete_dummy_secret(client: &mut Client, secret_name: String) {
-    let project_id = &get_project_id();
+    let variables = &get_environment_variables();
     let environment = &"dev";
 
     let options = DeleteSecretOptions {
         secret_name: secret_name.to_string(),
         environment: environment.to_string(),
-        project_id: project_id.to_string(),
+        project_id: variables.project_id.to_string(),
         path: None,
         r#type: None,
     };
@@ -49,7 +49,7 @@ async fn delete_dummy_secret(client: &mut Client, secret_name: String) {
     match secret {
         Ok(secret) => {
             assert_eq!(secret.secret.environment, environment.as_ref());
-            assert_eq!(secret.secret.workspace, project_id.as_ref());
+            assert_eq!(secret.secret.workspace, variables.project_id.as_ref());
             assert_eq!(secret.secret.secret_key, secret_name.as_ref());
         }
         Err(e) => {
@@ -68,38 +68,49 @@ fn random_string() -> String {
     return s;
 }
 
+struct Environment {
+    client_id: String,
+    client_secret: String,
+    site_url: String,
+    project_id: String,
+}
+
+fn get_environment_variables() -> Environment {
+    dotenv().ok();
+
+    let client_id = std::env::var(&"INFISICAL_UNIVERSAL_CLIENT_ID")
+        .expect("INFISICAL_UNIVERSAL_CLIENT_ID not found in environment variables.");
+    let client_secret = std::env::var(&"INFISICAL_UNIVERSAL_CLIENT_SECRET")
+        .expect("INFISICAL_UNIVERSAL_CLIENT_SECRET not found in environment variables.");
+    let site_url = std::env::var(&"INFISICAL_SITE_URL")
+        .expect("INFISICAL_SITE_URL not found in environment variables.");
+    let project_id = std::env::var(&"INFISICAL_PROJECT_ID")
+        .expect("INFISICAL_PROJECT_ID not found in environment variables.");
+
+    let environment = Environment {
+        client_id: client_id,
+        client_secret: client_secret,
+        site_url: site_url,
+        project_id: project_id,
+    };
+
+    return environment;
+}
+
 fn create_client() -> Client {
-    let client_id = env::var(&"INFISICAL_UNIVERSAL_CLIENT_ID");
-    let client_secret = env::var(&"INFISICAL_UNIVERSAL_CLIENT_SECRET");
-
-    print!("INFISICAL_UNIVERSAL_CLIENT_ID: {:?}", client_id);
-    print!("INFISICAL_UNIVERSAL_CLIENT_SECRET: {:?}", client_secret);
-
-    if client_id.is_err() || client_secret.is_err() {
-        panic!("INFISICAL_UNIVERSAL_CLIENT_ID or INFISICAL_UNIVERSAL_CLIENT_SECRET not found in environment variables.");
-    }
+    let environment = get_environment_variables();
 
     let settings = ClientSettings {
-        client_id: Some(client_id.unwrap()),
-        client_secret: Some(client_secret.unwrap()),
+        client_id: Some(environment.client_id),
+        client_secret: Some(environment.client_secret),
         access_token: None,
-        site_url: None,
+        site_url: Some(environment.site_url),
         cache_ttl: None,
     };
 
     let client = Client::new(Some(settings));
 
     return client;
-}
-
-fn get_project_id() -> String {
-    let project_id = env::var(&"INFISICAL_PROJECT_ID");
-
-    if project_id.is_err() {
-        panic!("INFISICAL_PROJECT_ID not found in environment variables.");
-    }
-
-    return project_id.unwrap();
 }
 
 #[cfg(test)]
@@ -116,7 +127,7 @@ mod tests {
     #[tokio::test]
     async fn test_create_secret() {
         let mut client = create_client();
-        let project_id = &get_project_id();
+        let variables = &get_environment_variables();
         let environment = &"dev";
 
         let secret_name = random_string();
@@ -126,7 +137,7 @@ mod tests {
             secret_name: secret_name.to_string(),
             secret_value: secret_value.to_string(),
             environment: environment.to_string(),
-            project_id: project_id.to_string(),
+            project_id: variables.project_id.to_string(),
             path: None,
             secret_comment: None,
             r#type: Some("shared".to_string()),
@@ -138,7 +149,7 @@ mod tests {
         match secret {
             Ok(secret) => {
                 assert_eq!(secret.secret.environment, environment.as_ref());
-                assert_eq!(secret.secret.workspace, project_id.as_ref());
+                assert_eq!(secret.secret.workspace, variables.project_id.as_ref());
                 assert_eq!(secret.secret.secret_key, secret_name.as_ref());
                 assert_eq!(secret.secret.secret_value, secret_value.as_ref());
             }
@@ -153,7 +164,7 @@ mod tests {
     #[tokio::test]
     async fn test_get_secret() {
         let mut client = create_client();
-        let project_id = &get_project_id();
+        let variables = &get_environment_variables();
         let environment = &"dev";
 
         let dummy_secret = create_dummy_secret(&mut client).await;
@@ -161,7 +172,7 @@ mod tests {
         let options = GetSecretOptions {
             secret_name: dummy_secret.secret_key.to_string(),
             environment: environment.to_string(),
-            project_id: project_id.to_string(),
+            project_id: variables.project_id.to_string(),
             path: None,
             r#type: None,
             include_imports: None,
@@ -172,7 +183,7 @@ mod tests {
         match secret {
             Ok(secret) => {
                 assert_eq!(secret.secret.environment, environment.as_ref());
-                assert_eq!(secret.secret.workspace, project_id.as_ref());
+                assert_eq!(secret.secret.workspace, variables.project_id.as_ref());
                 assert_eq!(
                     secret.secret.secret_value,
                     dummy_secret.secret_value.as_ref()
@@ -191,12 +202,12 @@ mod tests {
     #[tokio::test]
     async fn test_list_secrets() {
         let mut client = create_client();
-        let project_id = &get_project_id();
+        let variables = &get_environment_variables();
         let environment = &"dev";
 
         let options = ListSecretsOptions {
             environment: environment.to_string(),
-            project_id: project_id.to_string(),
+            project_id: variables.project_id.to_string(),
             path: None,
             include_imports: None,
             attach_to_process_env: None,
@@ -215,7 +226,7 @@ mod tests {
                 // Loop through secrets and make sure they are all in the same environment, and the secret with SECRET_NAME exists
                 for secret in secrets.secrets {
                     assert_eq!(secret.environment, environment.as_ref());
-                    assert_eq!(secret.workspace, project_id.as_ref());
+                    assert_eq!(secret.workspace, variables.project_id.as_ref());
 
                     if secret.secret_key == dummy_secret.secret_key {
                         assert_eq!(secret.secret_value, dummy_secret.secret_value);
@@ -236,7 +247,7 @@ mod tests {
     #[tokio::test]
     async fn test_update_secret() {
         let mut client = create_client();
-        let project_id = &get_project_id();
+        let variables = &get_environment_variables();
         let environment = &"dev";
 
         let dummy_secret = create_dummy_secret(&mut client).await;
@@ -245,7 +256,7 @@ mod tests {
             secret_name: dummy_secret.secret_key.to_string(),
             secret_value: dummy_secret.secret_value.to_string(),
             environment: environment.to_string(),
-            project_id: project_id.to_string(),
+            project_id: variables.project_id.to_string(),
             path: None,
             r#type: None,
             skip_multiline_encoding: None,
@@ -256,7 +267,7 @@ mod tests {
         match secret {
             Ok(secret) => {
                 assert_eq!(secret.secret.environment, environment.as_ref());
-                assert_eq!(secret.secret.workspace, project_id.as_ref());
+                assert_eq!(secret.secret.workspace, variables.project_id.as_ref());
                 assert_eq!(
                     secret.secret.secret_value,
                     dummy_secret.secret_value.as_ref()
@@ -274,7 +285,7 @@ mod tests {
     #[tokio::test]
     async fn test_delete_secret() {
         let mut client = create_client();
-        let project_id = &get_project_id();
+        let variables: &Environment = &get_environment_variables();
         let environment = &"dev";
 
         let dummy_secret = create_dummy_secret(&mut client).await;
@@ -282,7 +293,7 @@ mod tests {
         let options = DeleteSecretOptions {
             secret_name: dummy_secret.secret_key.to_string(),
             environment: environment.to_string(),
-            project_id: project_id.to_string(),
+            project_id: variables.project_id.to_string(),
             path: None,
             r#type: None,
         };
@@ -292,7 +303,7 @@ mod tests {
         match secret {
             Ok(secret) => {
                 assert_eq!(secret.secret.environment, environment.as_ref());
-                assert_eq!(secret.secret.workspace, project_id.as_ref());
+                assert_eq!(secret.secret.workspace, variables.project_id.as_ref());
                 assert_eq!(
                     secret.secret.secret_value,
                     dummy_secret.secret_value.as_ref()
