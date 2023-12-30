@@ -1,3 +1,4 @@
+use crate::cache::remove_from_cache;
 use crate::error::api_error_handler;
 use crate::helper::build_base_request;
 use crate::manager::secrets::{UpdateSecretOptions, UpdateSecretResponse};
@@ -47,6 +48,14 @@ pub async fn update_secret_request(
 
     if status == StatusCode::OK {
         let response = response.json::<UpdateSecretResponse>().await?;
+
+        // Remove secret from cache since we're sure it just changed
+        remove_from_cache(
+            client,
+            &response.secret.secret_key,
+            &response.secret.r#type,
+            &response.secret.environment,
+        );
 
         Ok(response)
     } else {
