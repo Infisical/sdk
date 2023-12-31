@@ -1,3 +1,4 @@
+use crate::cache::remove_from_cache;
 use crate::error::api_error_handler;
 use crate::helper::build_base_request;
 use crate::manager::secrets::{CreateSecretOptions, CreateSecretResponse};
@@ -50,6 +51,14 @@ pub async fn create_secret_request(
 
     if status == StatusCode::OK {
         let response = response.json::<CreateSecretResponse>().await?;
+
+        // Just to be sure, remove secret from cache since we're since we just created it
+        remove_from_cache(
+            client,
+            &response.secret.secret_key,
+            &response.secret.r#type,
+            &response.secret.environment,
+        );
 
         Ok(response)
     } else {
