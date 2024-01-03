@@ -1,6 +1,5 @@
 use crate::error::{Error, Result};
 use aes::cipher::generic_array::GenericArray;
-use aes_gcm::Nonce;
 use aes_gcm::{
     aead::{Aead, KeyInit},
     Aes256Gcm,
@@ -19,47 +18,21 @@ macro_rules! b64_decode {
 #[serde(rename_all = "camelCase")]
 pub struct DecryptSymmetricOptions {
     pub key: String,
+    pub ciphertext: String,
     pub iv: String,
     pub tag: String,
-    pub ciphertext: String,
 }
 
 pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
     let key = &input.key;
-    let iv = &input.iv;
+    let encoded_ciphertext = &input.ciphertext; // We slightly modify this later.
+    let encoded_iv = &input.iv;
     let tag = &input.tag;
-    let ciphertext = &input.ciphertext;
 
-    let decoded_key = &b64_decode!(key);
-    let decoded_iv = b64_decode!(iv);
     let decoded_tag = b64_decode!(tag);
-    let decoded_ciphertext = b64_decode!(ciphertext);
-
-    println!("1");
-
-    if decoded_key.is_err() {
-        return Err(Error::DecryptSymmetricKeyError {
-            message: decoded_key.as_ref().unwrap_err().to_string(),
-        });
-    }
-
-    println!("2");
-
-    if decoded_key.as_ref().unwrap().len() != 32 {
-        return Err(Error::DecryptSymmetricKeyError {
-            message: "Key must be 32 bytes in length.".to_string(),
-        });
-    }
-
-    println!("3");
-
-    if decoded_iv.is_err() {
-        return Err(Error::DecryptSymmetricKeyError {
-            message: decoded_iv.unwrap_err().to_string(),
-        });
-    }
-
-    println!("4");
+    let decoded_key = b64_decode!(key);
+    let iv = b64_decode!(encoded_iv);
+    let decoded_ciphertext = b64_decode!(encoded_ciphertext);
 
     if decoded_tag.is_err() {
         return Err(Error::DecryptSymmetricKeyError {
@@ -67,7 +40,17 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
         });
     }
 
-    println!("5");
+    if decoded_key.is_err() {
+        return Err(Error::DecryptSymmetricKeyError {
+            message: decoded_key.unwrap_err().to_string(),
+        });
+    }
+
+    if iv.is_err() {
+        return Err(Error::DecryptSymmetricKeyError {
+            message: iv.unwrap_err().to_string(),
+        });
+    }
 
     if decoded_ciphertext.is_err() {
         return Err(Error::DecryptSymmetricKeyError {
@@ -75,44 +58,31 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
         });
     }
 
-    println!("decoded_key: {:?}", decoded_key);
-    println!("decoded_iv: {:?}", decoded_iv);
-    println!("decoded_tag: {:?}", decoded_tag);
-    println!("decoded_ciphertext: {:?}", decoded_ciphertext);
+    let decoded_tag = decoded_tag.unwrap();
+    let decoded_key = decoded_key.unwrap();
+    let iv = iv.unwrap();
+    let mut decoded_ciphertext = decoded_ciphertext.unwrap();
 
-    println!("6");
+    // Remove the tag from the end of the ciphertext, and replace it with the tag input.
+    decoded_ciphertext.truncate(decoded_ciphertext.len() - 16);
+    decoded_ciphertext.extend_from_slice(&decoded_tag);
 
-    let k = GenericArray::clone_from_slice(decoded_key.as_ref().unwrap());
-    let key_final = KeyInit::new(&k.as_ref().clone());
+    let nonce = GenericArray::from_slice(&iv);
 
-    let cipher = Aes256Gcm::new(key_final);
+    let cipher =
+        Aes256Gcm::new_from_slice(&decoded_key).map_err(|_| Error::DecryptSymmetricKeyError {
+            message: "Failed to create cipher.".to_string(),
+        })?;
 
-    println!("7");
+    let plaintext_bytes = cipher
+        .decrypt(nonce, decoded_ciphertext.as_ref())
+        .map_err(|e| Error::DecryptSymmetricKeyError {
+            message: e.to_string(),
+        })?;
 
-    // Concatenate the tag to the end of the ciphertext as required by the decrypt method
-    let mut combined_ct = decoded_ciphertext.unwrap();
-    combined_ct.extend_from_slice(&decoded_tag.unwrap());
-
-    println!("8");
-
-    let plaintext = cipher.decrypt(
-        Nonce::from_slice(&decoded_iv.unwrap()),
-        combined_ct.as_ref(),
-    );
-
-    println!("9");
-
-    println!("plaintext: {:?}", plaintext);
-
-    if plaintext.is_err() {
-        return Err(Error::DecryptSymmetricKeyError {
-            message: plaintext.clone().unwrap_err().to_string(),
-        });
-    }
-
-    println!("10");
-
-    let plaintext = String::from_utf8(plaintext.unwrap()).unwrap();
-
-    Ok(plaintext)
+    return Ok(String::from_utf8(plaintext_bytes)
+        .map_err(|e| Error::DecryptSymmetricKeyError {
+            message: e.to_string(),
+        })
+        .expect("Failed to convert bytes to string."));
 }
