@@ -45,13 +45,11 @@ fn create_client() -> Client {
 #[cfg(test)]
 mod tests {
 
-    use std::process;
-
     use infisical::manager::cryptography::{
         decrypt_symmetric::DecryptSymmetricOptions, encrypt_symmetric::EncryptSymmetricOptions,
     };
 
-    use super::*;
+    use crate::create_client;
 
     #[tokio::test]
     async fn test_create_key() {
@@ -73,32 +71,50 @@ mod tests {
 
         let test_key = &client.cryptography().create_symmetric_key().unwrap(); // We define a static string so the output is predictable and measurable.
 
-        println!("Key: {}", test_key);
-
-        let input = EncryptSymmetricOptions {
+        let encrypt_options = EncryptSymmetricOptions {
             key: test_key.clone(),
-            plaintext: "Hello world!".to_string(),
+            plaintext: "Infisical".to_string(),
         };
 
-        let encrypted_data = client
+        let encrypted = client
             .cryptography()
-            .encrypt_symmetric(&input)
+            .encrypt_symmetric(&encrypt_options)
             .expect("Failed to encrypt data.");
 
-        println!("Encrypted data: {:?}", encrypted_data);
+        assert!(encrypted.ciphertext.len() > 0);
+        assert_eq!(encrypted.tag.len(), 24); // It should be 24 because its base64 encoded, and 16 bytes long.
+        assert_eq!(encrypted.iv.len(), 16); // It should be 16 because its base64 encoded, and 12 bytes long.
+    }
 
-        let options = DecryptSymmetricOptions {
+    #[tokio::test]
+    async fn test_decrypt_symmetric() {
+        let mut client = create_client();
+        let plaintext = &"Infisical rocks!".to_string();
+
+        let test_key = &client.cryptography().create_symmetric_key().unwrap(); // We define a static string so the output is predictable and measurable.
+
+        let encrypt_options = EncryptSymmetricOptions {
             key: test_key.clone(),
-            iv: encrypted_data.iv,
-            tag: encrypted_data.tag,
-            ciphertext: encrypted_data.ciphertext,
+            plaintext: plaintext.clone(),
         };
 
-        let decrypted_string = client
+        let encrypted = client
             .cryptography()
-            .decrypt_symmetric(&options)
+            .encrypt_symmetric(&encrypt_options)
+            .expect("Failed to encrypt data.");
+
+        let decrypt_options = DecryptSymmetricOptions {
+            key: test_key.clone(),
+            ciphertext: encrypted.ciphertext,
+            iv: encrypted.iv,
+            tag: encrypted.tag,
+        };
+
+        let decrypted_text = &client
+            .cryptography()
+            .decrypt_symmetric(&decrypt_options)
             .expect("Failed to decrypt data.");
 
-        println!("Decrypted string: {}", decrypted_string);
+        assert_eq!(decrypted_text, plaintext);
     }
 }
