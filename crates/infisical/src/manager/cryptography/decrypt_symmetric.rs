@@ -24,15 +24,10 @@ pub struct DecryptSymmetricOptions {
 }
 
 pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
-    let key = &input.key;
-    let encoded_ciphertext = &input.ciphertext; // We slightly modify this later.
-    let encoded_iv = &input.iv;
-    let tag = &input.tag;
-
-    let decoded_tag = b64_decode!(tag);
-    let decoded_key = b64_decode!(key);
-    let iv = b64_decode!(encoded_iv);
-    let decoded_ciphertext = b64_decode!(encoded_ciphertext);
+    let decoded_tag = b64_decode!(&input.tag);
+    let decoded_key = b64_decode!(&input.key);
+    let iv = b64_decode!(&input.iv);
+    let decoded_ciphertext = b64_decode!(&input.ciphertext);
 
     if decoded_tag.is_err() {
         return Err(Error::DecryptSymmetricKeyError {
@@ -63,18 +58,22 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
     let iv = iv.unwrap();
     let mut decoded_ciphertext = decoded_ciphertext.unwrap();
 
-    // Remove the tag from the end of the ciphertext, and replace it with the tag input.
+    // We modify the ciphertext a little bit here to remove the pre-existing tag, and append the tag that was provided as a parameter.
     decoded_ciphertext.truncate(decoded_ciphertext.len() - 16);
     decoded_ciphertext.extend_from_slice(&decoded_tag);
 
     let nonce = GenericArray::from_slice(&iv);
 
-    let cipher =
-        Aes256Gcm::new_from_slice(&decoded_key).map_err(|_| Error::DecryptSymmetricKeyError {
+    let cipher = Aes256Gcm::new_from_slice(&decoded_key);
+
+    if cipher.is_err() {
+        return Err(Error::DecryptSymmetricKeyError {
             message: "Failed to create cipher.".to_string(),
-        })?;
+        });
+    }
 
     let plaintext_bytes = cipher
+        .unwrap()
         .decrypt(nonce, decoded_ciphertext.as_ref())
         .map_err(|e| Error::DecryptSymmetricKeyError {
             message: e.to_string(),
