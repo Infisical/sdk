@@ -67,8 +67,9 @@ jobs:
               uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
               with:
                   node-version: 18
-                  cache: "npm"
-                  cache-dependency-path: crates/infisical-napi/package-lock.json
+
+                  #cache: "npm"
+                  #cache-dependency-path: languages/node/package-lock.json
 
             - name: Install rust
               uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7 # stable
