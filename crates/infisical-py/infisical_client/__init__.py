@@ -8,3 +8,9 @@ from .schemas import CreateSecretOptions as CreateSecretOptions
 from .schemas import ListSecretsOptions as ListSecretsOptions
 from .schemas import ClientSettings as ClientSettings
 from .schemas import SecretElement as SecretElement
+
+from .schemas import EncryptSymmetricOptions as EncryptSymmetricOptions
+from .schemas import EncryptSymmetricResponse as EncryptSymmetricResponse
+
+from .schemas import DecryptSymmetricOptions as DecryptSymmetricOptions
+from .schemas import DecryptSymmetricResponse as DecryptSymmetricResponse
