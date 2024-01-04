@@ -60,9 +60,9 @@ mod tests {
             .create_symmetric_key()
             .expect("Failed to create key.");
 
-        println!("Key: {}", key);
+        println!("Key: {}", key.key);
 
-        assert_eq!(key.len(), 44); // It should be 44 because its base64 encoded, and 32 bytes long.
+        assert_eq!(key.key.len(), 44); // It should be 44 because its base64 encoded, and 32 bytes long.
     }
 
     #[tokio::test]
@@ -72,7 +72,7 @@ mod tests {
         let test_key = &client.cryptography().create_symmetric_key().unwrap(); // We define a static string so the output is predictable and measurable.
 
         let encrypt_options = EncryptSymmetricOptions {
-            key: test_key.clone(),
+            key: test_key.key.clone(),
             plaintext: "Infisical".to_string(),
         };
 
@@ -94,7 +94,7 @@ mod tests {
         let test_key = &client.cryptography().create_symmetric_key().unwrap(); // We define a static string so the output is predictable and measurable.
 
         let encrypt_options = EncryptSymmetricOptions {
-            key: test_key.clone(),
+            key: test_key.key.clone(),
             plaintext: plaintext.clone(),
         };
 
@@ -104,17 +104,17 @@ mod tests {
             .expect("Failed to encrypt data.");
 
         let decrypt_options = DecryptSymmetricOptions {
-            key: test_key.clone(),
+            key: test_key.key.clone(),
             ciphertext: encrypted.ciphertext,
             iv: encrypted.iv,
             tag: encrypted.tag,
         };
 
-        let decrypted_text = &client
+        let decrypted = &client
             .cryptography()
             .decrypt_symmetric(&decrypt_options)
             .expect("Failed to decrypt data.");
 
-        assert_eq!(decrypted_text, plaintext);
+        assert_eq!(&decrypted.decrypted, plaintext);
     }
 }
