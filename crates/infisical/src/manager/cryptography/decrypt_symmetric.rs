@@ -65,7 +65,7 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<DecryptSymme
     let mut decoded_ciphertext = decoded_ciphertext.unwrap();
 
     // We modify the ciphertext a little bit here to remove the pre-existing tag, and append the tag that was provided as a parameter.
-    decoded_ciphertext.truncate(decoded_ciphertext.len() - 16);
+    //decoded_ciphertext.truncate(decoded_ciphertext.len() - 16);
     decoded_ciphertext.extend_from_slice(&decoded_tag);
 
     let nonce = GenericArray::from_slice(&iv);

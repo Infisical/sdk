@@ -60,17 +60,22 @@ pub fn encrypt_symmetric(input: &EncryptSymmetricOptions) -> Result<EncryptSymme
         });
     }
 
-    let ciphertext = &cipher.unwrap().encrypt(&iv.into(), plaintext.as_bytes());
+    let ciphertext_r = &cipher.unwrap().encrypt(&iv.into(), plaintext.as_bytes());
 
-    if ciphertext.is_err() {
+    if ciphertext_r.is_err() {
         return Err(Error::EncryptSymmetricKeyError {
-            message: ciphertext.clone().unwrap_err().to_string(),
+            message: ciphertext_r.clone().unwrap_err().to_string(),
         });
     }
 
-    let encryption_tag = &ciphertext.clone().unwrap()[&ciphertext.clone().unwrap().len() - 16..];
+    let mut ciphertext = ciphertext_r.as_ref().unwrap().clone();
 
-    let encoded_ciphertext = b64_encode!(&ciphertext.clone().unwrap());
+    // we need to take the last 16 bytes of the ciphertext and remove it from the ciphertext, and append it to the tag.
+
+    let encryption_tag = &ciphertext.clone()[&ciphertext.clone().len() - 16..]; // This line is a bit confusing, but it basically takes the last 16 bytes of the ciphertext and stores it in a variable.
+    ciphertext.truncate(ciphertext.len() - 16); // This line removes the last 16 bytes of the ciphertext.
+
+    let encoded_ciphertext = b64_encode!(&ciphertext.clone());
     let encoded_iv = b64_encode!(iv);
     let encoded_tag = b64_encode!(encryption_tag);
 
