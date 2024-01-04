@@ -6,6 +6,12 @@ from .schemas import ListSecretsOptions, ResponseForListSecretsResponse
 from .schemas import UpdateSecretOptions, ResponseForUpdateSecretResponse
 from .schemas import DeleteSecretOptions, ResponseForDeleteSecretResponse
 from .schemas import CreateSecretOptions, ResponseForCreateSecretResponse
+
+from .schemas import EncryptSymmetricOptions, EncryptSymmetricResponse, ResponseForEncryptSymmetricResponse
+from .schemas import DecryptSymmetricOptions, DecryptSymmetricResponse, ResponseForDecryptSymmetricResponse
+
+from .schemas import ArbitraryOptions, ResponseForCreateSymmetricKeyResponse
+
 import infisical_py
 import os
 
@@ -59,3 +65,21 @@ class InfisicalClient:
         result = self._run_command(Command(create_secret=options))
 
         return ResponseForCreateSecretResponse.from_dict(result).data.secret
+    
+    def createSymmetricKey(self) -> str:
+
+        arbitraryOptions = ArbitraryOptions(data="")
+
+        result = self._run_command(Command(create_symmetric_key=arbitraryOptions))
+
+        return ResponseForCreateSymmetricKeyResponse.from_dict(result).data.key
+    
+    def encryptSymmetric(self, options: EncryptSymmetricOptions) -> EncryptSymmetricResponse:
+        result = self._run_command(Command(encrypt_symmetric=options))
+
+        return ResponseForEncryptSymmetricResponse.from_dict(result).data
+    
+    def decryptSymmetric(self, options: DecryptSymmetricOptions) -> str:
+        result = self._run_command(Command(decrypt_symmetric=options))
+
+        return ResponseForDecryptSymmetricResponse.from_dict(result).data.decrypted
