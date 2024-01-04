@@ -3,7 +3,8 @@ use crate::{error::Result, Client};
 // DELETE SECRET
 use super::cryptography::{
     decrypt_symmetric::{decrypt_symmetric, DecryptSymmetricOptions},
-    encrypt_symmetric::{encrypt_symmetric, EncryptSymmetricOptions, EncryptedData},
+    encrypt_symmetric::{encrypt_symmetric, EncryptSymmetricOptions, EncryptSymmetricResponse},
+    CreateSymmetricKeyResponse, DecryptSymmetricResponse,
 };
 pub use crate::manager::cryptography::create_symmetric_key::create_symmetric_key;
 
@@ -13,18 +14,21 @@ pub struct ClientCryptography<'a> {
 }
 
 impl<'a> ClientCryptography<'a> {
-    pub fn create_symmetric_key(&'a mut self) -> Result<String> {
+    pub fn create_symmetric_key(&'a mut self) -> Result<CreateSymmetricKeyResponse> {
         create_symmetric_key()
     }
 
     pub fn encrypt_symmetric(
         &'a mut self,
         input: &EncryptSymmetricOptions,
-    ) -> Result<EncryptedData> {
+    ) -> Result<EncryptSymmetricResponse> {
         encrypt_symmetric(input)
     }
 
-    pub fn decrypt_symmetric(&'a mut self, input: &DecryptSymmetricOptions) -> Result<String> {
+    pub fn decrypt_symmetric(
+        &'a mut self,
+        input: &DecryptSymmetricOptions,
+    ) -> Result<DecryptSymmetricResponse> {
         decrypt_symmetric(input)
     }
 }
