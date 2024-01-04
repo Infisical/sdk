@@ -2,7 +2,7 @@ import * as rust from "../../binding";
 import { LogLevel } from "../../binding";
 import { ClientSettings, Convert } from "./schemas";
 
-import type { GetSecretOptions, GetSecretResponse } from "./schemas";
+import type { DecryptSymmetricOptions, EncryptSymmetricOptions, EncryptSymmetricResponse, GetSecretOptions, GetSecretResponse } from "./schemas";
 import type { ListSecretsOptions, ListSecretsResponse } from "./schemas";
 import type { UpdateSecretOptions, UpdateSecretResponse } from "./schemas";
 import type { CreateSecretOptions, CreateSecretResponse } from "./schemas";
@@ -89,6 +89,54 @@ export class InfisicalClient {
         }
 
         return response.data.secret;
+    }
+
+    // Has to be a promise because our client is async
+    async createSymmetricKey(): Promise<string> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                createSymmetricKey: {
+                    data: ""
+                }
+            })
+        );
+        const response = Convert.toResponseForCreateSymmetricKeyResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data.key;
+    }
+
+    async encryptSymmetric(options: EncryptSymmetricOptions): Promise<EncryptSymmetricResponse> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                encryptSymmetric: options
+            })
+        );
+        const response = Convert.toResponseForEncryptSymmetricResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data;
+    }
+
+    async decryptSymmetric(options: DecryptSymmetricOptions): Promise<string> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                decryptSymmetric: options
+            })
+        );
+        const response = Convert.toResponseForDecryptSymmetricResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data.decrypted;
     }
 }
 
