@@ -2,11 +2,14 @@ import * as rust from "../../binding";
 import { LogLevel } from "../../binding";
 import { ClientSettings, Convert } from "./schemas";
 
-import type { DecryptSymmetricOptions, EncryptSymmetricOptions, EncryptSymmetricResponse, GetSecretOptions, GetSecretResponse } from "./schemas";
+import type { GetSecretOptions, GetSecretResponse } from "./schemas";
 import type { ListSecretsOptions, ListSecretsResponse } from "./schemas";
 import type { UpdateSecretOptions, UpdateSecretResponse } from "./schemas";
 import type { CreateSecretOptions, CreateSecretResponse } from "./schemas";
 import type { DeleteSecretOptions, DeleteSecretResponse } from "./schemas";
+
+import type { DecryptSymmetricOptions } from "./schemas";
+import type { EncryptSymmetricOptions, EncryptSymmetricResponse } from "./schemas";
 
 export class InfisicalClient {
     #client: rust.InfisicalClient;
