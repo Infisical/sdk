@@ -63,7 +63,11 @@ fn main() -> Result<()> {
         infisical::manager::secrets::UpdateSecretResponse,
         infisical::manager::secrets::DeleteSecretResponse,
         infisical::manager::secrets::CreateSecretResponse,
-        infisical::auth::AccessTokenSuccessResponse
+        infisical::auth::AccessTokenSuccessResponse,
+
+        infisical::manager::cryptography::EncryptSymmetricResponse,
+        infisical::manager::cryptography::DecryptSymmetricResponse,
+        infisical::manager::cryptography::CreateSymmetricKeyResponse,
     };
 
     Ok(())
