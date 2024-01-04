@@ -32,7 +32,6 @@
         "move:bindings": "mv -v ../../crates/infisical-napi/binding.* ./",
         "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",
         "move:artifacts": "mv -v ./artifacts/* ./ && mv ./schemas.ts ./src/infisical_client/schemas.ts",
-        "prepublishOnly": "napi prepublish --skip-gh-release -t npm",
         "tsc": "tsc",
         "version": "napi version"
     },
