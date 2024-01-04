@@ -29,13 +29,13 @@ pub struct EncryptSymmetricOptions {
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct EncryptedData {
+pub struct EncryptSymmetricResponse {
     pub ciphertext: String,
     pub iv: String,
     pub tag: String,
 }
 
-pub fn encrypt_symmetric(input: &EncryptSymmetricOptions) -> Result<EncryptedData> {
+pub fn encrypt_symmetric(input: &EncryptSymmetricOptions) -> Result<EncryptSymmetricResponse> {
     let key = &input.key;
     let plaintext = &input.plaintext;
 
@@ -74,7 +74,7 @@ pub fn encrypt_symmetric(input: &EncryptSymmetricOptions) -> Result<EncryptedDat
     let encoded_iv = b64_encode!(iv);
     let encoded_tag = b64_encode!(encryption_tag);
 
-    return Ok(EncryptedData {
+    return Ok(EncryptSymmetricResponse {
         ciphertext: encoded_ciphertext,
         iv: encoded_iv,
         tag: encoded_tag,
