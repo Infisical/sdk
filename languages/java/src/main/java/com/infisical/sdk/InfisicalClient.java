@@ -85,6 +85,45 @@ public class InfisicalClient implements AutoCloseable {
         return response.getData().getSecret();
     }
 
+    public String createSymmetricKey() {
+        ArbitraryOptions options = new ArbitraryOptions();
+        options.setData("");
+
+        Command command = new Command();
+        command.setCreateSymmetricKey(options);
+
+        ResponseForCreateSymmetricKeyResponse response = commandRunner.runCommand(command,
+                InfisicalClient
+                        .throwingFunctionWrapper(Converter::ResponseForCreateSymmetricKeyResponseFromJsonString));
+
+        errorCheck(response.getSuccess(), response.getErrorMessage());
+        return response.getData().getKey();
+    }
+
+    public EncryptSymmetricResponse encryptSymmetric(EncryptSymmetricOptions options) {
+        Command command = new Command();
+        command.setEncryptSymmetric(options);
+
+        ResponseForEncryptSymmetricResponse response = commandRunner.runCommand(command,
+                InfisicalClient
+                        .throwingFunctionWrapper(Converter::ResponseForEncryptSymmetricResponseFromJsonString));
+
+        errorCheck(response.getSuccess(), response.getErrorMessage());
+        return response.getData();
+    }
+
+    public DecryptSymmetricResponse decryptSymmetric(DecryptSymmetricOptions options) {
+        Command command = new Command();
+        command.setDecryptSymmetric(options);
+
+        ResponseForDecryptSymmetricResponse response = commandRunner.runCommand(command,
+                InfisicalClient
+                        .throwingFunctionWrapper(Converter::ResponseForDecryptSymmetricResponseFromJsonString));
+
+        errorCheck(response.getSuccess(), response.getErrorMessage());
+        return response.getData();
+    }
+
     private void errorCheck(boolean success, String errorMessage) {
         if (!success) {
             if (errorMessage.length() > 0) {
