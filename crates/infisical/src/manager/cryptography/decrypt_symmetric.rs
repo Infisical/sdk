@@ -23,7 +23,13 @@ pub struct DecryptSymmetricOptions {
     pub tag: String,
 }
 
-pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
+#[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct DecryptSymmetricResponse {
+    pub decrypted: String,
+}
+
+pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<DecryptSymmetricResponse> {
     let decoded_tag = b64_decode!(&input.tag);
     let decoded_key = b64_decode!(&input.key);
     let iv = b64_decode!(&input.iv);
@@ -79,9 +85,11 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<String> {
             message: e.to_string(),
         })?;
 
-    return Ok(String::from_utf8(plaintext_bytes)
-        .map_err(|e| Error::DecryptSymmetricKeyError {
-            message: e.to_string(),
-        })
-        .expect("Failed to convert bytes to string."));
+    return Ok(DecryptSymmetricResponse {
+        decrypted: String::from_utf8(plaintext_bytes)
+            .map_err(|e| Error::DecryptSymmetricKeyError {
+                message: e.to_string(),
+            })
+            .expect("Failed to convert bytes to string."),
+    });
 }
