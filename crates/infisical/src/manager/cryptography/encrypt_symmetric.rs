@@ -39,34 +39,26 @@ pub fn encrypt_symmetric(input: &EncryptSymmetricOptions) -> Result<EncryptSymme
     let key = &input.key;
     let plaintext = &input.plaintext;
 
-    let decoded_key = b64_decode!(key);
-
     // Generate a random IV
     let mut iv = [0u8; 12];
     OsRng.fill_bytes(&mut iv);
 
-    if decoded_key.is_err() {
-        return Err(Error::EncryptSymmetricKeyError {
-            message: decoded_key.unwrap_err().to_string(),
-        });
-    }
+    let decoded_key = b64_decode!(key).map_err(|e| Error::EncryptSymmetricKeyError {
+        message: e.to_string(),
+    })?;
 
     // Create a new AES256-GCM instance
-    let cipher = Aes256Gcm::new_from_slice(decoded_key.unwrap().as_slice());
+    let cipher = Aes256Gcm::new_from_slice(decoded_key.as_slice()).map_err(|e| {
+        Error::EncryptSymmetricKeyError {
+            message: e.to_string(),
+        }
+    })?;
 
-    if cipher.is_err() {
-        return Err(Error::EncryptSymmetricKeyError {
-            message: "Failed to create cipher.".to_string(),
+    let ciphertext_r = &cipher
+        .encrypt(&iv.into(), plaintext.as_bytes())
+        .map_err(|e| Error::EncryptSymmetricKeyError {
+            message: e.to_string(),
         });
-    }
-
-    let ciphertext_r = &cipher.unwrap().encrypt(&iv.into(), plaintext.as_bytes());
-
-    if ciphertext_r.is_err() {
-        return Err(Error::EncryptSymmetricKeyError {
-            message: ciphertext_r.clone().unwrap_err().to_string(),
-        });
-    }
 
     let mut ciphertext = ciphertext_r.as_ref().unwrap().clone();
 
