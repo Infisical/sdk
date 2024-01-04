@@ -10,5 +10,5 @@
         "esModuleInterop": true
     },
     "include": [".", "/infisical_client"],
-    "exclude": ["example.ts", "node_modules", "lib"]
+    "exclude": ["examples", "node_modules", "lib"]
 }
