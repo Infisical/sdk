@@ -3,7 +3,6 @@ use crate::error::api_error_handler;
 use crate::helper::build_base_request;
 use crate::manager::secrets::{UpdateSecretOptions, UpdateSecretResponse};
 use crate::{error::Result, Client};
-use log::debug;
 use reqwest::StatusCode;
 
 pub async fn update_secret_request(
@@ -33,15 +32,6 @@ pub async fn update_secret_request(
         Ok(request) => request,
         Err(e) => return Err(e),
     };
-
-    let token = match client.auth.access_token {
-        Some(ref token) => format!("Bearer {}", token),
-        None => "".to_string(),
-    };
-
-    debug!("Creating secret with token: {}", token);
-    debug!("Creating secret with JSON body: {:?}", json);
-    debug!("Creating secret with url: {}", base_url);
 
     let response = request.json(json).send().await?;
     let status = response.status();
