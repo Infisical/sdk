@@ -18,6 +18,15 @@ pub enum Error {
     #[error("Something unexpected went wrong.")]
     UnknownError,
 
+    #[error("Failed to create symmetric key: {}", .message)]
+    CreateSymmetricKeyError { message: String },
+
+    #[error("Failed to encrypt symmetric key: {}", .message)]
+    EncryptSymmetricKeyError { message: String },
+
+    #[error("Failed to decrypt symmetric key: {}", .message)]
+    DecryptSymmetricKeyError { message: String },
+
     #[error("Missing access token.")]
     MissingAccessToken,
 

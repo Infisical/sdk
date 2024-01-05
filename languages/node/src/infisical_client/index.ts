@@ -8,6 +8,9 @@ import type { UpdateSecretOptions, UpdateSecretResponse } from "./schemas";
 import type { CreateSecretOptions, CreateSecretResponse } from "./schemas";
 import type { DeleteSecretOptions, DeleteSecretResponse } from "./schemas";
 
+import type { DecryptSymmetricOptions } from "./schemas";
+import type { EncryptSymmetricOptions, EncryptSymmetricResponse } from "./schemas";
+
 export class InfisicalClient {
     #client: rust.InfisicalClient;
 
@@ -89,6 +92,54 @@ export class InfisicalClient {
         }
 
         return response.data.secret;
+    }
+
+    // Has to be a promise because our client is async
+    async createSymmetricKey(): Promise<string> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                createSymmetricKey: {
+                    data: ""
+                }
+            })
+        );
+        const response = Convert.toResponseForCreateSymmetricKeyResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data.key;
+    }
+
+    async encryptSymmetric(options: EncryptSymmetricOptions): Promise<EncryptSymmetricResponse> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                encryptSymmetric: options
+            })
+        );
+        const response = Convert.toResponseForEncryptSymmetricResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data;
+    }
+
+    async decryptSymmetric(options: DecryptSymmetricOptions): Promise<string> {
+        const command = await this.#client.runCommand(
+            Convert.commandToJson({
+                decryptSymmetric: options
+            })
+        );
+        const response = Convert.toResponseForDecryptSymmetricResponse(command);
+
+        if (!response.success || response.data == null) {
+            throw new Error(response.errorMessage ?? "Something went wrong");
+        }
+
+        return response.data.decrypted;
     }
 }
 

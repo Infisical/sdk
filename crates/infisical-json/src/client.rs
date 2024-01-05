@@ -29,11 +29,23 @@ impl Client {
         };
 
         match cmd {
+            // Infisical secrets
             Command::GetSecret(req) => self.0.secrets().get(&req).await.into_string(),
             Command::ListSecrets(req) => self.0.secrets().list(&req).await.into_string(),
             Command::CreateSecret(req) => self.0.secrets().create(&req).await.into_string(),
             Command::UpdateSecret(req) => self.0.secrets().update(&req).await.into_string(),
             Command::DeleteSecret(req) => self.0.secrets().delete(&req).await.into_string(),
+
+            // Symmetric cryptography
+            Command::DecryptSymmetric(req) => {
+                self.0.cryptography().decrypt_symmetric(&req).into_string()
+            }
+            Command::EncryptSymmetric(req) => {
+                self.0.cryptography().encrypt_symmetric(&req).into_string()
+            }
+            Command::CreateSymmetricKey(_) => {
+                self.0.cryptography().create_symmetric_key().into_string()
+            }
         }
     }
 
