@@ -16,6 +16,8 @@ public class InfisicalClient implements AutoCloseable {
 
     public InfisicalClient(ClientSettings settings) {
 
+        settings.setUserAgent("infisical-java-sdk");
+
         library = Native.load("infisical_c", InfisicalLibrary.class);
 
         try {
