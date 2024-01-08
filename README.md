@@ -54,8 +54,9 @@ Infisical takes security issues very seriously. If you have any concerns about I
 
 Note that this security address should be used only for undisclosed vulnerabilities. Please report any security problems to us before disclosing it publicly.
 
-## Acknowledgements
 
-[//]: contributor-faces
+## Contributing
 
-<a href="https://github.com/danielhougaard"><img src="https://avatars.githubusercontent.com/u/62331820?v=4" width="50" height="50" alt=""/></a>
+Whether it's big or small, we love contributions. Check out our guide to see how to [get started](https://infisical.com/docs/contributing/getting-started).
+
+Not sure where to get started? Join our <a href="https://infisical.com/slack">Slack</a>, and ask us any questions there.
