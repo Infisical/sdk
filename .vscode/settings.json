@@ -12,6 +12,7 @@
         "./crates/infisical-py/Cargo.toml"
     ],
     "cSpell.words": [
+        "Cdecl",
         "ciphertext",
         "dotenv",
         "indicies",
