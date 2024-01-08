@@ -44,12 +44,12 @@ jobs:
                   path: ${{ github.workspace }}/languages/node/src/infisical_client/schemas.ts
                   if-no-files-found: error
 
-            # - name: Upload CSharp schemas artifact
-            #  uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
-            #  with:
-            #       name: schemas.cs
-            #      path: ${{ github.workspace }}/languages/csharp/Infisical.Sdk/schemas.cs
-            #      if-no-files-found: error
+            - name: Upload CSharp schemas artifact
+              uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+              with:
+                  name: schemas.cs
+                  path: ${{ github.workspace }}/languages/csharp/Infisical.Sdk/schemas.cs
+                  if-no-files-found: error
 
             - name: Upload Python schemas artifact
               uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3

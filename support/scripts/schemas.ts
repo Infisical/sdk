@@ -51,7 +51,7 @@ async function main() {
     await ensureDir("./crates/infisical-py/infisical_client");
     writeToFile("./crates/infisical-py/infisical_client/schemas.py", python.lines);
 
-    /*
+    
     const csharp = await quicktype({
         inputData,
         lang: "csharp",
@@ -63,7 +63,7 @@ async function main() {
     });
     await ensureDir("./languages/csharp/Infisical.Sdk");
     writeToFile("./languages/csharp/Infisical.Sdk/schemas.cs", csharp.lines);
-    */
+    
 
     const java = await quicktypeMultiFile({
         inputData,
