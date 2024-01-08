@@ -112,7 +112,7 @@ public class InfisicalClient implements AutoCloseable {
         return response.getData();
     }
 
-    public DecryptSymmetricResponse decryptSymmetric(DecryptSymmetricOptions options) {
+    public String decryptSymmetric(DecryptSymmetricOptions options) {
         Command command = new Command();
         command.setDecryptSymmetric(options);
 
@@ -121,7 +121,7 @@ public class InfisicalClient implements AutoCloseable {
                         .throwingFunctionWrapper(Converter::ResponseForDecryptSymmetricResponseFromJsonString));
 
         errorCheck(response.getSuccess(), response.getErrorMessage());
-        return response.getData();
+        return response.getData().getDecrypted();
     }
 
     private void errorCheck(boolean success, String errorMessage) {
