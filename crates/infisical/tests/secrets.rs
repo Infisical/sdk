@@ -106,6 +106,7 @@ fn create_client() -> Client {
         access_token: None,
         site_url: Some(environment.site_url),
         cache_ttl: None,
+        user_agent: Some("infisical-secrets-test-sdk".to_string()),
     };
 
     let client = Client::new(Some(settings));
