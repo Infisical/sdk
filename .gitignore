@@ -182,3 +182,9 @@ languages/java/src/main/java/com/infisical/sdk/schema/*.java
 languages/java/build
 languages/java/.gradle
 languages/java/src/main/resources/*
+infisical-sdk.sln
+
+languages/csharp/Infisical.Sdk/obj/**/*
+languages/csharp/Infisical.Sdk/bin/**/*
+languages/csharp/Infisical.Sdk.Samples/obj/**/*
+languages/csharp/Infisical.Sdk.Samples/bin/**/*
