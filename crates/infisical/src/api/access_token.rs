@@ -37,7 +37,8 @@ pub async fn access_token_request(client: &mut Client) -> Result<AccessTokenSucc
     let request = req_client
         .post(url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
-        .header(reqwest::header::ACCEPT, "application/json");
+        .header(reqwest::header::ACCEPT, "application/json")
+        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
     let response = request.body(object).send().await?;
 

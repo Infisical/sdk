@@ -21,6 +21,9 @@ class InfisicalClient:
         if settings is None:
             self.inner = infisical_py.InfisicalClient(None)
         else:
+
+            settings.user_agent = "infisical-python-sdk"
+
             settings_json = json.dumps(settings.to_dict())
 
             self.inner = infisical_py.InfisicalClient(settings_json)

@@ -15,6 +15,7 @@ pub struct Client {
     pub(crate) cache_ttl: u64, // No need for a mutex lock here, as we are only reading this value in the cache thread.
 
     pub site_url: String,
+    pub user_agent: String,
 }
 
 impl Client {
@@ -33,6 +34,7 @@ impl Client {
 
             cache: Arc::new(Mutex::new(Vec::new())),
             cache_ttl: settings.cache_ttl.unwrap_or(300),
+            user_agent: settings.user_agent.unwrap(),
         };
 
         if c.cache_ttl != 0 {
