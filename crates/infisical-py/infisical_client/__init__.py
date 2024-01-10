@@ -1,6 +1,9 @@
 __version__ = "1.0.1"
 
 from .infisical_client import InfisicalClient as InfisicalClient
+
+from .infisical_py import InfisicalClient as RustInfisicalClient
+
 from .schemas import GetSecretOptions as GetSecretOptions
 from .schemas import UpdateSecretOptions as UpdateSecretOptions
 from .schemas import DeleteSecretOptions as DeleteSecretOptions

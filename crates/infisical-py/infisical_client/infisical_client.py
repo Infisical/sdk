@@ -12,21 +12,21 @@ from .schemas import DecryptSymmetricOptions, DecryptSymmetricResponse, Response
 
 from .schemas import ArbitraryOptions, ResponseForCreateSymmetricKeyResponse
 
-import infisical_py
+from .infisical_py import InfisicalClient as RustInfisicalClient
 import os
 
 class InfisicalClient:
     def __init__(self, settings: ClientSettings = None):
 
         if settings is None:
-            self.inner = infisical_py.InfisicalClient(None)
+            self.inner = RustInfisicalClient(None)
         else:
 
             settings.user_agent = "infisical-python-sdk"
 
             settings_json = json.dumps(settings.to_dict())
 
-            self.inner = infisical_py.InfisicalClient(settings_json)
+            self.inner = RustInfisicalClient(settings_json)
 
     def _run_command(self, command: Command) -> Any:
         response_json = self.inner.run_command(json.dumps(command.to_dict()))
