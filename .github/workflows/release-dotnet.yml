@@ -72,7 +72,7 @@ jobs:
             - name: Pack NuGet Package
               env:
                   VERSION: ${{ github.ref_name }}
-              run: dotnet pack --configuration Release -p:PackageID=Infisical.Sdk -p:Version=${VERSION} --output ./nuget-output /nologo /v:n
+              run: dotnet pack --configuration Release -p:PackageID=Infisical.Sdk -p:Version=${{env.VERSION}} --output ./nuget-output /nologo /v:n
               working-directory: languages/csharp/Infisical.Sdk
 
             - name: Publish NuGet Package
