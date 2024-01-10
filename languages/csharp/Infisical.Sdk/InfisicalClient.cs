@@ -99,7 +99,7 @@ public sealed class InfisicalClient : IDisposable
         throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    public string createSymmetricKey()
+    public string CreateSymmetricKey()
     {
 
         var cmd = new Command
@@ -121,7 +121,7 @@ public sealed class InfisicalClient : IDisposable
     }
 
 
-    public EncryptSymmetricResponse encryptSymmetric(EncryptSymmetricOptions options)
+    public EncryptSymmetricResponse EncryptSymmetric(EncryptSymmetricOptions options)
     {
         var cmd = new Command
         {
@@ -138,7 +138,7 @@ public sealed class InfisicalClient : IDisposable
         throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    public string decryptSymmetric(DecryptSymmetricOptions options)
+    public string DecryptSymmetric(DecryptSymmetricOptions options)
     {
         var cmd = new Command
         {
