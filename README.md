@@ -44,7 +44,7 @@ We chose Rust as the foundation for our SDK based on several key factors, primar
 -   **[Node.js SDK](https://github.com/Infisical/sdk/tree/main/languages/node) — [(NPM)](https://www.npmjs.com/package/@infisical/sdk)**
 -   **[Python SDK](https://github.com/Infisical/sdk/tree/main/crates/infisical-py) — [(PyPI)](https://pypi.org/project/infisical-python/)**
 -   **[Java SDK](https://github.com/Infisical/sdk/tree/main/languages/java) — [(GitHub Maven Registry)](https://github.com/Infisical/sdk/packages/2019741)**
--   **[C# SDK](https://github.com/Infisical/sdk/tree/main/languages/csharp)  - [(NuGet)](https://www.nuget.org/packages/Infisical.Sdk)**
+-   **[.NET SDK](https://github.com/Infisical/sdk/tree/main/languages/csharp)  - [(NuGet)](https://www.nuget.org/packages/Infisical.Sdk)**
 -   Many more to come!
 
 ## Security
