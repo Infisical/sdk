@@ -20,7 +20,7 @@
     <PackageIcon>infisical.png</PackageIcon>
     <PackageTags>Infisical;Sdk;.NET</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
