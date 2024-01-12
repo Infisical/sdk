@@ -1,0 +1,31 @@
+{
+    "name": "@infisical/napi-linux-x64-gnu",
+    "version": "0.3.1",
+    "homepage": "https://github.com/infisical/sdk",
+    "bugs": {
+      "url": "https://github.com/infisical/sdk/issues"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/infisical/sdk.git"
+    },
+    "license": "SEE LICENSE IN LICENSE",
+    "author": "Infisical Inc. <team@infisical.com> (https://infisical.com)",
+    "main": "infisical.linux-x64-gnu.node",
+    "files": [
+      "sdk-napi.linux-x64-gnu.node"
+    ],
+    "engines": {
+      "node": ">= 10"
+    },
+    "os": [
+      "linux"
+    ],
+    "cpu": [
+      "x64"
+    ],
+    "libc": [
+      "glibc"
+    ]
+  }
+  

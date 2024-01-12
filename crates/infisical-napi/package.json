@@ -1,7 +1,7 @@
 {
     "name": "@infisical/napi",
     "napi": {
-        "name": "sdk",
+        "name": "infisical",
         "triples": {
             "additional": [
                 "aarch64-apple-darwin"
