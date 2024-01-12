@@ -28,9 +28,14 @@
     "scripts": {
         "build": "npm run build --prefix ../../crates/infisical-napi && npm run move",
         "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move",
+        "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move",
+
+        
+
         "move": "npm run move:bindings && npm run move:binaries",
         "move:bindings": "mv -v ../../crates/infisical-napi/binding.* ./",
         "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",
+        
         "move:artifacts": "mv -v ./artifacts/* ./ && mv ./schemas.ts ./src/infisical_client/schemas.ts",
         "tsc": "tsc",
         "version": "napi version"
