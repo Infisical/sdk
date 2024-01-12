@@ -1,31 +1,31 @@
 {
-    "name": "@infisical/napi-darwin-arm64",
-    "version": "0.3.1",
-    "homepage": "https://github.com/infisical/sdk#readme",
-    "bugs": {
-      "url": "https://github.com/infisical/sdk/issues"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/infisical/sdk.git"
-    },
-    "license": "SEE LICENSE IN LICENSE",
-    "author": "Infisical Inc. <team@infisical.com> (https://infisical.com)",
-    "main": "infisical.darwin-arm64.node",
-    "files": [
-      "infisical.darwin-arm64.node"
-    ],
-    "engines": {
-      "node": ">= 10"
-    },
-    "os": [
-      "darwin"
-    ],
-    "cpu": [
-      "arm64"
-    ],
-    "publishConfig": {
-      "access": "public",
-      "registry": "https://registry.npmjs.org/"
-    }
+  "name": "@infisical/napi-darwin-arm64",
+  "version": "0.0.0",
+  "homepage": "https://github.com/infisical/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/infisical/sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infisical/sdk.git"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Infisical Inc. <team@infisical.com> (https://infisical.com)",
+  "main": "infisical.darwin-arm64.node",
+  "files": [
+    "infisical.darwin-arm64.node"
+  ],
+  "engines": {
+    "node": ">= 10"
+  },
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
+}
