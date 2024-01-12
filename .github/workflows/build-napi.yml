@@ -51,11 +51,11 @@ jobs:
                       target: x86_64-pc-windows-msvc
                       build: |
                           npm run build
-                    - os: windows-22
+                    - os: windows-2022
                       target: i686-pc-windows-msvc
                       build: |
                           rustup target add i686-pc-windows-msvc
-                          npm run build-win
+                          npm run build-win-ia32
 
                     - os: ubuntu-22.04
                       target: x86_64-unknown-linux-gnu
