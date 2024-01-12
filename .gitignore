@@ -188,3 +188,7 @@ languages/csharp/Infisical.Sdk/obj/**/*
 languages/csharp/Infisical.Sdk/bin/**/*
 languages/csharp/Infisical.Sdk.Samples/obj/**/*
 languages/csharp/Infisical.Sdk.Samples/bin/**/*
+
+
+languages/node/npm/**/*.node
+languages/node/artifacts
