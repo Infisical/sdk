@@ -57,9 +57,6 @@ jobs:
             - name: Move artifacts to root of artifacts directory
               run: mkdir artifacts2 && find ./artifacts/* -type f -exec mv -i {} ./artifacts2/ \; && rm -rf ./artifacts && mv ./artifacts2 ./artifacts
 
-            - name: Move artifacts
-              run: npm run move:artifacts
-
             - name: Install dependencies
               run: npm ci
 
@@ -68,6 +65,7 @@ jobs:
 
             - name: Run tsc
               run: npm run tsc
+
             - name: Setup NPM
               run: |
                   echo 'registry="https://registry.npmjs.org/"' > ./.npmrc
@@ -78,13 +76,19 @@ jobs:
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            - name: Pack NPM
-              run: npm pack
+            # - name: Pack NPM
+            #   run: npm pack
 
-            #- name: Sleep 10 minutes
-            #  run: sleep 600
+            # - name: Publish NPM
+            #   run: npm publish --tarball=./sdk-${{github.ref_name}}
+            #   env:
+            #       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Move artifacts
+              run: npm run artifacts
 
             - name: Publish NPM
-              run: npm publish --tarball=./sdk-${{github.ref_name}}
+              run: npm publish --access public --registry=https://registry.npmjs.org/
               env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
