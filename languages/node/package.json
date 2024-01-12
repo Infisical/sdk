@@ -14,8 +14,7 @@
     "binding.js",
     "binding.d.ts",
     "./lib/",
-    "./lib/infisical_client/",
-    "**/*.node"
+    "./lib/infisical_client/"
   ],
   "napi": {
     "name": "infisical",
