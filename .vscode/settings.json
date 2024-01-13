@@ -19,6 +19,7 @@
         "infisical",
         "libinfisical",
         "msvc",
+        "napi",
         "openapi",
         "openapitools",
         "quicktype",
