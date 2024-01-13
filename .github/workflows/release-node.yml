@@ -57,8 +57,8 @@ jobs:
             - name: Move artifacts to root of artifacts directory
               run: mkdir artifacts2 && find ./artifacts/* -type f -exec mv -i {} ./artifacts2/ \; && rm -rf ./artifacts && mv ./artifacts2 ./artifacts
 
-            - name: Copy TS schema
-              run: npm run copy:schema
+            - name: Copy schema and binding converter
+              run: npm run copy:artifacts
 
             - name: Install dependencies
               run: npm ci
