@@ -192,3 +192,4 @@ languages/csharp/Infisical.Sdk.Samples/bin/**/*
 
 languages/node/npm/**/*.node
 languages/node/artifacts
+languages/node/package/**/*
