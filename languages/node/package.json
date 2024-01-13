@@ -29,15 +29,14 @@
     "build": "npm run build --prefix ../../crates/infisical-napi && npm run move",
     "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move",
     "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32",
-    
-    
     "move-win-ia32": "npm run move-win-ia32:binaries && npm run move:win-ia32:bindings",
     "move": "npm run move:bindings && npm run move:binaries",
-
+    
+    "move:win-ia32:bindings": "move ../../crates/infisical-napi/binding.* ./",
     "move:bindings": "mv -v ../../crates/infisical-napi/binding.* ./",
+    
     "move-win-ia32:binaries": "move ../../crates/infisical-napi/infisical.win32-ia32-msvc.node ./",
 
-    
     "artifacts": "napi artifacts",
     "prepublishOnly": "napi prepublish --skip-gh-release",
     "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",
