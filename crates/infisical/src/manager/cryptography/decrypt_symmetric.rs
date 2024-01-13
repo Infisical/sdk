@@ -61,11 +61,17 @@ pub fn decrypt_symmetric(input: &DecryptSymmetricOptions) -> Result<DecryptSymme
             message: e.to_string(),
         })?;
 
-    return Ok(DecryptSymmetricResponse {
-        decrypted: String::from_utf8(plaintext_bytes)
-            .map_err(|e| Error::DecryptSymmetricKeyError {
-                message: e.to_string(),
-            })
-            .expect("Failed to convert bytes to string."),
-    });
+    let decrypted = String::from_utf8(plaintext_bytes)
+        .map_err(|e| Error::DecryptSymmetricKeyError {
+            message: e.to_string(),
+        });
+    
+    match decrypted {
+        Ok(message) => {
+            Ok(DecryptSymmetricResponse { decrypted: message })
+        },
+        Err(_) => {
+            Err(Error::DecryptSymmetricKeyError { message: "Failed to convert bytes to string.".to_string() })
+        },
+    }
 }
