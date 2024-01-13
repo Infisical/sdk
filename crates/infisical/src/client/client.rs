@@ -20,7 +20,7 @@ pub struct Client {
 
 impl Client {
     pub fn new(settings_input: Option<ClientSettings>) -> Self {
-        let settings = settings_input.unwrap();
+        let settings = settings_input.unwrap(); // show an error to set the .env? Not actually sure how this throws
 
         let c = Self {
             auth: ClientAuth {
@@ -34,7 +34,7 @@ impl Client {
 
             cache: Arc::new(Mutex::new(Vec::new())),
             cache_ttl: settings.cache_ttl.unwrap_or(300),
-            user_agent: settings.user_agent.unwrap(),
+            user_agent: settings.user_agent.unwrap_or("".to_string()),
         };
 
         if c.cache_ttl != 0 {
@@ -44,9 +44,11 @@ impl Client {
     }
 
     pub fn set_cache(&self, new_cache: &[CachedSecret]) {
-        let mut cache = self.cache.lock().unwrap();
-        cache.clear();
-        cache.extend(new_cache.iter().cloned());
+        let cache = self.cache.lock();
+        if let Ok(mut cache) = cache {
+            cache.clear();
+            cache.extend(new_cache.iter().cloned());
+        } // failing silently in this change. if a lock cannot be acquired, there can also be an error thrown here.
     }
 
     pub fn set_access_token(&mut self, token: String) {
