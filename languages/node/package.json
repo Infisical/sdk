@@ -26,9 +26,9 @@
     }
   },
   "scripts": {
-    "build": "npm run build --prefix ../../crates/infisical-napi && npm run move",
-    "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move",
-    "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32",
+    "build": "npm run build --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
+    "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
+    "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32 && npm run format-binding",
     "move-win-ia32": "npm run move-win-ia32:binaries && npm run move:win-ia32:bindings",
     "move": "npm run move:bindings && npm run move:binaries",
     "move:win-ia32:bindings": "move ../../crates/infisical-napi/binding.* ./",
@@ -39,6 +39,7 @@
     "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",
     "copy:artifacts": "cp ./artifacts/schemas.ts ./src/infisical_client/schemas.ts && cp ./artifacts/binding.* ./",
     "tsc": "tsc",
+    "format-binding": "node ./format-binding.js",
     "version": "napi version"
   },
   "devDependencies": {
@@ -55,12 +56,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "optionalDependencies": {
-    "@infisical/sdk-win32-x64-msvc": "0.0.0",
-    "@infisical/sdk-darwin-x64": "0.0.0",
-    "@infisical/sdk-linux-x64-gnu": "0.0.0",
-    "@infisical/sdk-darwin-arm64": "0.0.0",
-    "@infisical/sdk-win32-ia32-msvc": "0.0.0"
   }
 }
