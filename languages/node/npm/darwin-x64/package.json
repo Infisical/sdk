@@ -1,5 +1,5 @@
 {
-  "name": "@infisical/napi-darwin-x64",
+  "name": "@infisical/sdk-darwin-x64",
   "version": "0.0.0",
   "homepage": "https://github.com/infisical/sdk",
   "bugs": {
