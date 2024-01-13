@@ -18,6 +18,7 @@
         "indicies",
         "infisical",
         "libinfisical",
+        "msvc",
         "openapi",
         "openapitools",
         "quicktype",
