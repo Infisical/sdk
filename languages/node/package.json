@@ -40,7 +40,7 @@
     "artifacts": "napi artifacts",
     "prepublishOnly": "napi prepublish --skip-gh-release",
     "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",
-    "copy:artifacts": "cp -v ./artifacts/* ./ && cp ./schemas.ts ./src/infisical_client/schemas.ts",
+    "copy:schema": "cp ./artifacts/schemas.ts ./src/infisical_client/schemas.ts",
     "tsc": "tsc",
     "version": "napi version"
   },
