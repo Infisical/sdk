@@ -1,6 +1,6 @@
 use crate::cache::{add_to_cache, create_cache_key, get_secret_from_cache};
 use crate::error::api_error_handler;
-use crate::helper::{build_base_request, build_url};
+use crate::helper::{build_base_request, build_url, get_fallback_env_secret};
 use crate::manager::secrets::{GetSecretOptions, GetSecretResponse};
 use crate::{error::Result, Client};
 use log::debug;
@@ -69,6 +69,14 @@ pub async fn get_secret_request(
 
         Ok(response)
     } else {
+        let fallback_secret = get_fallback_env_secret(&input.secret_name);
+
+        if fallback_secret.is_some() {
+            return Ok(GetSecretResponse {
+                secret: fallback_secret.unwrap(),
+            });
+        }
+
         let err =
             api_error_handler(status, response, Some(input.secret_name.clone()), false).await?;
         Err(err)
