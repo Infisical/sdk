@@ -13,6 +13,11 @@ pub use update::{UpdateSecretOptions, UpdateSecretResponse};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+// This is a hack, because Serde can't parse boolean values by default...
+fn default_as_false() -> bool {
+    false
+}
+
 #[derive(Serialize, Deserialize, Debug, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Secret {
@@ -23,4 +28,7 @@ pub struct Secret {
     pub secret_key: String,
     pub secret_value: String,
     pub secret_comment: String,
+
+    #[serde(default = "default_as_false")]
+    pub is_fallback: bool,
 }
