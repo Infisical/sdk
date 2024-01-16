@@ -23,17 +23,6 @@ pub enum Error<T> {
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde()]
-pub struct BaseApiError {
-    pub message: String,
-    pub level: i32,
-    pub level_name: String,
-    pub status_code: i32,
-    pub datetime_iso: String,
-    pub application: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, JsonSchema)]
-#[serde()]
 pub struct UnauthorizedError {
     pub message: String,
 }
