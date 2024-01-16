@@ -126,7 +126,7 @@ pub fn cache_thread(cache: Arc<Mutex<Vec<CachedSecret>>>) {
 
 pub fn get_secret_from_cache(client: &mut Client, key: &String) -> Option<Secret> {
     if client.cache_ttl == 0 {
-        debug!("[CACHE]: Cache TTL is set to 0, not adding secret to cache.");
+        debug!("[CACHE]: Cache TTL is set to 0, not getting secret from cache.");
         return None;
     }
 
