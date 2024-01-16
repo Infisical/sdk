@@ -1,6 +1,6 @@
 //! Errors that can occur when using this SDK
 
-use crate::api::{BadRequestError, BaseApiError, Error as BaseError, UnauthorizedError};
+use crate::api::{BadRequestError, Error as BaseError, UnauthorizedError};
 
 use reqwest::{Response, StatusCode};
 use std::fmt::Debug;
@@ -109,16 +109,17 @@ pub async fn api_error_handler(
         return Ok(Error::Unauthorized { message: r.message });
     }
 
-    // We need to try and parse the text to a BaseApiError
-    let r = res.json::<BaseApiError>().await?;
-    return Ok(Error::ResponseContent {
-        status: StatusCode::from_u16(r.status_code as u16).unwrap(),
-        message: r.message,
-    });
+    let json_string = res.json::<serde_json::Value>().await;
 
-    // We gotta do this or the function doesn't have an OK return, which doesn't work with the result flow.
-    #[allow(unreachable_code)]
-    Err(Error::UnknownError)
+    let err_message = match json_string {
+        Ok(json) => json.to_string(),
+        Err(_) => "Failed to decode error message".to_string(),
+    };
+
+    return Ok(Error::ResponseContent {
+        status,
+        message: err_message,
+    });
 }
 
 macro_rules! impl_infisical_error {
