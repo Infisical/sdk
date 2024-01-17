@@ -20,8 +20,7 @@ pub struct Client {
 
 impl Client {
     pub fn new(settings_input: Option<ClientSettings>) -> Self {
-        let settings = settings_input.unwrap(); // show an error to set the .env? Not actually sure how this throws
-
+        let settings = settings_input.unwrap(); 
         let c = Self {
             auth: ClientAuth {
                 client_id: settings.client_id.unwrap_or("".to_string()),
@@ -41,14 +40,6 @@ impl Client {
             cache_thread(Arc::clone(&c.cache));
         }
         return c;
-    }
-
-    pub fn set_cache(&self, new_cache: &[CachedSecret]) {
-        let cache = self.cache.lock();
-        if let Ok(mut cache) = cache {
-            cache.clear();
-            cache.extend(new_cache.iter().cloned());
-        } // failing silently in this change. if a lock cannot be acquired, there can also be an error thrown here.
     }
 
     pub fn set_access_token(&mut self, token: String) {
