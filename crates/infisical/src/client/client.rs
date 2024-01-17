@@ -20,7 +20,7 @@ pub struct Client {
 
 impl Client {
     pub fn new(settings_input: Option<ClientSettings>) -> Self {
-        let settings = settings_input.unwrap();
+        let settings = settings_input.expect("Settings not found or were set improperly.");
 
         let c = Self {
             auth: ClientAuth {
@@ -34,19 +34,13 @@ impl Client {
 
             cache: Arc::new(Mutex::new(Vec::new())),
             cache_ttl: settings.cache_ttl.unwrap_or(300),
-            user_agent: settings.user_agent.unwrap(),
+            user_agent: settings.user_agent.unwrap_or("".to_string()),
         };
 
         if c.cache_ttl != 0 {
             cache_thread(Arc::clone(&c.cache));
         }
         return c;
-    }
-
-    pub fn set_cache(&self, new_cache: &[CachedSecret]) {
-        let mut cache = self.cache.lock().unwrap();
-        cache.clear();
-        cache.extend(new_cache.iter().cloned());
     }
 
     pub fn set_access_token(&mut self, token: String) {
