@@ -15,7 +15,6 @@ export class InfisicalClient {
     #client: rust.InfisicalClient;
 
     constructor(settings: ClientSettings & { logLevel?: LogLevel }) {
-
         settings.userAgent = "infisical-nodejs-sdk";
 
         const settingsJson = settings == null ? null : Convert.clientSettingsToJson(settings);

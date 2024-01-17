@@ -1,6 +1,7 @@
 use crate::{
     api::access_token::access_token_request,
     error::{Error, Result},
+    manager::secrets::Secret,
     Client,
 };
 use log::debug;
@@ -80,4 +81,28 @@ pub fn build_url(url: String, query_params: &serde_json::Value) -> String {
     }
 
     return url.to_string();
+}
+
+pub fn get_fallback_env_secret(key: &str) -> Option<Secret> {
+    let fallback = std::env::var(key);
+
+    let default_secret = Secret {
+        is_fallback: true,
+        version: 0,
+        workspace: "".to_string(),
+        secret_comment: "".to_string(),
+        r#type: "".to_string(),
+        environment: "".to_string(),
+
+        secret_key: key.to_string(),
+        secret_value: "".to_string(),
+    };
+
+    match fallback {
+        Ok(val) => Some(Secret {
+            secret_value: val,
+            ..default_secret
+        }),
+        Err(_) => None,
+    }
 }
