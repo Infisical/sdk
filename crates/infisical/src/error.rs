@@ -47,11 +47,11 @@ pub enum Error {
     UnauthorizedAccessTokenRequest,
 
     // Blind indicies error
-    #[error("Blind indicies are not enabled for this project. Read more here: https://infisical.com/docs/api-reference/overview/blind-indices")]
+    #[error("Blind indicies are not enabled for this project. Read more here: https://infisical.com/docs/")]
     BlindIndicesDisabled,
 
     // E2EE enabled error
-    #[error("End-to-end encryption is enabled for this project. Please disable it to use this SDK. Read more here: https://github.com/infisical/sdk#end-to-end-encryption")]
+    #[error("End-to-end encryption is enabled for this project. Please disable it to use this SDK. Read more here: https://infisical.com/docs/api-reference/overview/examples/note")]
     E2EEEnabled,
 
     // Regular unauthorized error
