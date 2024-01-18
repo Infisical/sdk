@@ -3,7 +3,6 @@ use crate::{
     Client,
 };
 use log::debug;
-use reqwest::StatusCode;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -20,11 +19,11 @@ pub async fn access_token_request(client: &mut Client) -> Result<AccessTokenSucc
     let mut body = HashMap::new();
     body.insert(
         "clientId",
-        client.auth.client_id.clone().to_string().to_owned(),
+        client.auth.client_id.clone(),
     );
     body.insert(
         "clientSecret",
-        client.auth.client_secret.clone().to_string().to_owned(),
+        client.auth.client_secret.clone(),
     );
 
     let object = serde_json::to_string(&body).unwrap();
@@ -46,9 +45,8 @@ pub async fn access_token_request(client: &mut Client) -> Result<AccessTokenSucc
 
     let status = response.status();
 
-    if status == StatusCode::OK {
+    if status.is_success() {
         let response = response.json::<AccessTokenSuccessResponse>().await?;
-
         Ok(response)
     } else {
         let err = api_error_handler(status, response, None, true).await?;
