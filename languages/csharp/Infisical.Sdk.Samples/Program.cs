@@ -18,7 +18,7 @@ internal class Program
 
         using var infisicalClient = new InfisicalClient(settings);
 
-        var key = infisicalClient.createSymmetricKey();
+        var key = infisicalClient.CreateSymmetricKey();
 
         Console.WriteLine($"Key: {key}");
 
@@ -29,7 +29,7 @@ internal class Program
             Plaintext = "Hello World!"
         };
 
-        var encrypted = infisicalClient.encryptSymmetric(options);
+        var encrypted = infisicalClient.EncryptSymmetric(options);
 
         Console.WriteLine($"Encrypted: {encrypted.Ciphertext}");
 
@@ -43,7 +43,7 @@ internal class Program
             Tag = encrypted.Tag
         };
 
-        var decrypted = infisicalClient.decryptSymmetric(decryptOptions);
+        var decrypted = infisicalClient.DecryptSymmetric(decryptOptions);
 
         Console.WriteLine($"Decrypted: {decrypted}");
 
