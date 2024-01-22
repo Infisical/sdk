@@ -55,7 +55,7 @@ jobs:
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-x86_64-unknown-linux-gnu
-                  path: languages/csharp/Infisical.Sdk/ubuntu-x64
+                  path: languages/csharp/Infisical.Sdk/linux-x64
 
             - name: Download x86_64-pc-windows-msvc files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
