@@ -173,6 +173,11 @@ jobs:
                   path: languages/node/artifacts
             - name: Move artifacts
               run: yarn artifacts
+
+            - name: List artifacts
+              run: ls -R ./languages/node/artifacts
+              shell: bash
+
             - name: List packages
               run: ls -R ./npm
               shell: bash
