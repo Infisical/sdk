@@ -21,6 +21,7 @@
     "triples": {
       "additional": [
         "aarch64-apple-darwin",
+        "aarch64-linux-gnu",
         "i686-pc-windows-msvc"
       ]
     }
@@ -62,6 +63,7 @@
     "@infisical/sdk-darwin-x64": "0.0.0",
     "@infisical/sdk-linux-x64-gnu": "0.0.0",
     "@infisical/sdk-darwin-arm64": "0.0.0",
+    "@infisical/sdk-gnu-arm64": "0.0.0",
     "@infisical/sdk-win32-ia32-msvc": "0.0.0"
   }
 }
