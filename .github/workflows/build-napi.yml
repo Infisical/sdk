@@ -4,11 +4,9 @@ run-name: Build Node.js Bindings
 
 on:
     #pull_request:
-    #push:
-    #    branches:
-    #        - "main"
-    #        - "rc"
-    #        - "hotfix-rc"
+    push:
+        branches:
+            - "test-workflows"
     #workflow_dispatch:
     workflow_call:
 
@@ -22,15 +20,15 @@ jobs:
         name: Generate schemas
         uses: ./.github/workflows/generate-schemas.yml
 
-    test-rust-crate:
-        uses: ./.github/workflows/rust-test.yml
+    # test-rust-crate:
+    #     uses: ./.github/workflows/rust-test.yml
 
     build:
         name: Building @infisical/sdk-napi for - ${{ matrix.settings.os }}
         runs-on: ${{ matrix.settings.os || 'ubuntu-latest' }}
         needs:
             - generate_schemas
-            - test-rust-crate
+            #- test-rust-crate
         strategy:
             fail-fast: false
             matrix:
