@@ -11,7 +11,6 @@
   "files": [
     "infisical.android-arm-eabi.node"
   ],
-  
   "license": "MIT",
   "engines": {
     "node": ">= 10"

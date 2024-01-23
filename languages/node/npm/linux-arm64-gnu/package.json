@@ -1,30 +1,23 @@
 {
   "name": "@infisical/sdk-linux-arm64-gnu",
   "version": "0.0.0",
-  "homepage": "https://github.com/infisical/sdk",
-  "bugs": {
-    "url": "https://github.com/infisical/sdk/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/infisical/sdk.git"
-  },
-  "license": "SEE LICENSE IN LICENSE",
-  "author": "Infisical Inc. <team@infisical.com> (https://infisical.com)",
-  "main": "infisical.aarch64-unknown-linux-gnu.node",
-  "files": [
-    "infisical.aarch64-unknown-linux-gnu.node"
-  ],
-  "engines": {
-    "node": ">= 10"
-  },
   "os": [
     "linux"
   ],
   "cpu": [
     "arm64"
   ],
-  "libc": [
-    "glibc"
-  ]
+  "main": "infisical.linux-arm64-gnu.node",
+  "files": [
+    "infisical.linux-arm64-gnu.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": "https://github.com/Infisical/sdk"
 }
