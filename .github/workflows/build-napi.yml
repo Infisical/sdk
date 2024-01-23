@@ -4,9 +4,9 @@ run-name: Build Node.js Bindings
 
 on:
     #pull_request:
-    push:
-        branches:
-            - "test-workflows"
+    #push:
+    #branches:
+    #  - "test-workflows"
     #workflow_dispatch:
     workflow_call:
 
