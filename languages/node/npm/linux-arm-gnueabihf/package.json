@@ -1,0 +1,23 @@
+{
+  "name": "@infisical/sdk-linux-arm-gnueabihf",
+  "version": "7.2.2",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm"
+  ],
+  "main": "infisical.linux-arm-gnueabihf.node",
+  "files": [
+    "infisical.linux-arm-gnueabihf.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": "https://github.com/Infisical/sdk"
+}

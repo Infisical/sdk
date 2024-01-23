@@ -1,0 +1,23 @@
+{
+  "name": "@infisical/sdk-win32-arm64-msvc",
+  "version": "7.2.2",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "infisical.win32-arm64-msvc.node",
+  "files": [
+    "infisical.win32-arm64-msvc.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": "https://github.com/Infisical/sdk"
+}
