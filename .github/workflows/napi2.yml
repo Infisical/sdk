@@ -62,8 +62,7 @@ jobs:
                       build: |-
                           set -e &&
                           cd ./languages/node
-                          yarn build --target aarch64-unknown-linux-gnu &&
-                          aarch64-unknown-linux-gnu-strip *.node
+                          yarn build --target aarch64-unknown-linux-gnu
                     - host: ubuntu-latest
                       target: armv7-unknown-linux-gnueabihf
                       setup: |
@@ -71,17 +70,14 @@ jobs:
                           sudo apt-get install gcc-arm-linux-gnueabihf -y
                       build: |
                           yarn build --target armv7-unknown-linux-gnueabihf
-                          arm-linux-gnueabihf-strip *.node
                     - host: ubuntu-latest
                       target: aarch64-linux-android
                       build: |
                           yarn build --target aarch64-linux-android
-                          ${ANDROID_NDK_LATEST_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
                     - host: ubuntu-latest
                       target: armv7-linux-androideabi
                       build: |
                           yarn build --target armv7-linux-androideabi
-                          ${ANDROID_NDK_LATEST_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
                     - host: ubuntu-latest
                       target: aarch64-unknown-linux-musl
                       docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
@@ -89,8 +85,7 @@ jobs:
                           set -e &&
                           rustup target add aarch64-unknown-linux-musl &&
                           cd ./languages/node &&
-                          yarn build --target aarch64-unknown-linux-musl &&
-                          /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
+                          yarn build --target aarch64-unknown-linux-musl
                     - host: windows-latest
                       target: aarch64-pc-windows-msvc
                       build: yarn build --target aarch64-pc-windows-msvc
@@ -227,20 +222,3 @@ jobs:
             - name: List packages
               run: ls -R ./npm
               shell: bash
-            - name: Publish
-              run: |
-                  npm config set provenance true
-                  if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
-                  then
-                    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-                    npm publish --access public
-                  elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
-                  then
-                    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-                    npm publish --tag next --access public
-                  else
-                    echo "Not a release, skipping publish"
-                  fi
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
