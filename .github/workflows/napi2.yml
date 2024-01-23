@@ -170,7 +170,7 @@ jobs:
             - name: Download all artifacts
               uses: actions/download-artifact@v4
               with:
-                  path: artifacts
+                  path: languages/node/artifacts
             - name: Move artifacts
               run: yarn artifacts
             - name: List packages
