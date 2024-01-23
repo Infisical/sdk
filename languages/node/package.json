@@ -18,6 +18,7 @@
   ],
   "napi": {
     "name": "infisical",
+    "defaults": true,
     "triples": {
       "additional": [
         "x86_64-unknown-linux-musl",
