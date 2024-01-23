@@ -62,21 +62,13 @@ jobs:
                           sudo apt-get install -y binutils &&
                           set -e &&
                           npm run build
-                    - os: ubuntu-22.04
-                      target: aarch64-unknown-linux-gnu
-                      build: |
-                          sudo apt-get update &&
-                          sudo apt-get install -y binutils &&
-                          set -e &&
-                          npm run build
                     - host: ubuntu-latest
                       target: aarch64-unknown-linux-gnu
-                      docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+                      docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2023-09-17-aarch64
                       build: |-
                           set -e &&
-                          yarn build --target aarch64-unknown-linux-gnu &&
-                          aarch64-unknown-linux-gnu-strip *.node &&
-                          chmod 777 -R target
+                          rustup target add aarch64-unknown-linux-gnu &&
+                          npm run build --target aarch64-unknown-linux-gnu &&
         steps:
             - name: Checkout repo
               uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
