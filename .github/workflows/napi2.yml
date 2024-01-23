@@ -10,9 +10,6 @@ permissions:
     push:
         branches:
             - "test-workflows"
-concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
 
 defaults:
     run:
