@@ -68,6 +68,7 @@ jobs:
                       build: |
                           sudo apt-get update &&
                           sudo apt-get install -y binutils &&
+                          sudo apt-get install gcc-aarch64-linux-gnu && 
                           set -e &&
                           npm run build-gnu-arm64
         steps:
