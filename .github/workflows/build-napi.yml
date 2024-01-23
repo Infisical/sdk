@@ -26,9 +26,9 @@ jobs:
     build:
         name: Building @infisical/sdk-napi for - ${{ matrix.settings.os }}
         runs-on: ${{ matrix.settings.os || 'ubuntu-latest' }}
-        needs:
-            # - generate_schemas
-            #- test-rust-crate
+        #needs:
+        # - generate_schemas
+        #- test-rust-crate
         strategy:
             fail-fast: false
             matrix:
