@@ -64,11 +64,12 @@ jobs:
                           npm run build
                     - host: ubuntu-latest
                       target: aarch64-linux-gnu
+                      docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2023-09-17-aarch64
                       build: |
                           sudo apt-get update &&
                           sudo apt-get install -y binutils &&
                           set -e &&
-                          npm run build
+                          npm run build-gnu-arm64
         steps:
             - name: Checkout repo
               uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1

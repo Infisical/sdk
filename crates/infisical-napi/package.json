@@ -12,7 +12,8 @@
         "cleanup": "rm -f -r ../../target && rm -f -r ./target",
         "build": "napi build --platform --release --js binding.js --dts binding.d.ts",
         "build-win-ia32": "napi build --platform --target i686-pc-windows-msvc --release --js binding.js --dts binding.d.ts",
-        "build-arm64": "npm run cleanup && napi build --target aarch64-apple-darwin --platform --release --js binding.js --dts binding.d.ts"
+        "build-arm64": "npm run cleanup && napi build --target aarch64-apple-darwin --platform --release --js binding.js --dts binding.d.ts",
+        "build-gnu-arm64": "npm run cleanup && napi build --target aarch64-unknown-linux-gnu --platform --release --js binding.js --dts binding.d.ts"
     },
     "devDependencies": {
         "@napi-rs/cli": "^2.13.2",
