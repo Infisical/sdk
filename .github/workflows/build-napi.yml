@@ -65,21 +65,10 @@ jobs:
 
                     - host: ubuntu-latest
                       target: aarch64-unknown-linux-gnu
-                      docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:stable-2023-09-17-aarch64
-                      build: |
-                          sudo apt-get update &&
-                          sudo apt-get install -y binutils &&
-                          sudo apt-get install gcc-aarch64-linux-gnu && 
-
-                          apt install -y pkg-config xz-utils dav1d libdav1d-dev &&
-                          export JEMALLOC_SYS_WITH_LG_PAGE=16 &&
-                          rustup toolchain install "${RUST_TOOLCHAIN}" &&
-                          rustup default "${RUST_TOOLCHAIN}" &&
-                          rustup target add aarch64-unknown-linux-gnu &&
-                          export CC_aarch64_unknown_linux_gnu=/usr/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-gcc
-
+                      docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+                      build: |-
                           set -e &&
-                          npm run build-gnu-arm64
+                          yarn build --target aarch64-unknown-linux-gnu
         steps:
             - name: Checkout repo
               uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
