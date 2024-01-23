@@ -56,5 +56,12 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "optionalDependencies": {
+    "@infisical/sdk-win32-x64-msvc": "0.0.0",
+    "@infisical/sdk-darwin-x64": "0.0.0",
+    "@infisical/sdk-linux-x64-gnu": "0.0.0",
+    "@infisical/sdk-darwin-arm64": "0.0.0",
+    "@infisical/sdk-win32-ia32-msvc": "0.0.0"
   }
 }
