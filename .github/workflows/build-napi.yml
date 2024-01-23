@@ -64,6 +64,13 @@ jobs:
                           sudo apt-get install -y binutils &&
                           set -e &&
                           npm run build
+                    - os: ubuntu-22.04
+                      target: aarch64-unknown-linux-gnu
+                      build: |
+                          sudo apt-get update &&
+                          sudo apt-get install -y binutils &&
+                          set -e &&
+                          npm run build
         steps:
             - name: Checkout repo
               uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
