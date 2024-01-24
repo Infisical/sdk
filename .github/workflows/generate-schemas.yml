@@ -24,8 +24,8 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
               with:
-                  cache: "npm"
-                  cache-dependency-path: "package-lock.json"
+                  cache: "yarn"
+                  cache-dependency-path: yarn.lock
                   node-version: "16"
 
             - name: NPM Setup
