@@ -95,7 +95,7 @@ jobs:
               shell: bash
 
             - name: Publish NPM
-              run: npm publish --dry-run --access public --registry=https://registry.npmjs.org/
+              run: npm publish --access public --registry=https://registry.npmjs.org/
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
