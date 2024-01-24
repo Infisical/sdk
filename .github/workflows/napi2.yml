@@ -28,14 +28,14 @@ jobs:
                           yarn build && yarn post-build
                           strip -x *.node
 
-                    #- os: windows-latest
-                    #  build: yarn build && yarn post-build
-                    #  target: x86_64-pc-windows-msvc
+                    - os: windows-latest
+                      build: yarn build && yarn post-build
+                      target: x86_64-pc-windows-msvc
 
-                    #- os: windows-latest
-                    #  build: |
-                    #      yarn build --target i686-pc-windows-msvc && yarn post-build
-                    #  target: i686-pc-windows-msvc
+                    - os: windows-latest
+                      build: |
+                          yarn build --target i686-pc-windows-msvc && yarn post-build
+                      target: i686-pc-windows-msvc
 
                     - os: ubuntu-latest
                       target: x86_64-unknown-linux-gnu
@@ -93,9 +93,9 @@ jobs:
                           cd ./languages/node &&
                           yarn build --target aarch64-unknown-linux-musl && yarn post-build
 
-                    #- os: windows-latest
-                    #  target: aarch64-pc-windows-msvc
-                    #  build: yarn build --target aarch64-pc-windows-msvc && yarn post-build
+                    - os: windows-latest
+                      target: aarch64-pc-windows-msvc
+                      build: yarn build --target aarch64-pc-windows-msvc && yarn post-build
 
         name: stable - ${{ matrix.settings.target }} - node@18
         runs-on: ${{ matrix.settings.os }}
