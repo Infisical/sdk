@@ -159,7 +159,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: bindings-${{ matrix.settings.target }}
-                  path: crates/infisical-napi/infisical.*.node
+                  path: languages/node/infisical.*.node
                   if-no-files-found: error
     publish:
         name: Publish
