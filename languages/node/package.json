@@ -34,10 +34,10 @@
     }
   },
   "scripts": {
-    "build": "npm run build --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
-    "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
-    "build-gnu-arm64": "npm run build-gnu-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
-    "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32 && npm run format-binding",
+    "build": "npm run build --prefix ../../crates/infisical-napi && npm run format-binding",
+    "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run format-binding",
+    "build-gnu-arm64": "npm run build-gnu-arm64 --prefix ../../crates/infisical-napi && npm run format-binding",
+    "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run format-binding",
     "move-win-ia32": "npm run move-win-ia32:binaries && npm run move:win-ia32:bindings",
     "move": "npm run move:bindings && npm run move:binaries",
     "move:win-ia32:bindings": "move ../../crates/infisical-napi/binding.* ./",
