@@ -164,6 +164,12 @@ jobs:
                   name: __init__.py
                   path: ./crates/infisical-py/infisical_client/
 
+            - name: Retrieve Type Definitions
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: schemas.py
+                  path: ${{ github.workspace }}/crates/infisical-py/infisical_client/
+
             - uses: actions/setup-python@v4
               with:
                   python-version: "3.10"
@@ -217,6 +223,12 @@ jobs:
                   name: __init__.py
                   path: ./crates/infisical-py/infisical_client/
 
+            - name: Retrieve Type Definitions
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: schemas.py
+                  path: ${{ github.workspace }}/crates/infisical-py/infisical_client/
+
             - uses: actions/setup-python@v4
               with:
                   python-version: "3.10"
@@ -266,6 +278,12 @@ jobs:
               with:
                   name: __init__.py
                   path: ./crates/infisical-py/infisical_client/
+
+            - name: Retrieve Type Definitions
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: schemas.py
+                  path: ${{ github.workspace }}/crates/infisical-py/infisical_client/
 
             - name: Build sdist
               uses: PyO3/maturin-action@v1
