@@ -8,7 +8,7 @@ from .schemas import DeleteSecretOptions, ResponseForDeleteSecretResponse
 from .schemas import CreateSecretOptions, ResponseForCreateSecretResponse
 
 from .schemas import EncryptSymmetricOptions, EncryptSymmetricResponse, ResponseForEncryptSymmetricResponse
-from .schemas import DecryptSymmetricOptions, DecryptSymmetricResponse, ResponseForDecryptSymmetricResponse
+from .schemas import DecryptSymmetricOptions, ResponseForDecryptSymmetricResponse
 
 from .schemas import ArbitraryOptions, ResponseForCreateSymmetricKeyResponse
 
@@ -16,17 +16,17 @@ from .infisical_py import InfisicalClient as RustInfisicalClient
 import os
 
 class InfisicalClient:
-    def __init__(self, settings: ClientSettings = None):
+    def __init__(self, settings: ClientSettings = None, debug: bool = False):
 
         if settings is None:
-            self.inner = RustInfisicalClient(None)
+            self.inner = RustInfisicalClient(settings, debug)
         else:
 
             settings.user_agent = "infisical-python-sdk"
 
             settings_json = json.dumps(settings.to_dict())
 
-            self.inner = RustInfisicalClient(settings_json)
+            self.inner = RustInfisicalClient(settings_json, debug)
 
     def _run_command(self, command: Command) -> Any:
         response_json = self.inner.run_command(json.dumps(command.to_dict()))
