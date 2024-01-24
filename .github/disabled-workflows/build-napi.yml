@@ -99,7 +99,7 @@ jobs:
             #      path: ${{ github.workspace }}/languages/node/src/infisical_client/
 
             - name: Install dependencies
-              run: npm ci
+              run: yarn install --frozen-lockfile
 
             - name: Build
               run: ${{ matrix.settings.build }}

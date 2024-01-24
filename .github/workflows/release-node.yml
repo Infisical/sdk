@@ -53,7 +53,7 @@ jobs:
               run: npm run copy:artifacts
 
             - name: Install dependencies
-              run: npm ci
+              run: yarn install --frozen-lockfile
 
             - name: Set NPM version #get the version from the tag
               run: npm version ${{ github.ref_name }} --allow-same-version --no-git-tag-version
