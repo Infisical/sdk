@@ -7,10 +7,6 @@ on:
         tags:
             - "*.*.*" # version, e.g. 1.0.0
 
-concurrency:
-    group: ${{ github.workflow }}-${{ github.ref_name }}-${{ github.sha }}
-    cancel-in-progress: true
-
 defaults:
     run:
         shell: bash
@@ -41,15 +37,15 @@ jobs:
               uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
               with:
                   node-version: 18
-                  cache: "npm"
-                  cache-dependency-path: package-lock.json
+                  cache: "yarn"
+                  cache-dependency-path: yarn.lock
 
             - name: Download artifacts
               uses: actions/download-artifact@v3
               with:
                   path: languages/node/artifacts
 
-            # All the artifacts have been downloaded as subdirectories of the artifacts directory
+            # Some artifacts have been downloaded as subdirectories of the artifacts directory
             # Example: artifacts/binding.js/binding.js
             # Example: artifacts/binding.d.ts/binding.d.ts
 
@@ -61,7 +57,7 @@ jobs:
               run: npm run copy:artifacts
 
             - name: Install dependencies
-              run: npm ci
+              run: yarn install --frozen-lockfile
 
             - name: Set NPM version #get the version from the tag
               run: npm version ${{ github.ref_name }} --allow-same-version --no-git-tag-version
@@ -90,8 +86,16 @@ jobs:
             - name: Move artifacts
               run: npm run artifacts
 
+            - name: List packages
+              run: ls -R ./npm
+              shell: bash
+
+            - name: List artifacts
+              run: ls -R ./artifacts
+              shell: bash
+
             - name: Publish NPM
-              run: npm publish --access public --registry=https://registry.npmjs.org/
+              run: npm publish --dry-run --access public --registry=https://registry.npmjs.org/
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -24,18 +24,18 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
               with:
-                  cache: "npm"
-                  cache-dependency-path: "package-lock.json"
+                  cache: "yarn"
+                  cache-dependency-path: yarn.lock
                   node-version: "16"
 
             - name: NPM Setup
-              run: npm ci
+              run: yarn install --frozen-lockfile
 
             - name: Cache cargo registry
               uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
 
             - name: NPM Schemas
-              run: npm run schemas
+              run: yarn schemas
 
             - name: Upload Typescript schemas artifact
               uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3

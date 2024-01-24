@@ -1,15 +1,15 @@
 {
-  "name": "@infisical/sdk-win32-ia32-msvc",
+  "name": "@infisical/sdk-win32-arm64-msvc",
   "version": "0.0.0",
   "os": [
     "win32"
   ],
   "cpu": [
-    "ia32"
+    "arm64"
   ],
-  "main": "infisical.win32-ia32-msvc.node",
+  "main": "infisical.win32-arm64-msvc.node",
   "files": [
-    "infisical.win32-ia32-msvc.node"
+    "infisical.win32-arm64-msvc.node"
   ],
   "license": "MIT",
   "engines": {

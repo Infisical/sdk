@@ -1,15 +1,15 @@
 {
-  "name": "@infisical/sdk-win32-ia32-msvc",
+  "name": "@infisical/sdk-linux-x64-musl",
   "version": "0.0.0",
   "os": [
-    "win32"
+    "linux"
   ],
   "cpu": [
-    "ia32"
+    "x64"
   ],
-  "main": "infisical.win32-ia32-msvc.node",
+  "main": "infisical.linux-x64-musl.node",
   "files": [
-    "infisical.win32-ia32-msvc.node"
+    "infisical.linux-x64-musl.node"
   ],
   "license": "MIT",
   "engines": {

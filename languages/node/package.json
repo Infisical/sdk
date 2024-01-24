@@ -18,22 +18,26 @@
   ],
   "napi": {
     "name": "infisical",
+    "defaults": true,
     "triples": {
       "additional": [
+        "x86_64-unknown-linux-musl",
+        "aarch64-unknown-linux-gnu",
+        "i686-pc-windows-msvc",
+        "armv7-unknown-linux-gnueabihf",
         "aarch64-apple-darwin",
-        "i686-pc-windows-msvc"
+        "aarch64-linux-android",
+        "arm-linux-androideabi",
+        "aarch64-unknown-linux-musl",
+        "aarch64-pc-windows-msvc"
       ]
     }
   },
   "scripts": {
-    "build": "npm run build --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
-    "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
-    "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32 && npm run format-binding",
-    "move-win-ia32": "npm run move-win-ia32:binaries && npm run move:win-ia32:bindings",
+    "build": "yarn --cwd ../../crates/infisical-napi build",
+    "post-build": "npm run move && npm run format-binding",
     "move": "npm run move:bindings && npm run move:binaries",
-    "move:win-ia32:bindings": "move ../../crates/infisical-napi/binding.* ./",
     "move:bindings": "mv -v ../../crates/infisical-napi/binding.* ./",
-    "move-win-ia32:binaries": "move ../../crates/infisical-napi/infisical.win32-ia32-msvc.node ./",
     "artifacts": "napi artifacts",
     "prepublishOnly": "napi prepublish --skip-gh-release",
     "move:binaries": "mv -v ../../crates/infisical-napi/*.node ./",

@@ -2,17 +2,24 @@
     "name": "@infisical/napi",
     "napi": {
         "name": "infisical",
+        "defaults": true,
         "triples": {
-            "additional": [
-                "aarch64-apple-darwin"
-            ]
+          "additional": [
+            "x86_64-unknown-linux-musl",
+            "aarch64-unknown-linux-gnu",
+            "i686-pc-windows-msvc",
+            "armv7-unknown-linux-gnueabihf",
+            "aarch64-apple-darwin",
+            "aarch64-linux-android",
+            "arm-linux-androideabi",
+            "aarch64-unknown-linux-musl",
+            "aarch64-pc-windows-msvc"
+          ]
         }
     },
     "scripts": {
         "cleanup": "rm -f -r ../../target && rm -f -r ./target",
-        "build": "napi build --platform --release --js binding.js --dts binding.d.ts",
-        "build-win-ia32": "napi build --platform --target i686-pc-windows-msvc --release --js binding.js --dts binding.d.ts",
-        "build-arm64": "npm run cleanup && napi build --target aarch64-apple-darwin --platform --release --js binding.js --dts binding.d.ts"
+        "build": "napi build --platform --release --js binding.js --dts binding.d.ts"
     },
     "devDependencies": {
         "@napi-rs/cli": "^2.13.2",
