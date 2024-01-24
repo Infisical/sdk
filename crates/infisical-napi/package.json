@@ -2,11 +2,19 @@
     "name": "@infisical/napi",
     "napi": {
         "name": "infisical",
+        "defaults": true,
         "triples": {
-            "additional": [
-                "aarch64-apple-darwin",
-                "aarch64-unknown-linux-gnu"
-            ]
+          "additional": [
+            "x86_64-unknown-linux-musl",
+            "aarch64-unknown-linux-gnu",
+            "i686-pc-windows-msvc",
+            "armv7-unknown-linux-gnueabihf",
+            "aarch64-apple-darwin",
+            "aarch64-linux-android",
+            "arm-linux-androideabi",
+            "aarch64-unknown-linux-musl",
+            "aarch64-pc-windows-msvc"
+          ]
         }
     },
     "scripts": {
