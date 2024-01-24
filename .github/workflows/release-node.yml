@@ -49,14 +49,6 @@ jobs:
               with:
                   path: languages/node/artifacts
 
-            # All the artifacts have been downloaded as subdirectories of the artifacts directory
-            # Example: artifacts/binding.js/binding.js
-            # Example: artifacts/binding.d.ts/binding.d.ts
-
-            # We need to move the artifacts to the root of the artifacts directory
-            - name: Move artifacts to root of artifacts directory
-              run: mkdir artifacts2 && find ./artifacts/* -type f -exec mv -i {} ./artifacts2/ \; && rm -rf ./artifacts && mv ./artifacts2 ./artifacts
-
             - name: Copy schema and binding converter
               run: npm run copy:artifacts
 
@@ -89,6 +81,14 @@ jobs:
 
             - name: Move artifacts
               run: npm run artifacts
+
+            - name: List packages
+              run: ls -R ./npm
+              shell: bash
+
+            - name: List artifacts
+              run: ls -R ./artifacts
+              shell: bash
 
             - name: Publish NPM
               run: npm publish --access public --registry=https://registry.npmjs.org/
