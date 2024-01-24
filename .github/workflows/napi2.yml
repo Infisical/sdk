@@ -171,6 +171,10 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   path: languages/node/artifacts
+
+            - name: Move artifacts to root of artifacts directory
+              run: mkdir artifacts2 && find ./artifacts/* -type f -exec mv -i {} ./artifacts2/ \; && rm -rf ./artifacts && mv ./artifacts2 ./artifacts
+
             - name: Move artifacts
               run: yarn artifacts
 
