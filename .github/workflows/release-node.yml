@@ -7,10 +7,6 @@ on:
         tags:
             - "*.*.*" # version, e.g. 1.0.0
 
-concurrency:
-    group: ${{ github.workflow }}-${{ github.ref_name }}-${{ github.sha }}
-    cancel-in-progress: true
-
 defaults:
     run:
         shell: bash
@@ -98,8 +94,8 @@ jobs:
               run: ls -R ./artifacts
               shell: bash
 
-            #- name: Publish NPM
-            #  run: npm publish --dry-run --access public --registry=https://registry.npmjs.org/
-            #  env:
-            #      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-            #      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - name: Publish NPM
+              run: npm publish --dry-run --access public --registry=https://registry.npmjs.org/
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
