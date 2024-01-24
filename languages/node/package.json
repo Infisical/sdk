@@ -34,7 +34,8 @@
     }
   },
   "scripts": {
-    "build": "yarn --cwd ../../crates/infisical-napi build --target $npm_config_target && npm run move && npm run format-binding",
+    "build": "yarn --cwd ../../crates/infisical-napi build",
+    "post-build": "npm run move && npm run format-binding",
     "build-arm64": "npm run build-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
     "build-gnu-arm64": "npm run build-gnu-arm64 --prefix ../../crates/infisical-napi && npm run move && npm run format-binding",
     "build-win-ia32": "npm run build-win-ia32 --prefix ../../crates/infisical-napi && npm run move-win-ia32 && npm run format-binding",
