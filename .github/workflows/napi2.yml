@@ -22,22 +22,22 @@ jobs:
             fail-fast: false
             matrix:
                 settings:
-                    - host: macos-latest
+                    - os: macos-latest
                       target: x86_64-apple-darwin
                       build: |
                           yarn build
                           strip -x *.node
 
-                    - host: windows-latest
-                      build: yarn build
-                      target: x86_64-pc-windows-msvc
+                    #- os: windows-latest
+                    #  build: yarn build
+                    #  target: x86_64-pc-windows-msvc
 
-                    - host: windows-latest
-                      build: |
-                          yarn build --target i686-pc-windows-msvc
-                      target: i686-pc-windows-msvc
+                    #- os: windows-latest
+                    #  build: |
+                    #      yarn build --target i686-pc-windows-msvc
+                    #  target: i686-pc-windows-msvc
 
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: x86_64-unknown-linux-gnu
                       docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
                       build: |-
@@ -46,12 +46,12 @@ jobs:
                           yarn build --target x86_64-unknown-linux-gnu &&
                           strip *.node
 
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: x86_64-unknown-linux-musl
                       docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
                       build: set -e && cd ./languages/node && yarn build && strip *.node
 
-                    - host: macos-latest
+                    - os: macos-latest
                       target: aarch64-apple-darwin
                       build: |
                           sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
@@ -61,29 +61,29 @@ jobs:
                           export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
                           yarn build --target aarch64-apple-darwin
                           strip -x *.node
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: aarch64-unknown-linux-gnu
                       docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
                       build: |-
                           set -e &&
                           cd ./languages/node
                           yarn build --target aarch64-unknown-linux-gnu
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: armv7-unknown-linux-gnueabihf
                       setup: |
                           sudo apt-get update
                           sudo apt-get install gcc-arm-linux-gnueabihf -y
                       build: |
                           yarn build --target armv7-unknown-linux-gnueabihf
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: aarch64-linux-android
                       build: |
                           yarn build --target aarch64-linux-android
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: armv7-linux-androideabi
                       build: |
                           yarn build --target armv7-linux-androideabi
-                    - host: ubuntu-latest
+                    - os: ubuntu-latest
                       target: aarch64-unknown-linux-musl
                       docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
                       build: |-
@@ -92,7 +92,7 @@ jobs:
                           cd ./languages/node &&
                           yarn build --target aarch64-unknown-linux-musl
 
-                    #- host: windows-latest
+                    #- os: windows-latest
                     #  target: aarch64-pc-windows-msvc
                     #  build: yarn build --target aarch64-pc-windows-msvc
         name: stable - ${{ matrix.settings.target }} - node@18
@@ -153,11 +153,12 @@ jobs:
               run: ${{ matrix.settings.build }}
               if: ${{ !matrix.settings.docker }}
               shell: bash
+
             - name: Upload artifact
               uses: actions/upload-artifact@v3
               with:
                   name: bindings-${{ matrix.settings.target }}
-                  path: ${{ github.workspace }}/languages/node/infisical.*.node
+                  path: crates/infisical-napi/infisical.*.node
                   if-no-files-found: error
     publish:
         name: Publish
