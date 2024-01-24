@@ -172,6 +172,8 @@ InfisicalClient.egg-info
 
 __pycache__
 crates/infisical-py/infisical_client/schemas.py
+crates/infisical-py/infisical_client/infisical_py.*.so
+crates/infisical-py/infisical_client/infisical_py.*.dll
 
 
 infisical_py.so

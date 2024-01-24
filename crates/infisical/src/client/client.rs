@@ -20,7 +20,8 @@ pub struct Client {
 
 impl Client {
     pub fn new(settings_input: Option<ClientSettings>) -> Self {
-        let settings = settings_input.expect("Settings not found or were set improperly.");
+        // We should allow the user to not provide settings, so they can still use encryption methods that don't require authentication.
+        let settings = settings_input.unwrap_or(ClientSettings::default());
 
         let c = Self {
             auth: ClientAuth {

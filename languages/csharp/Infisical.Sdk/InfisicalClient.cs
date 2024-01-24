@@ -42,6 +42,15 @@ public sealed class InfisicalClient : IDisposable
 
         if (result is { Success: true })
         {
+
+            if (options.AttachToProcessEnv == true)
+            {
+                foreach (var secret in result.Data.Secrets)
+                {
+                    Environment.SetEnvironmentVariable(secret.SecretKey, secret.SecretValue);
+                }
+            }
+
             return result.Data.Secrets;
         }
 

@@ -22,6 +22,8 @@
         "napi",
         "openapi",
         "openapitools",
+        "pyclass",
+        "pymethods",
         "quicktype",
         "reqwest",
         "rngs"
