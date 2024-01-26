@@ -49,10 +49,11 @@ class InfisicalClient:
         secrets = ResponseForListSecretsResponse.from_dict(result).data.secrets
 
         # Setting the env in Rust is not enough for Python apparently, so we have to do this as well.
-        for secret in secrets:
-            if(options.attach_to_process_env):
+        if options.attach_to_process_env:
+            for secret in secrets:
                 os.environ[secret.secret_key] = secret.secret_value
 
+        return secrets
     
     def updateSecret(self, options: UpdateSecretOptions) -> SecretElement:
         result = self._run_command(Command(update_secret=options))
