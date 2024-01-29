@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.20.0", features = ["extension-module"] }
 infisical-json = { path = "../infisical-json" }
-env_logger = "0.11.1"
+env_logger = "0.9.3"
 log = "0.4.20"
 
 [build-dependencies]
