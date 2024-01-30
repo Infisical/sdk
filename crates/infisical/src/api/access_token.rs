@@ -15,8 +15,6 @@ pub struct AccessTokenSuccessResponse {
 }
 
 pub async fn access_token_request(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let req_client = reqwest::Client::new();
-
     let mut body = HashMap::new();
     body.insert(
         "clientId",
@@ -34,7 +32,12 @@ pub async fn access_token_request(client: &mut Client) -> Result<AccessTokenSucc
         client.site_url.clone()
     );
 
-    let request = req_client
+    let request_client = reqwest::Client::builder()
+        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+        .build()
+        .unwrap();
+
+    let request = request_client
         .post(url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .header(reqwest::header::ACCEPT, "application/json")

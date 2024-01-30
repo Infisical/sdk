@@ -29,18 +29,21 @@ pub fn build_base_request(
         None => Err(Error::MissingAccessToken)?,
     };
 
-    let base_request = reqwest::Client::new()
+    let request_client = reqwest::Client::builder()
+        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+        .build();
+
+    if request_client.is_err() {
+        return Err(Error::Reqwest(request_client.err().unwrap()))?;
+    }
+
+    let base_request = request_client?
         .request(method, url)
         // Setting JSON as the content type is OK since we only work with JSON.
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .header(reqwest::header::ACCEPT, "application/json")
         .header("Authorization", token)
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
-
-    // we need to be able to do .json() on this request
-    // .json(json)
-    // .send()
-    // .await?;
 
     Ok(base_request)
 }
