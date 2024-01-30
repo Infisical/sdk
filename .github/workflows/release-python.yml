@@ -110,6 +110,13 @@ jobs:
                   name: schemas.py
                   path: ${{ github.workspace }}/crates/infisical-py/infisical_client/
 
+                  #sudo apt install libssl-dev
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y libssl-dev
+                  sudo apt-get install -y pkg-config
+
             - name: Build wheels
               uses: PyO3/maturin-action@v1
               env:

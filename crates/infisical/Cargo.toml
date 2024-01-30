@@ -48,4 +48,5 @@ dotenv = "0.15.0"
 aes-gcm = "0.10.3"
 
 openssl = {version = "0.10", features = ["vendored"]}
+openssl-sys = {version = "0.9", features = ["vendored"]}
 reqwest = { version = ">=0.11, <0.12", features = ["json", "native-tls-vendored"], default-features = false }
