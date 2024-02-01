@@ -38,7 +38,8 @@ jobs:
               with:
                   workflow: build-python.yml
                   path: ${{ github.workspace }}/target/wheels/dist
-                  #  workflow_conclusion: success
+                  workflow_conclusion: success
+                  branch: python-test # CHANGE TO 'main' WHEN READY!
                   name: infisical_python(.*)
                   name_is_regexp: true
 
