@@ -52,7 +52,7 @@ jobs:
               working-directory: ${{ github.workspace }}/target/wheels
               run: twine check dist/*
 
-            - name: Publish (DRY RUN ENABLED!)
+            - name: Publish
               working-directory: ${{ github.workspace }}/target/wheels
               env:
                   TWINE_USERNAME: __token__
