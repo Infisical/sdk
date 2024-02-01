@@ -9,11 +9,14 @@ jobs:
     generate_schemas:
         uses: ./.github/workflows/generate-schemas.yml
 
+    test-rust-crate:
+        uses: ./.github/workflows/rust-test.yml
+
     bump-version:
         name: Version changes
         needs:
             - generate_schemas
-            # - test-rust-crate
+            - test-rust-crate
         runs-on: ubuntu-latest
         # if: startsWith(github.ref, 'refs/tags/')
         steps:
@@ -33,7 +36,7 @@ jobs:
                   cd ./crates/infisical-py
                   pip install poetry
                   poetry self add poetry-bumpversion
-                  poetry version 2.1.8
+                  poetry version ${{ github.ref_name }}
                   cd ../..
 
             - name: Upload Cargo.toml artifact
@@ -68,8 +71,8 @@ jobs:
             - bump-version
             - setup
         env:
-            #_PACKAGE_VERSION: ${{ github.ref_name }}
-            _PACKAGE_VERSION: "2.1.8"
+            _PACKAGE_VERSION: ${{ github.ref_name }}
+            # _PACKAGE_VERSION: "2.1.8"
         strategy:
             fail-fast: false
             matrix:
@@ -109,12 +112,7 @@ jobs:
               with:
                   key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.os }}
 
-                  #
-                  #
-                  #
-                  #
-                  #
-                  #
+            # Deleting old files that contain versioning info, and replacing them with our modified artifacts.
 
             - name: Delete existing version files (Linux/MacOS)
               if: ${{ matrix.settings.os != 'windows-2022' }}
@@ -146,21 +144,13 @@ jobs:
                   name: __init__.py
                   path: ./crates/infisical-py/infisical_client/
 
+            # End of file replacement
+
             - name: Retrieve Type Definitions
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: schemas.py
                   path: ${{ github.workspace }}/crates/infisical-py/infisical_client/
-
-                  #
-                  #
-                  #
-                  #
-                  #
-                  #
-                  #
-                  #
-                  #
 
             - name: Build wheels
               if: ${{ matrix.settings.target != 'x86_64-unknown-linux-gnu' }}

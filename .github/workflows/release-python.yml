@@ -3,8 +3,8 @@ name: Publish Python SDK
 
 on:
     push:
-        branches:
-            - "python-test"
+        tags:
+            - "*.*.*" # version, e.g. 1.0.0
 
 jobs:
     build-python:
@@ -56,5 +56,5 @@ jobs:
               working-directory: ${{ github.workspace }}/target/wheels
               env:
                   TWINE_USERNAME: __token__
-                  TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
-              run: twine upload --repository testpypi dist/*
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+              run: twine upload --repository pypi dist/*
