@@ -11,6 +11,8 @@ jobs:
         uses: ./.github/workflows/build-python.yml
 
     setup:
+        needs:
+            - build-python
         name: Setup
         runs-on: ubuntu-22.04
         steps:
@@ -20,7 +22,8 @@ jobs:
     publish:
         name: Publish
         runs-on: ubuntu-22.04
-        needs: [build-python, setup]
+        needs:
+            - setup
         steps:
             - name: Install Python
               uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
