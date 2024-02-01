@@ -3,6 +3,7 @@ name: Build Python
 
 on:
     workflow_call:
+    workflow_dispatch:
 
 jobs:
     generate_schemas:
@@ -14,7 +15,7 @@ jobs:
             - generate_schemas
             # - test-rust-crate
         runs-on: ubuntu-latest
-        if: startsWith(github.ref, 'refs/tags/')
+        #if: startsWith(github.ref, 'refs/tags/')
         steps:
             - name: Checkout
               uses: actions/checkout@v3
