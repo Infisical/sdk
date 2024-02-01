@@ -37,13 +37,10 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   path: ${{ github.workspace }}/target/wheels/dist
-                  name: infisical_python-*-*
 
-            - name: Download sdist
-              uses: actions/download-artifact@v4
-              with:
-                  path: ${{ github.workspace }}/target/wheels/dist
-                  name: infisical_python-*-sdist
+            - name: List packages
+              run: ls -R ./target/wheels/dist
+              shell: bash
 
             - name: Move files
               working-directory: ${{ github.workspace }}/target/wheels/dist
