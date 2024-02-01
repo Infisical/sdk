@@ -125,9 +125,11 @@ jobs:
             - name: Delete existing version files (Windows)
               if: ${{ matrix.settings.os == 'windows-2022' }}
               run: |
+                  shell: cmd
                   del /s /q .\crates\infisical-py\Cargo.toml
                   del /s /q .\crates\infisical-py\pyproject.toml
                   del /s /q .\crates\infisical-py\infisical_client\__init__.py
+                  shell: cmd
 
             - name: Download Cargo.toml artifact
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
