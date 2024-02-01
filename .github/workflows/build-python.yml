@@ -15,7 +15,7 @@ jobs:
             - generate_schemas
             # - test-rust-crate
         runs-on: ubuntu-latest
-        #if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -29,11 +29,11 @@ jobs:
                   python-version: "3.10"
 
             - name: Bump versions (pyproject.toml / Cargo.toml)
-              run: |
+              run: | # poetry version ${{ github.ref_name }}
                   cd ./crates/infisical-py
                   pip install poetry
                   poetry self add poetry-bumpversion
-                  poetry version ${{ github.ref_name }}
+                  poetry version 2.1.8
                   cd ../..
 
             - name: Upload Cargo.toml artifact
@@ -68,7 +68,8 @@ jobs:
             - bump-version
             - setup
         env:
-            _PACKAGE_VERSION: ${{ github.ref_name }}
+            #_PACKAGE_VERSION: ${{ github.ref_name }}
+            _PACKAGE_VERSION: "2.1.8"
         strategy:
             fail-fast: false
             matrix:
