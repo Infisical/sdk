@@ -7,6 +7,9 @@ on:
             - "python-test"
 
 jobs:
+    build-python:
+        uses: ./.github/workflows/build-python.yml
+
     setup:
         name: Setup
         runs-on: ubuntu-22.04
@@ -17,7 +20,7 @@ jobs:
     publish:
         name: Publish
         runs-on: ubuntu-22.04
-        needs: setup
+        needs: [build-python, setup]
         steps:
             - name: Install Python
               uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
