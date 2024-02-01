@@ -56,5 +56,5 @@ jobs:
               working-directory: ${{ github.workspace }}/target/wheels
               env:
                   TWINE_USERNAME: __token__
-                  TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+                  TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
               run: twine upload --repository testpypi dist/*
