@@ -34,14 +34,16 @@ jobs:
               run: pip install twine
 
             - name: Download artifacts
-              uses: dawidd6/action-download-artifact@e7466d1a7587ed14867642c2ca74b5bcc1e19a2d # v3.0.0
+              uses: actions/download-artifact@v4
               with:
-                  workflow: build-python.yml
                   path: ${{ github.workspace }}/target/wheels/dist
-                  # workflow_conclusion: success
-                  branch: python-test # CHANGE TO 'main' WHEN READY!
-                  name: infisical_python(.*)
-                  name_is_regexp: true
+                  name: infisical_python-*-*
+
+            - name: Download sdist
+              uses: actions/download-artifact@v4
+              with:
+                  path: ${{ github.workspace }}/target/wheels/dist
+                  name: infisical_python-*-sdist
 
             - name: Move files
               working-directory: ${{ github.workspace }}/target/wheels/dist
