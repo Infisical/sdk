@@ -1,5 +1,6 @@
 ---
-name: Publish Python SDK
+name: Release Python SDK
+run-name: Release Python SDK
 
 on:
     push:
