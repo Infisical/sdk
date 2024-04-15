@@ -17,7 +17,6 @@
         "build-dev-c-crates": "cargo build --manifest-path crates/infisical-c/Cargo.toml --release && cp ./target/release/libinfisical_c.* languages/java/build/resources"
     },
     "devDependencies": {
-        "@openapitools/openapi-generator-cli": "2.7.0",
         "handlebars": "^4.7.8",
         "prettier": "3.1.0",
         "quicktype-core": "23.0.79",
