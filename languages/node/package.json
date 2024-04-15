@@ -51,9 +51,7 @@
     "ts-node": "10.9.1",
     "typescript": "^5.0.0"
   },
-  "dependencies": {
-    "tinyify": "4.0.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">= 10"
   },
