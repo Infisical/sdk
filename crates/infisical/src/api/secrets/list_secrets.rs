@@ -1,5 +1,5 @@
 use crate::error::api_error_handler;
-use crate::helper::{build_base_request, build_url};
+use crate::helper::{build_base_request, build_url, ensure_unique_secrets_by_key, set_env_vars};
 use crate::manager::secrets::{ListSecretsOptions, ListSecretsResponse, Secret};
 use crate::{error::Result, Client};
 use log::debug;
@@ -31,14 +31,16 @@ pub async fn list_secrets_request(
         "environment": input.environment,
         "workspaceId": input.project_id,
 
+        "expandSecretReferences": input.expand_secret_references.unwrap_or(true).to_string(),
+        "recursive": input.recursive.unwrap_or(false).to_string(),
         "secretPath": input.path.as_ref().unwrap_or(&"/".to_string()), // default is "/"
         "include_imports": input.include_imports.unwrap_or(false).to_string(),
 
     });
 
-    let url = build_url(base_url, json);
+    let url = &build_url(base_url, json);
 
-    let base_request = build_base_request(client, &url, reqwest::Method::GET);
+    let base_request = build_base_request(client, url, reqwest::Method::GET);
 
     let request = match base_request {
         Ok(request) => request,
@@ -51,7 +53,6 @@ pub async fn list_secrets_request(
     };
 
     debug!("Creating secret with token: {}", token);
-
     debug!("Creating secret with JSON body: {:?}", json);
     debug!("Creating secret with url: {}", url);
 
@@ -60,32 +61,46 @@ pub async fn list_secrets_request(
 
     if status == StatusCode::OK {
         if input.include_imports.unwrap_or(false) == true {
-            let response = response.json::<ImportResponse>().await?;
+            let mut response = response.json::<ImportResponse>().await?;
+
+            if input.recursive.unwrap_or(false) == false {
+                ensure_unique_secrets_by_key(&mut response.secrets);
+            }
 
             let mut secrets = response.secrets.clone();
 
             for import in response.imports {
-                secrets.extend(import.secrets);
-            }
+                for import_secret in import.secrets.clone() {
+                    // CASE: We need to ensure that the imported values don't override the "base" secrets.
+                    // Priority order is:
+                    // Local/Preset variables -> Actual secrets -> Imported secrets (high->low)
 
-            if input.attach_to_process_env.unwrap_or(false) == true {
-                for secret in secrets.clone() {
-                    std::env::set_var(secret.secret_key, secret.secret_value);
+                    // Check if the secret already exists in the secrets list
+                    if !secrets
+                        .iter()
+                        .any(|secret| secret.secret_key == import_secret.secret_key)
+                    {
+                        secrets.push(import_secret);
+                    }
                 }
             }
 
+            set_env_vars(input.attach_to_process_env.unwrap_or(false), &secrets);
+
             return Ok(ListSecretsResponse { secrets });
         }
+        let mut response = response.json::<ListSecretsResponse>().await?;
 
-        let response = response.json::<ListSecretsResponse>().await?;
-
-        if input.attach_to_process_env.unwrap_or(false) == true {
-            let secrets = response.secrets.clone();
-
-            for secret in secrets {
-                std::env::set_var(secret.secret_key, secret.secret_value);
-            }
+        if input.recursive.unwrap_or(false) == false {
+            ensure_unique_secrets_by_key(&mut response.secrets);
         }
+
+        set_env_vars(
+            input.attach_to_process_env.unwrap_or(false),
+            &response.secrets,
+        );
+
+        debug!("Secrets: {:?}", response);
 
         Ok(response)
     } else {
