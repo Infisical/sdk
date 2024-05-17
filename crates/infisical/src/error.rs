@@ -21,6 +21,15 @@ pub enum Error {
     #[error("Failed to create symmetric key: {}", .message)]
     CreateSymmetricKeyError { message: String },
 
+    #[error("Failed to authenticate due to missing parameters: {}", .message)]
+    MissingParametersAuthError { message: String },
+
+    #[error("Authentication parsing failed: {}", .message)]
+    AuthSanitizationError { message: String },
+
+    #[error("No access token was obtained after authentication.")]
+    NoAccessTokenObtained,
+
     #[error("Failed to encrypt symmetric key: {}", .message)]
     EncryptSymmetricKeyError { message: String },
 
