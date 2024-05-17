@@ -1,15 +1,12 @@
 use crate::{
     cache::{cache_thread, CachedSecret},
-    client::client_settings::ClientSettings,
+    client::{auth_method_settings::UniversalAuthMethod, client_settings::ClientSettings},
 };
 use std::sync::{Arc, Mutex};
-pub(crate) struct ClientAuth {
-    pub client_id: String,
-    pub client_secret: String,
-    pub access_token: Option<String>,
-}
+
+use super::auth_method_settings::Authentication;
 pub struct Client {
-    pub(crate) auth: ClientAuth,
+    pub(crate) auth: Authentication,
 
     pub(crate) cache: Arc<Mutex<Vec<CachedSecret>>>,
     pub(crate) cache_ttl: u64, // No need for a mutex lock here, as we are only reading this value in the cache thread.
@@ -21,14 +18,23 @@ pub struct Client {
 impl Client {
     pub fn new(settings_input: Option<ClientSettings>) -> Self {
         // We should allow the user to not provide settings, so they can still use encryption methods that don't require authentication.
-        let settings = settings_input.unwrap_or(ClientSettings::default());
+        let mut settings = settings_input.unwrap_or(ClientSettings::default());
 
-        let c = Self {
-            auth: ClientAuth {
-                client_id: settings.client_id.unwrap_or("".to_string()),
-                client_secret: settings.client_secret.unwrap_or("".to_string()),
-                access_token: settings.access_token,
-            },
+        // Move the deprecated fields to the new auth object for backwards compatibility.
+        #[allow(deprecated)]
+        {
+            settings.auth.access_token = settings.access_token;
+
+            if settings.client_id.is_some() && settings.client_secret.is_some() {
+                settings.auth.universal_auth = Some(UniversalAuthMethod {
+                    client_id: settings.client_id.unwrap(),
+                    client_secret: settings.client_secret.unwrap(),
+                });
+            }
+        }
+
+        let client: Client = Self {
+            auth: settings.auth,
             site_url: settings
                 .site_url
                 .unwrap_or("https://app.infisical.com".to_string()),
@@ -38,10 +44,10 @@ impl Client {
             user_agent: settings.user_agent.unwrap_or("".to_string()),
         };
 
-        if c.cache_ttl != 0 {
-            cache_thread(Arc::clone(&c.cache));
+        if client.cache_ttl != 0 {
+            cache_thread(Arc::clone(&client.cache));
         }
-        return c;
+        return client;
     }
 
     pub fn set_access_token(&mut self, token: String) {
