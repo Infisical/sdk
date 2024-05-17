@@ -209,6 +209,8 @@ mod tests {
         let options = ListSecretsOptions {
             environment: environment.to_string(),
             project_id: variables.project_id.to_string(),
+            recursive: Some(true),
+            expand_secret_references: None,
             path: None,
             include_imports: None,
             attach_to_process_env: None,
@@ -222,9 +224,15 @@ mod tests {
             Ok(secrets) => {
                 assert!(secrets.secrets.len() > 0);
 
+                // Find secret in a folder to ensure recursive mode works as intended.
+                let secret_in_folder = secrets.secrets.iter().find(|&s| {
+                    s.secret_key == "SECRET_IN_FOLDER" && s.secret_value == "test-secret"
+                });
+                assert!(secret_in_folder.is_some());
+
                 let mut found_secret = false;
 
-                // Loop through secrets and make sure they are all in the same environment, and the secret with SECRET_NAME exists
+                // Loop through secrets and make sure they are all in the same environment, and the secret with SECRET_NAME exists.
                 for secret in secrets.secrets {
                     assert_eq!(secret.environment, environment.as_ref());
                     assert_eq!(secret.workspace, variables.project_id.as_ref());
