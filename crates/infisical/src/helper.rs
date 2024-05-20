@@ -1,5 +1,8 @@
 use crate::{
-    api::universal_auth_login::universal_auth_login,
+    api::auth::{
+        gcp_iam_login::gcp_iam_login, gcp_id_token_login::gcp_id_token_login,
+        universal_auth_login::universal_auth_login,
+    },
     client::auth_method_settings::AuthMethod,
     error::{Error, Result},
     manager::secrets::Secret,
@@ -23,9 +26,8 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
         };
 
         return Err(err);
-    } else {
-        debug!("Auth validation passed");
-    }
+    };
+    debug!("Auth validation passed");
 
     let auth_method = validation_result.unwrap_or(AuthMethod::UniversalAuth);
     let access_token;
@@ -37,12 +39,14 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
             access_token = result.access_token;
         }
         AuthMethod::GcpIdToken => {
-            debug!("Auth method is GCP ID Token!!!");
-            debug!(
-                "GCP Identity ID: {}",
-                client.auth.gcp_auth.as_ref().unwrap().identity_id
-            );
-            access_token = "NOT_IMPLEMENTED".to_string();
+            debug!("Auth method is GCP ID Token");
+            let result = gcp_id_token_login(client).await?;
+            access_token = result.access_token;
+        }
+        AuthMethod::GcpIam => {
+            debug!("Auth method is GCP IAM");
+            let result = gcp_iam_login(client).await?;
+            access_token = result.access_token;
         }
     }
 
