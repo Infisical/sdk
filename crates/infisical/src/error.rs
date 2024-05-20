@@ -18,11 +18,23 @@ pub enum Error {
     #[error("Something unexpected went wrong.")]
     UnknownError,
 
+    #[error("Something went wrong: {}", .message)]
+    UnknownErrorWithMessage { message: String },
+
     #[error("Failed to create symmetric key: {}", .message)]
     CreateSymmetricKeyError { message: String },
 
     #[error("Failed to authenticate due to missing parameters: {}", .message)]
     MissingParametersAuthError { message: String },
+
+    #[error("Failed to obtain metadata from Google Cloud")]
+    GoogleMetadataError,
+
+    #[error("Failed to sign JWT from Google Cloud: {}", .message)]
+    GoogleJwtError { message: String },
+
+    #[error("Failed to get token from Google Cloud Platform: {}", .message)]
+    GoogleTokenError { message: String },
 
     #[error("Authentication parsing failed: {}", .message)]
     AuthSanitizationError { message: String },
