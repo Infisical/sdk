@@ -7,34 +7,13 @@ const randomStr = () => Date.now().toString(36);
 const projectId = "bfdb6ae4-bcbf-4738-ad1c-0ff2102721f4";
 const environment = "dev";
 
-const MACHINE_IDENTITY_CLIENT_SECRET = "5c943b047536c9fa486153ae6b8e1a3f29f6948c6fc3e06d97a9133195e6235c";
-const MACHINE_IDENTITY_CLIENT_ID = "ae652b82-358c-4319-938b-3016db58a960";
-
-process.env = {
-	...process.env,
-
-	INFISICAL_UNIVERSAL_AUTH_CLIENT_ID: MACHINE_IDENTITY_CLIENT_ID,
-	INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET: MACHINE_IDENTITY_CLIENT_SECRET
-};
-
 const client = new InfisicalClient({
-	clientId: MACHINE_IDENTITY_CLIENT_ID,
-	clientSecret: MACHINE_IDENTITY_CLIENT_SECRET,
-	siteUrl: "http://localhost:8080",
-	logLevel: LogLevel.Debug // Optional, default is LogLevel.Error.
-
-	// // NEW:
-	// auth: {
-	// 	universalAuth: {
-	// 		clientId: "client_id",
-	// 		clientSecret: "client_secret"
-	// 	},
-
-	// 	aws: {
-	// 		something: "the stuff",
-	// 		etc: "etc..."
-	// 	}
-	// }
+	logLevel: LogLevel.Debug, // Optional, default is LogLevel.Error.
+	auth: {
+		awsIam: {
+			identityId: "2849825f-08ec-482a-87b6-d786bd8035ff"
+		}
+	}
 });
 
 async function testListSecrets() {
