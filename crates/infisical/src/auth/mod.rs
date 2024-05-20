@@ -1,4 +1,4 @@
 pub mod authenticate;
 
-pub use crate::api::universal_auth_login::AccessTokenSuccessResponse;
+pub use crate::api::auth::AccessTokenSuccessResponse;
 pub use authenticate::UpdateAccessTokenRequest;

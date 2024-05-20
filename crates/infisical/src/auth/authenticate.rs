@@ -2,9 +2,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::universal_auth_login::{universal_auth_login, AccessTokenSuccessResponse},
-    error::Result,
-    Client,
+    api::auth::universal_auth_login::universal_auth_login, api::auth::AccessTokenSuccessResponse,
+    error::Result, Client,
 };
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
