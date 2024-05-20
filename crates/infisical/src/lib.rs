@@ -1,7 +1,6 @@
 #![feature(stmt_expr_attributes)]
 
 pub mod api;
-pub use api::universal_auth_login;
 
 pub mod cache;
 pub mod constants;
