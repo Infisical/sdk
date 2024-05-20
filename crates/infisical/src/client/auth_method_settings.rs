@@ -32,12 +32,19 @@ pub struct GCPIAmAuthMethod {
 }
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct AWSIamAuthMethod {
+    pub identity_id: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Authentication {
     pub access_token: Option<String>,
     pub universal_auth: Option<UniversalAuthMethod>,
     pub gcp_id_token: Option<GCPIdTokenAuthMethod>,
     pub gcp_iam: Option<GCPIAmAuthMethod>,
+    pub aws_iam: Option<AWSIamAuthMethod>,
 }
 
 impl Default for Authentication {
@@ -47,6 +54,7 @@ impl Default for Authentication {
             universal_auth: None,
             gcp_id_token: None,
             gcp_iam: None,
+            aws_iam: None,
         }
     }
 }
@@ -56,6 +64,7 @@ pub enum AuthMethod {
     UniversalAuth,
     GcpIdToken,
     GcpIam,
+    AwsIam,
 }
 
 // Custom validation to ensure that if universal_auth or gcp_auth are present, their fields are populated
@@ -69,17 +78,26 @@ impl Authentication {
 
             return Err("universal_auth is present but client_id or client_secret is empty".into());
         }
-        // GCP AUTH:
+        // GCP ID TOKEN AUTH:
         else if let Some(ref auth) = self.gcp_id_token {
             if !auth.identity_id.is_empty() {
                 return Ok(AuthMethod::GcpIdToken);
             }
             return Err("gcp_auth is present but identity_id is empty".into());
-        } else if let Some(ref auth) = self.gcp_iam {
+        }
+        // GCP IAM AUTH:
+        else if let Some(ref auth) = self.gcp_iam {
             if !auth.service_account_key_file_path.is_empty() && !auth.identity_id.is_empty() {
                 return Ok(AuthMethod::GcpIam);
             }
             return Err("gcp_auth is present but service_account_key_file_path is empty".into());
+        }
+        // AWS IAM AUTH:
+        else if let Some(ref auth) = self.aws_iam {
+            if !auth.identity_id.is_empty() {
+                return Ok(AuthMethod::AwsIam);
+            }
+            return Err("aws_iam is present but identity_id is empty".into());
         } else {
             debug!("No authentication method is set. Checking environment variables.");
 

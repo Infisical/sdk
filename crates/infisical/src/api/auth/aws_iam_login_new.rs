@@ -9,8 +9,9 @@ use aws_sigv4::{
     http_request::{sign, SignableBody, SignableRequest, SigningSettings},
     sign::v4,
 };
+use log::debug;
 
-async fn test() -> Result<()> {
+pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
     let config = aws_config::load_defaults(BehaviorVersion::v2023_11_09()).await;
 
     let credentials = config
@@ -76,12 +77,12 @@ async fn test() -> Result<()> {
         url.query_pairs_mut().append_pair(name, &value);
     }
 
-    println!("URL: {}", url);
-    println!("URL: {}", url);
-    println!("URL: {}", url);
-    println!("URL: {}", url);
-    println!("URL: {}", url);
-    println!("URL: {}", url);
+    debug!("URL: {}", url);
+    debug!("URL: {}", url);
+    debug!("URL: {}", url);
+    debug!("URL: {}", url);
+    debug!("URL: {}", url);
+    debug!("URL: {}", url);
 
     return Ok(());
 }

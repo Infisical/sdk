@@ -1,7 +1,7 @@
 use crate::{
     api::auth::{
-        gcp_iam_login::gcp_iam_login, gcp_id_token_login::gcp_id_token_login,
-        universal_auth_login::universal_auth_login,
+        aws_iam_login_new::aws_iam_login, gcp_iam_login::gcp_iam_login,
+        gcp_id_token_login::gcp_id_token_login, universal_auth_login::universal_auth_login,
     },
     client::auth_method_settings::AuthMethod,
     error::{Error, Result},
@@ -47,6 +47,17 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
             debug!("Auth method is GCP IAM");
             let result = gcp_iam_login(client).await?;
             access_token = result.access_token;
+        }
+
+        AuthMethod::AwsIam => {
+            debug!("Auth method is AWS IAM");
+            let result = aws_iam_login(client).await;
+
+            if result.is_err() {
+                return Err(result.err().unwrap());
+            }
+
+            access_token = "test".to_string();
         }
     }
 
