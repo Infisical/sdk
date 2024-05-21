@@ -103,21 +103,6 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         headers.insert(name.to_string(), value.to_string());
     }
 
-    let algo_header = headers.get("X-Amz-Algorithm");
-    let credential_header = headers.get("X-Amz-Credential");
-    let signed_headers_header = headers.get("X-Amz-SignedHeaders");
-    let signature_header = headers.get("X-Amz-Signature");
-
-    if algo_header.is_none()
-        || credential_header.is_none()
-        || signed_headers_header.is_none()
-        || signature_header.is_none()
-    {
-        return Err(Error::UnknownErrorWithMessage {
-            message: "Failed to sign the request".to_string(),
-        });
-    }
-
     /*
 
     Authorization: AWS4-HMAC-SHA256 Credential=AKIAI44QH8DHBEXAMPLE/20160126/us-east-1/sts/aws4_request,
@@ -125,17 +110,17 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         Signature=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
      */
 
-    // build the authorization header like above
-    let auth_header = format!(
-        "{} Credential={}, SignedHeaders={}, Signature={}",
-        algo_header.unwrap(),
-        credential_header.unwrap(),
-        signed_headers_header.unwrap(),
-        signature_header.unwrap()
-    );
+    // // build the authorization header like above
+    // let auth_header = format!(
+    //     "{} Credential={}, SignedHeaders={}, Signature={}",
+    //     algo_header.unwrap(),
+    //     credential_header.unwrap(),
+    //     signed_headers_header.unwrap(),
+    //     signature_header.unwrap()
+    // );
 
-    headers.insert("Accept-Encoding".to_string(), "identity".to_string());
-    headers.insert("Authorization".to_string(), auth_header);
+    // headers.insert("Accept-Encoding".to_string(), "identity".to_string());
+    // headers.insert("Authorization".to_string(), auth_header);
 
     debug!("URL: {}", url);
     debug!("URL: {}", url);
