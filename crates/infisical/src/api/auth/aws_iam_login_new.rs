@@ -68,7 +68,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         "Content-Type".to_string(),
         "application/x-www-form-urlencoded; charset=utf-8".to_string(),
     );
-    headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
+    headers.insert("Host".to_string(), format!("sts.amazonaws.com"));
     headers.insert(
         "Content-Length".to_string(),
         bytecount::num_chars(iam_request_body.as_bytes()).to_string(),
