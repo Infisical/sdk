@@ -146,7 +146,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     real_headers.insert("Authorization".to_string(), auth_header);
 
-    real_headers.insert("Accept-Encoding".to_string(), "identity".to_string());
+    // real_headers.insert("Accept-Encoding".to_string(), "identity".to_string());
 
     debug!("URL: {}", url);
 
