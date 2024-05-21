@@ -122,7 +122,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     real_headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
     real_headers.insert(
         "Content-Length".to_string(),
-        tmp_headers.get("Content-Length").unwrap().to_string(),
+        iam_request_body.len().to_string(),
     );
     real_headers.insert(
         "X-Amz-Date".to_string(),
