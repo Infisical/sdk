@@ -94,9 +94,11 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
-    let mut url = url::Url::parse(&iam_request_url).unwrap();
+    let url = url::Url::parse(&iam_request_url).unwrap();
     for (name, value) in signing_instructions.params() {
-        url.query_pairs_mut().append_pair(name, &value);
+        // url.query_pairs_mut().append_pair(name, &value);
+
+        headers.insert(name.to_string(), value.to_string());
     }
 
     debug!("URL: {}", url);
@@ -108,7 +110,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     let iam_data = AwsIamRequestData {
         http_request_method: "POST".to_string(),
-        iam_request_url: url.to_string(),
+        // iam_request_url: url.to_string(),
         iam_request_body: iam_request_body.to_string(),
         iam_request_headers: headers,
     };

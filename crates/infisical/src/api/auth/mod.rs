@@ -31,8 +31,8 @@ pub struct AccessTokenSuccessResponse {
 pub(self) struct AwsIamRequestData {
     http_request_method: String,
 
-    // base64 encoded url
-    iam_request_url: String,
+    // // base64 encoded url
+    // iam_request_url: String,
 
     // base64 encoded body
     iam_request_body: String,
@@ -83,7 +83,7 @@ pub(self) async fn auth_infisical_aws(
 
     let iam_headers = base64_encode(header_json);
     let request_body = base64_encode(iam_data.iam_request_body.clone());
-    let request_url = base64_encode(iam_data.iam_request_url.clone());
+    // let request_url = base64_encode(iam_data.iam_request_url.clone());
 
     let request_client = reqwest::Client::builder()
         .use_preconfigured_tls(rustls_platform_verifier::tls_config())
@@ -94,7 +94,7 @@ pub(self) async fn auth_infisical_aws(
 
     form_data.insert("identityId", identity_id);
     form_data.insert("iamHttpRequestMethod", Some(iam_data.http_request_method));
-    form_data.insert("iamRequestUrl", Some(request_url));
+    // form_data.insert("iamRequestUrl", Some(request_url));
     form_data.insert("iamRequestBody", Some(request_body));
     form_data.insert("iamRequestHeaders", Some(iam_headers));
 
