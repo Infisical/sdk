@@ -8,10 +8,11 @@ const projectId = "bfdb6ae4-bcbf-4738-ad1c-0ff2102721f4";
 const environment = "dev";
 
 const client = new InfisicalClient({
+	siteUrl: "http://localhost:8080",
 	logLevel: LogLevel.Debug, // Optional, default is LogLevel.Error.
 	auth: {
 		awsIam: {
-			identityId: "2849825f-08ec-482a-87b6-d786bd8035ff"
+			identityId: "781a026b-06a6-4ab1-957b-6a54fd11bca5"
 		}
 	}
 });
