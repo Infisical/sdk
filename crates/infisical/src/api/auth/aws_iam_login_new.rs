@@ -3,27 +3,29 @@ use std::time::{Duration, SystemTime};
 
 use crate::error::{Error, Result};
 use crate::Client;
+use aws_config::default_provider::credentials::DefaultCredentialsChain;
 use aws_config::BehaviorVersion;
 use aws_credential_types::provider::ProvideCredentials;
+use aws_credential_types::Credentials;
 use aws_sigv4::{
     http_request::{sign, SignableBody, SignableRequest, SigningSettings},
     sign::v4,
 };
+
 use log::debug;
 
 pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
-    // let config = aws_config::load_defaults(BehaviorVersion::v2024_03_28()).await;
-    let config = aws_config::load_from_env().await;
+    let region = "us-east-1";
 
-    let credentials = config
-        .credentials_provider()
-        .expect("no credentials provider found")
+    let credentials = DefaultCredentialsChain::builder()
+        .region(region)
+        .build()
+        .await
         .provide_credentials()
         .await
-        .expect("unable to load credentials");
+        .expect("Failed to get credentials");
 
     let identity = credentials.into();
-    let region = config.region().unwrap().to_string();
 
     let mut signing_settings = SigningSettings::default();
     signing_settings.expires_in = Some(Duration::from_secs(900));
@@ -31,7 +33,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
 
     let signing_params = v4::SigningParams::builder()
         .identity(&identity)
-        .region(&region)
+        .region(region)
         .name("sts")
         .time(SystemTime::now())
         .settings(signing_settings)
