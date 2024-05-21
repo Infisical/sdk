@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 use std::time::{Duration, SystemTime};
 
-use crate::error::{Error, Result};
+use crate::api::auth::{auth_infisical_aws, AccessTokenSuccessResponse, AwsIamRequestData};
+use crate::error::{api_error_handler, Error, Result};
 use crate::Client;
 use aws_config::default_provider::credentials::DefaultCredentialsChain;
 use aws_config::BehaviorVersion;
@@ -11,10 +12,22 @@ use aws_sigv4::{
     http_request::{sign, SignableBody, SignableRequest, SigningSettings},
     sign::v4,
 };
+use bytecount;
 
 use log::debug;
 
-pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
+pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
+    let identity_id;
+
+    if let Some(aws_iam_auth) = &client.auth.aws_iam {
+        identity_id = aws_iam_auth.identity_id.clone();
+    } else {
+        return Err(Error::MissingParametersAuthError {
+            message: "Attempt to authenticate with AWS IAM failed. Identity ID is missing."
+                .to_string(),
+        });
+    }
+
     let region = "us-east-1";
 
     let credentials = DefaultCredentialsChain::builder()
@@ -56,6 +69,12 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
         "application/x-www-form-urlencoded; charset=utf-8".to_string(),
     );
     headers.insert("Host".to_string(), format!("sts.${}.amazonaws.com", region));
+    headers.insert(
+        "Content-Length".to_string(),
+        bytecount::num_chars(iam_request_body.as_bytes()).to_string(),
+    );
+
+    // ! maybe need to insert the date header here
 
     let signable_request = SignableRequest::new(
         "POST",
@@ -87,5 +106,25 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
     debug!("URL: {}", url);
     debug!("URL: {}", url);
 
-    return Ok(());
+    let iam_data = AwsIamRequestData {
+        http_request_method: "POST".to_string(),
+        iam_request_url: url.to_string(),
+        iam_request_body: iam_request_body.to_string(),
+        iam_request_headers: headers,
+    };
+
+    let response = auth_infisical_aws(client, Some(identity_id), iam_data).await?;
+    let status = response.status();
+
+    debug!("aws_iam_login status: {}", status);
+
+    let status = response.status();
+
+    if status.is_success() {
+        let json_response = response.json::<AccessTokenSuccessResponse>().await?;
+        return Ok(json_response);
+    } else {
+        let err = api_error_handler(status, response, None, true).await?;
+        return Err(err);
+    }
 }

@@ -51,13 +51,8 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
 
         AuthMethod::AwsIam => {
             debug!("Auth method is AWS IAM");
-            let result = aws_iam_login(client).await;
-
-            if result.is_err() {
-                return Err(result.err().unwrap());
-            }
-
-            access_token = "test".to_string();
+            let result = aws_iam_login(client).await?;
+            access_token = result.access_token;
         }
     }
 
