@@ -103,7 +103,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let signing_params = signing_instructions.params();
 
     debug!("SIGNING PARAMS: {:?}", signing_params);
-    println!("SIGNING HEADERS: {:?}", signing_headers);
+    debug!("SIGNING HEADERS: {:?}", signing_headers);
 
     let url = url::Url::parse(&iam_request_url).unwrap();
     for (name, value) in signing_instructions.params() {
