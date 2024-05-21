@@ -117,7 +117,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     real_headers.insert(
         "Content-Type".to_string(),
-        "application/x-www-form-urlencoded".to_string(),
+        "application/x-www-form-urlencoded; charset=utf-8".to_string(),
     );
     real_headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
     real_headers.insert(
