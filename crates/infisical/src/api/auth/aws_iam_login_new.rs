@@ -12,7 +12,7 @@ use aws_sigv4::{
 use log::debug;
 
 pub async fn aws_iam_login(client: &mut Client) -> Result<()> {
-    let config = aws_config::load_defaults(BehaviorVersion::v2023_11_09()).await;
+    let config = aws_config::load_defaults(BehaviorVersion::v2024_03_28()).await;
 
     let credentials = config
         .credentials_provider()
