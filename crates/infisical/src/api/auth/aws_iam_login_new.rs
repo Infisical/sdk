@@ -59,7 +59,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     }
     let signing_params = signing_params.unwrap();
 
-    let iam_request_url = format!("https://sts.{}.amazonaws.com/", region);
+    let iam_request_url = format!("https://sts.amazonaws.com/");
     let iam_request_body = "Action=GetCallerIdentity&Version=2011-06-15";
 
     let mut headers = HashMap::<String, String>::new();
