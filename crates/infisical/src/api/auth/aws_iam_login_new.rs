@@ -129,6 +129,11 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         tmp_headers.get("X-Amz-Date").unwrap().to_string(),
     );
 
+    real_headers.insert(
+        "X-Amz-Security-Token".to_string(),
+        tmp_headers.get("X-Amz-Security-Token").unwrap().to_string(),
+    );
+
     // Authorization: AWS4-HMAC-SHA256 Credential=AKIAI44QH8DHBEXAMPLE/20160126/us-east-1/sts/aws4_request, SignedHeaders=host;user-agent;x-amz-date, Signature=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
     // build the authorization header like above
     let auth_header = format!(
