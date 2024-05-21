@@ -106,7 +106,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     println!("SIGNING HEADERS: {:?}", signing_headers);
 
     let url = url::Url::parse(&iam_request_url).unwrap();
-    for (name, value) in signing_instructions.headers() {
+    for (name, value) in signing_instructions.params() {
         // url.query_pairs_mut().append_pair(name, &value);
 
         debug!("HEADER() ---:---:--- {}: {}", name, value);
