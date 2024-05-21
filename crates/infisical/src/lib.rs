@@ -1,5 +1,3 @@
-#![feature(stmt_expr_attributes)]
-
 pub mod api;
 
 pub mod cache;
