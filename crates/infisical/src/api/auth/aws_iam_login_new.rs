@@ -71,7 +71,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
     headers.insert(
         "Content-Length".to_string(),
-        bytecount::num_chars(iam_request_body.as_bytes()).to_string(),
+        iam_request_body.len().to_string(),
     );
 
     // ! maybe need to insert the date header here
@@ -94,10 +94,12 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
+    headers.clear();
     let url = url::Url::parse(&iam_request_url).unwrap();
-    for (name, value) in signing_instructions.params() {
+    for (name, value) in signing_instructions.headers() {
         // url.query_pairs_mut().append_pair(name, &value);
 
+        debug!("HEADER() ---:---:--- {}: {}", name, value);
         headers.insert(name.to_string(), value.to_string());
     }
 
