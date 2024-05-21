@@ -95,6 +95,10 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .into_parts();
 
     headers.clear();
+
+    let signing_headers = signing_instructions.headers();
+    let signing_params = signing_instructions.params();
+
     let url = url::Url::parse(&iam_request_url).unwrap();
     for (name, value) in signing_instructions.headers() {
         // url.query_pairs_mut().append_pair(name, &value);
