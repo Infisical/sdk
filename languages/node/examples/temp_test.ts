@@ -8,7 +8,7 @@ const projectId = "bfdb6ae4-bcbf-4738-ad1c-0ff2102721f4";
 const environment = "dev";
 
 const client = new InfisicalClient({
-	siteUrl: "http://localhost:8080",
+	siteUrl: "https://2124877b5992.ngrok.app",
 	logLevel: LogLevel.Debug, // Optional, default is LogLevel.Error.
 	auth: {
 		awsIam: {
