@@ -72,7 +72,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     // we do this so the signed headers will contain the date header
     headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
-    headers.insert("Security-Token".to_string(), "tmp".to_string());
+    headers.insert("X-Amz-Security-Token".to_string(), "tmp".to_string());
 
     let signable_request = SignableRequest::new(
         "POST",
