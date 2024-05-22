@@ -21,6 +21,18 @@ pub enum Error {
     #[error("Something went wrong: {}", .message)]
     UnknownErrorWithMessage { message: String },
 
+    #[error("Failed to get AWS credentials: {}", .message)]
+    AwsCredentialsError { message: String },
+
+    #[error("Failed to build AWS request signer: {}", .message)]
+    AwsBuildRequestSignerError { message: String },
+
+    #[error("Failed to sign AWS request: {}", .message)]
+    AwsSignRequestError { message: String },
+
+    #[error("Failed to get AWS region: {}", .message)]
+    AwsGetRegionError { message: String },
+
     #[error("Failed to create symmetric key: {}", .message)]
     CreateSymmetricKeyError { message: String },
 
