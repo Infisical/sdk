@@ -1,3 +1,4 @@
+use infisical::client::auth_method_settings::Authentication;
 use rand::{distributions::Alphanumeric, Rng};
 
 use dotenv::dotenv;
@@ -101,12 +102,16 @@ fn create_client() -> Client {
     let environment = get_environment_variables();
 
     let settings = ClientSettings {
+        // These fields are deprecated. If they are populated, they will be backfilled into the new auth object.
         client_id: Some(environment.client_id),
         client_secret: Some(environment.client_secret),
         access_token: None,
+
         site_url: Some(environment.site_url),
         cache_ttl: None,
         user_agent: Some("infisical-secrets-test-sdk".to_string()),
+
+        auth: Authentication::default(),
     };
 
     let client = Client::new(Some(settings));
