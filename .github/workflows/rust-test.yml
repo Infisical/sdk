@@ -6,12 +6,20 @@ on:
         types: [opened, synchronize]
 
     workflow_call:
+        secrets:
+            INFISICAL_UNIVERSAL_CLIENT_SECRET:
+                required: true
+            INFISICAL_UNIVERSAL_CLIENT_ID:
+                required: true
+            INFISICAL_PROJECT_ID:
+                required: true
+            INFISICAL_SITE_URL:
+                required: true
 
 jobs:
     test:
         name: Functional tests
         runs-on: ubuntu-latest
-        environment: infisical-test-workspace
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -24,9 +32,9 @@ jobs:
             - name: 📦 Cargo test
               uses: actions-rs/cargo@v1
               env:
-                  INFISICAL_UNIVERSAL_CLIENT_SECRET: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_SECRET }}"
-                  INFISICAL_UNIVERSAL_CLIENT_ID: "${{ vars.INFISICAL_UNIVERSAL_CLIENT_ID }}"
-                  INFISICAL_PROJECT_ID: "${{ vars.INFISICAL_PROJECT_ID }}"
-                  INFISICAL_SITE_URL: "${{ vars.INFISICAL_SITE_URL }}"
+                  INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
+                  INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
+                  INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
+                  INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
               with:
                   command: test
