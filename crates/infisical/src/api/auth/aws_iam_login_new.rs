@@ -8,7 +8,7 @@ use crate::Client;
 use aws_config::default_provider::credentials::DefaultCredentialsChain;
 use aws_credential_types::provider::ProvideCredentials;
 use aws_sigv4::{
-    http_request::{sign, SignableBody, SignableRequest, SigningSettings},
+    http_request::{sign, SignableBody, SignableRequest, SigningInstructions, SigningSettings},
     sign::v4,
 };
 
@@ -45,8 +45,10 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let identity = credentials.into();
 
     let mut signing_settings = SigningSettings::default();
+    // signing_settings.excluded_headers = None;
+
     signing_settings.expires_in = Some(Duration::from_secs(900));
-    signing_settings.signature_location = aws_sigv4::http_request::SignatureLocation::QueryParams;
+    signing_settings.signature_location = aws_sigv4::http_request::SignatureLocation::Headers;
 
     let signing_params = v4::SigningParams::builder()
         .identity(&identity)
@@ -86,16 +88,11 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
-    debug!("THE SIGNATURE IS: {:?}", _signature);
-
     let mut my_req: http::Request<String> = http::Request::new(iam_request_body.to_string());
     signing_instructions.apply_to_request_http1x(&mut my_req);
 
+    debug!("THE SIGNATURE IS: {:?}", _signature);
     debug!("REQUEST HEADERS: {:?}", my_req.headers());
-
-    my_req.headers().iter().for_each(|(k, v)| {
-        debug!("REQUEST HEADER: {}: {}", k.to_string(), v.to_str().unwrap());
-    });
 
     // headers.insert(
     //     "Content-Length".to_string(),
