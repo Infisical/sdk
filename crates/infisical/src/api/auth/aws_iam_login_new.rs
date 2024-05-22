@@ -135,10 +135,13 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     headers.insert("Authorization".to_string(), auth_header);
 
+    let mut new_headers = HashMap::<String, String>::new();
+
     for header in allowed_headers.iter() {
-        if !headers.contains_key(*header) {
-            headers.remove(*header);
-        }
+        new_headers.insert(
+            header.to_string(),
+            headers.get(*header).unwrap().to_string(),
+        );
     }
 
     // debug!("URL: {}", url);
@@ -146,7 +149,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let iam_data = AwsIamRequestData {
         http_request_method: "POST".to_string(),
         iam_request_body: iam_request_body.to_string(),
-        iam_request_headers: headers,
+        iam_request_headers: new_headers,
     };
 
     // this is where we send the request to infisical, just pretend this works as it should
