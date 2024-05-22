@@ -35,6 +35,7 @@ fn get_environment_variables() -> Environment {
 fn create_client() -> Client {
     let environment = get_environment_variables();
 
+    #[allow(deprecated)]
     let settings = ClientSettings {
         // These fields are deprecated. If they are populated, they will be backfilled into the new auth object.
         client_id: None,
