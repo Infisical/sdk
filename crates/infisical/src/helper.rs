@@ -1,15 +1,19 @@
+use std::borrow::Cow;
+
 use crate::{
     api::auth::{
         aws_iam_login_new::aws_iam_login, gcp_iam_login::gcp_iam_login,
         gcp_id_token_login::gcp_id_token_login, universal_auth_login::universal_auth_login,
     },
     client::auth_method_settings::AuthMethod,
+    constants::{AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL, AWS_EC2_METADATA_TOKEN_URL},
     error::{Error, Result},
     manager::secrets::Secret,
     Client,
 };
 use log::debug;
-use reqwest;
+use reqwest::{self, header::HeaderValue};
+use serde::{Deserialize, Serialize};
 pub async fn handle_authentication(client: &mut Client) -> Result<()> {
     if client.auth.access_token.is_some() {
         return Ok(());
@@ -150,10 +154,7 @@ pub fn build_url(url: String, query_params: &serde_json::Value) -> String {
                 continue;
             }
 
-            url.push_str(key);
-            url.push_str("=");
-            url.push_str(val);
-            url.push_str("&");
+            url.push_str(&format!("{}={}&", key, val));
         }
 
         // Remove the last "&"
@@ -185,4 +186,77 @@ pub fn get_fallback_env_secret(key: &str) -> Option<Secret> {
         }),
         Err(_) => None,
     }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct IdentityDocumentResponse {
+    region: String,
+}
+
+async fn get_aws_ec2_identity_document(timeout: u64) -> Result<IdentityDocumentResponse> {
+    let mut token_headers = reqwest::header::HeaderMap::new();
+    token_headers.insert(
+        "X-aws-ec2-metadata-token-ttl-seconds",
+        HeaderValue::from_str("21600").unwrap(),
+    );
+
+    let request_client = reqwest::Client::builder()
+        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+        .build()?;
+
+    // Get the token from the metadata service. This is required to fetch the identity document.
+    let token_response = request_client
+        .get(AWS_EC2_METADATA_TOKEN_URL)
+        .headers(token_headers)
+        .timeout(std::time::Duration::from_millis(timeout))
+        .send()
+        .await?;
+
+    let token = token_response.text().await?;
+
+    // Get the identity document from the metadata service, which will contain the region if it's an EC2 instance.
+    let mut identity_doc_headers = reqwest::header::HeaderMap::new();
+    identity_doc_headers.insert(
+        "X-aws-ec2-metadata-token",
+        HeaderValue::from_str(&token).unwrap(),
+    );
+
+    let identity_doc_response = request_client
+        .get(AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL)
+        .headers(identity_doc_headers)
+        .timeout(std::time::Duration::from_millis(timeout))
+        .send()
+        .await?;
+
+    let identity_doc = identity_doc_response
+        .json::<IdentityDocumentResponse>()
+        .await?;
+
+    if identity_doc.region.is_empty() {
+        return Err(Error::UnknownErrorWithMessage {
+            message: "Failed to get region from EC2 instance metadata".to_string(),
+        });
+    }
+
+    return Ok(identity_doc);
+}
+
+pub async fn get_aws_region<'a>() -> Result<Cow<'a, str>> {
+    // in Lambda, the region is available in the environment variable AWS_REGION, but it might not be available in other environments. we should check for it and use it if it's available
+    if let Ok(region) = std::env::var("AWS_REGION") {
+        if !region.is_empty() {
+            return Ok(Cow::Owned(region));
+        }
+    }
+
+    // in EC2 instances, the region is available in the identity document
+    let identity_doc = get_aws_ec2_identity_document(5000).await;
+
+    if let Ok(identity_doc) = identity_doc {
+        return Ok(Cow::Owned(identity_doc.region));
+    }
+
+    return Err(Error::UnknownErrorWithMessage {
+        message: "Failed to find AWS region.".to_string(),
+    });
 }
