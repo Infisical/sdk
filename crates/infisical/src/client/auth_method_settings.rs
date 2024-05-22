@@ -34,6 +34,9 @@ pub struct GCPIAmAuthMethod {
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct AWSIamAuthMethod {
+    #[schemars(
+        description = "The Infisical Identity ID that you want to authenticate to Infisical with."
+    )]
     pub identity_id: String,
 }
 
