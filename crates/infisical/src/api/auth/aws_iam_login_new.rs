@@ -68,18 +68,11 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
 
     let mut headers = HashMap::<String, String>::new();
 
-    headers.insert(
-        "Content-Type".to_string(),
-        "application/x-www-form-urlencoded; charset=utf-8".to_string(),
-    );
     headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
-    headers.insert(
-        "Content-Length".to_string(),
-        iam_request_body.len().to_string(),
-    );
 
     // we do this so the signed headers will contain the date header
     headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
+    headers.insert("Security-Token".to_string(), "tmp".to_string());
 
     let signable_request = SignableRequest::new(
         "POST",
@@ -121,6 +114,17 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         headers.get("X-Amz-Credential").unwrap(),
         headers.get("X-Amz-SignedHeaders").unwrap(),
         headers.get("X-Amz-Signature").unwrap()
+    );
+
+    headers.remove("Security-Token");
+
+    headers.insert(
+        "Content-Length".to_string(),
+        iam_request_body.len().to_string(),
+    );
+    headers.insert(
+        "Content-Type".to_string(),
+        "application/x-www-form-urlencoded; charset=utf-8".to_string(),
     );
 
     headers.insert("Authorization".to_string(), auth_header);
