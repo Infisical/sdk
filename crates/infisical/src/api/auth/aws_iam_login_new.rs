@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::time::{Duration, SystemTime};
 
@@ -5,14 +6,11 @@ use crate::api::auth::{auth_infisical_aws, AccessTokenSuccessResponse, AwsIamReq
 use crate::error::{api_error_handler, Error, Result};
 use crate::Client;
 use aws_config::default_provider::credentials::DefaultCredentialsChain;
-use aws_config::BehaviorVersion;
 use aws_credential_types::provider::ProvideCredentials;
-use aws_credential_types::Credentials;
 use aws_sigv4::{
     http_request::{sign, SignableBody, SignableRequest, SigningSettings},
     sign::v4,
 };
-use bytecount;
 
 use log::debug;
 
@@ -38,6 +36,12 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .await
         .expect("Failed to get credentials");
 
+    debug!("Access key ID {}", credentials.borrow().access_key_id());
+    debug!(
+        "Secret access key {}",
+        credentials.borrow().secret_access_key()
+    );
+
     let identity = credentials.into();
 
     let mut signing_settings = SigningSettings::default();
@@ -62,27 +66,25 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let iam_request_url = format!("https://sts.{}.amazonaws.com/", region);
     let iam_request_body = "Action=GetCallerIdentity&Version=2011-06-15";
 
-    let mut tmp_headers = HashMap::<String, String>::new();
+    let mut headers = HashMap::<String, String>::new();
 
-    tmp_headers.insert(
+    headers.insert(
         "Content-Type".to_string(),
         "application/x-www-form-urlencoded; charset=utf-8".to_string(),
     );
-    tmp_headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
-    tmp_headers.insert(
+    headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
+    headers.insert(
         "Content-Length".to_string(),
         iam_request_body.len().to_string(),
     );
 
     // we do this so the signed headers will contain the date header
-    tmp_headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
-
-    // ! maybe need to insert the date header here
+    headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
 
     let signable_request = SignableRequest::new(
         "POST",
         &iam_request_url,
-        tmp_headers.iter().map(|(k, v)| (k.as_str(), v.as_str())),
+        headers.iter().map(|(k, v)| (k.as_str(), v.as_str())),
         SignableBody::Bytes(iam_request_body.as_bytes()),
     );
 
@@ -97,65 +99,41 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
-    tmp_headers.clear();
-
     let signing_headers: Vec<_> = signing_instructions.headers().collect();
     let signing_params = signing_instructions.params();
 
     debug!("SIGNING PARAMS: {:?}", signing_params);
     debug!("SIGNING HEADERS: {:?}", signing_headers);
 
-    let url = url::Url::parse(&iam_request_url).unwrap();
+    // let url = url::Url::parse(&iam_request_url).unwrap();
     for (name, value) in signing_instructions.params() {
         // url.query_pairs_mut().append_pair(name, &value);
 
         debug!("HEADER() ---:---:--- {}: {}", name, value);
-        tmp_headers.insert(name.to_string(), value.to_string());
+        headers.insert(name.to_string(), value.to_string());
     }
-
-    let mut real_headers = HashMap::<String, String>::new();
-
-    real_headers.insert(
-        "Content-Type".to_string(),
-        "application/x-www-form-urlencoded; charset=utf-8".to_string(),
-    );
-    real_headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
-    real_headers.insert(
-        "Content-Length".to_string(),
-        iam_request_body.len().to_string(),
-    );
-    real_headers.insert(
-        "X-Amz-Date".to_string(),
-        tmp_headers.get("X-Amz-Date").unwrap().to_string(),
-    );
-
-    real_headers.insert(
-        "X-Amz-Security-Token".to_string(),
-        tmp_headers.get("X-Amz-Security-Token").unwrap().to_string(),
-    );
 
     // Authorization: AWS4-HMAC-SHA256 Credential=AKIAI44QH8DHBEXAMPLE/20160126/us-east-1/sts/aws4_request, SignedHeaders=host;user-agent;x-amz-date, Signature=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
     // build the authorization header like above
     let auth_header = format!(
         "{} Credential={}, SignedHeaders={}, Signature={}",
-        tmp_headers.get("X-Amz-Algorithm").unwrap(),
-        tmp_headers.get("X-Amz-Credential").unwrap(),
-        tmp_headers.get("X-Amz-SignedHeaders").unwrap(),
-        tmp_headers.get("X-Amz-Signature").unwrap()
+        headers.get("X-Amz-Algorithm").unwrap(),
+        headers.get("X-Amz-Credential").unwrap(),
+        headers.get("X-Amz-SignedHeaders").unwrap(),
+        headers.get("X-Amz-Signature").unwrap()
     );
 
-    real_headers.insert("Authorization".to_string(), auth_header);
+    headers.insert("Authorization".to_string(), auth_header);
 
-    // real_headers.insert("Accept-Encoding".to_string(), "identity".to_string());
-
-    debug!("URL: {}", url);
+    // debug!("URL: {}", url);
 
     let iam_data = AwsIamRequestData {
         http_request_method: "POST".to_string(),
         iam_request_body: iam_request_body.to_string(),
-        iam_request_headers: real_headers,
+        iam_request_headers: headers,
     };
 
+    // this is where we send the request to infisical, just pretend this works as it should
     let response = auth_infisical_aws(client, Some(identity_id), iam_data).await?;
     let status = response.status();
 
