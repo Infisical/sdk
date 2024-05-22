@@ -24,8 +24,7 @@ pub async fn universal_auth_login(client: &mut Client) -> Result<AccessTokenSucc
     let mut body = HashMap::new();
     body.insert("clientId", Some(client_id));
     body.insert("clientSecret", Some(client_secret));
-
-    let object = serde_json::to_string(&body).unwrap();
+    let request_body = serde_json::to_string(&body).unwrap();
 
     let url = format!(
         "{}/api/v1/auth/universal-auth/login",
@@ -34,8 +33,7 @@ pub async fn universal_auth_login(client: &mut Client) -> Result<AccessTokenSucc
 
     let request_client = reqwest::Client::builder()
         .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()
-        .unwrap();
+        .build()?;
 
     let request = request_client
         .post(url)
@@ -43,7 +41,7 @@ pub async fn universal_auth_login(client: &mut Client) -> Result<AccessTokenSucc
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
-    let response = request.body(object).send().await?;
+    let response = request.body(request_body).send().await?;
 
     debug!("universal_auth_login status: {}", response.status());
 
