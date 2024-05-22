@@ -116,7 +116,13 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         headers.get("X-Amz-Signature").unwrap()
     );
 
-    headers.remove("Security-Token");
+    let allowed_headers = [
+        "Host",
+        "X-Amz-Date",
+        "Content-Length",
+        "X-Amz-Security-Token",
+        "Authorization",
+    ];
 
     headers.insert(
         "Content-Length".to_string(),
@@ -128,6 +134,12 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     );
 
     headers.insert("Authorization".to_string(), auth_header);
+
+    for header in allowed_headers.iter() {
+        if !headers.contains_key(*header) {
+            headers.remove(*header);
+        }
+    }
 
     // debug!("URL: {}", url);
 
