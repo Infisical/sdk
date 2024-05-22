@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::{
     api::auth::{
-        aws_iam_login_new::aws_iam_login, gcp_iam_login::gcp_iam_login,
+        aws_iam_login::aws_iam_login, gcp_iam_login::gcp_iam_login,
         gcp_id_token_login::gcp_id_token_login, universal_auth_login::universal_auth_login,
     },
     client::auth_method_settings::AuthMethod,
