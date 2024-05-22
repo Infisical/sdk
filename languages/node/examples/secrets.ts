@@ -4,19 +4,19 @@ import { InfisicalClient, ListSecretsOptions, LogLevel } from "../src";
 const randomStr = () => Date.now().toString(36);
 
 // Make sure to change these values.
-const projectId = "65670ae4f72abccd9f63d218";
+const projectId = "PROJECT_ID";
 const environment = "dev";
 const TEST_SECRET_NAME = "DATABASE_URL";
 
-const MACHINE_IDENTITY_CLIENT_SECRET = "2339617effc38b2f3d3efa7ac28d15f45f75e4c1aa1766b71a7d449b99ae689e";
-const MACHINE_IDENTITY_CLIENT_ID = "f39048d3-f341-4216-9a3d-2f514e2e9317";
+const MACHINE_IDENTITY_CLIENT_SECRET = "YOUR_CLIENT_SECRET";
+const MACHINE_IDENTITY_CLIENT_ID = "YOUR_CLIENT_ID";
 
 const uncachedClient = new InfisicalClient({
 	clientId: MACHINE_IDENTITY_CLIENT_ID,
 	clientSecret: MACHINE_IDENTITY_CLIENT_SECRET,
 	// siteUrl: "http://localhost:8080", // This is optional. You can remove it and it will default to https://app.infisical.com.
-	cacheTtl: 0, // Default is 300 seconds (5 minutes). (0 means no caching)
-	logLevel: LogLevel.Debug // Optional, default is LogLevel.Error.
+	cacheTtl: 0 // Default is 300 seconds (5 minutes). (0 means no caching)
+	// logLevel: LogLevel.Debug // Optional, default is LogLevel.Error.
 });
 
 const cachedClient = new InfisicalClient({
@@ -28,11 +28,11 @@ const cachedClient = new InfisicalClient({
 });
 
 async function main() {
-	// await testCacheSpeeds();
+	await testCacheSpeeds();
 	await testListSecrets();
-	// await testCreateSecret();
-	// await testDeleteSecret();
-	// await testUpdateSecret();
+	await testCreateSecret();
+	await testDeleteSecret();
+	await testUpdateSecret();
 }
 
 async function testUpdateSecret() {
