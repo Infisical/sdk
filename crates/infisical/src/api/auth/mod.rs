@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use base64::Engine;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 use crate::{
     error::{Error, Result},
@@ -11,7 +10,6 @@ use crate::{
 };
 
 pub mod aws_iam_login;
-pub mod aws_iam_login_new;
 pub mod gcp_iam_login;
 pub mod gcp_id_token_login;
 pub mod universal_auth_login;
