@@ -86,6 +86,8 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
+    debug!("THE SIGNATURE IS: {:?}", _signature);
+
     let mut my_req: http::Request<String> = http::Request::new(iam_request_body.to_string());
     signing_instructions.apply_to_request_http1x(&mut my_req);
 
