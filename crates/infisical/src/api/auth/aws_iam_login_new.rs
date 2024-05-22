@@ -69,8 +69,6 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let mut headers = HashMap::<String, String>::new();
 
     headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
-
-    // we do this so the signed headers will contain the date header
     headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
     headers.insert("X-Amz-Security-Token".to_string(), "tmp".to_string());
 
@@ -79,77 +77,43 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         &iam_request_url,
         headers.iter().map(|(k, v)| (k.as_str(), v.as_str())),
         SignableBody::Bytes(iam_request_body.as_bytes()),
-    );
-
-    if let Err(e) = signable_request {
-        return Err(Error::UnknownErrorWithMessage {
-            message: e.to_string(),
-        });
-    }
-    let signable_request = signable_request.unwrap();
+    )
+    .map_err(|e| Error::UnknownErrorWithMessage {
+        message: e.to_string(),
+    })?;
 
     let (signing_instructions, _signature) = sign(signable_request, &signing_params.into())
         .unwrap()
         .into_parts();
 
-    let signing_headers: Vec<_> = signing_instructions.headers().collect();
-    let signing_params = signing_instructions.params();
+    let mut my_req: http::Request<String> = http::Request::new(iam_request_body.to_string());
+    signing_instructions.apply_to_request_http1x(&mut my_req);
 
-    debug!("SIGNING PARAMS: {:?}", signing_params);
-    debug!("SIGNING HEADERS: {:?}", signing_headers);
+    my_req.headers().iter().for_each(|(k, v)| {
+        debug!("REQUEST HEADER: {}: {}", k.to_string(), v.to_str().unwrap());
+    });
 
-    // let url = url::Url::parse(&iam_request_url).unwrap();
-    for (name, value) in signing_instructions.params() {
-        // url.query_pairs_mut().append_pair(name, &value);
+    // headers.insert(
+    //     "Content-Length".to_string(),
+    //     iam_request_body.len().to_string(),
+    // );
+    // headers.insert(
+    //     "Content-Type".to_string(),
+    //     "application/x-www-form-urlencoded; charset=utf-8".to_string(),
+    // );
 
-        debug!("HEADER() ---:---:--- {}: {}", name, value);
-        headers.insert(name.to_string(), value.to_string());
-    }
-
-    // Authorization: AWS4-HMAC-SHA256 Credential=AKIAI44QH8DHBEXAMPLE/20160126/us-east-1/sts/aws4_request, SignedHeaders=host;user-agent;x-amz-date, Signature=1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
-    // build the authorization header like above
-    let auth_header = format!(
-        "{} Credential={}, SignedHeaders={}, Signature={}",
-        headers.get("X-Amz-Algorithm").unwrap(),
-        headers.get("X-Amz-Credential").unwrap(),
-        headers.get("X-Amz-SignedHeaders").unwrap(),
-        headers.get("X-Amz-Signature").unwrap()
-    );
-
-    let allowed_headers = [
-        "Host",
-        "X-Amz-Date",
-        "Content-Length",
-        "X-Amz-Security-Token",
-        "Authorization",
-    ];
-
-    headers.insert(
-        "Content-Length".to_string(),
-        iam_request_body.len().to_string(),
-    );
-    headers.insert(
-        "Content-Type".to_string(),
-        "application/x-www-form-urlencoded; charset=utf-8".to_string(),
-    );
-
-    headers.insert("Authorization".to_string(), auth_header);
-
-    let mut new_headers = HashMap::<String, String>::new();
-
-    for header in allowed_headers.iter() {
-        new_headers.insert(
-            header.to_string(),
-            headers.get(*header).unwrap().to_string(),
-        );
-    }
+    // headers.insert("Authorization".to_string(), auth_header);
 
     // debug!("URL: {}", url);
 
     let iam_data = AwsIamRequestData {
         http_request_method: "POST".to_string(),
         iam_request_body: iam_request_body.to_string(),
-        iam_request_headers: new_headers,
+        iam_request_headers: my_req
+            .headers()
+            .iter()
+            .map(|(k, v)| (k.to_string(), v.to_str().unwrap().to_string()))
+            .collect(),
     };
 
     // this is where we send the request to infisical, just pretend this works as it should
