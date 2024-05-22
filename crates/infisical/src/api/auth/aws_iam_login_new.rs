@@ -91,6 +91,8 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let mut my_req: http::Request<String> = http::Request::new(iam_request_body.to_string());
     signing_instructions.apply_to_request_http1x(&mut my_req);
 
+    debug!("REQUEST HEADERS: {:?}", my_req.headers());
+
     my_req.headers().iter().for_each(|(k, v)| {
         debug!("REQUEST HEADER: {}: {}", k.to_string(), v.to_str().unwrap());
     });
