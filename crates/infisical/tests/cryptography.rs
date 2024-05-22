@@ -1,5 +1,11 @@
 use dotenv::dotenv;
-use infisical::{client::client_settings::ClientSettings, Client};
+use infisical::{
+    client::{
+        auth_method_settings::{Authentication, UniversalAuthMethod},
+        client_settings::ClientSettings,
+    },
+    Client,
+};
 
 struct Environment {
     client_id: String,
@@ -30,9 +36,22 @@ fn create_client() -> Client {
     let environment = get_environment_variables();
 
     let settings = ClientSettings {
-        client_id: Some(environment.client_id),
-        client_secret: Some(environment.client_secret),
+        // These fields are deprecated. If they are populated, they will be backfilled into the new auth object.
+        client_id: None,
+        client_secret: None,
         access_token: None,
+
+        auth: Authentication {
+            gcp_iam: None,
+            gcp_id_token: None,
+            aws_iam: None,
+            access_token: None,
+            universal_auth: Some(UniversalAuthMethod {
+                client_id: environment.client_id,
+                client_secret: environment.client_secret,
+            }),
+        },
+
         site_url: Some(environment.site_url),
         cache_ttl: None,
         user_agent: Some("infisical-cryptography-test-sdk".to_string()),
