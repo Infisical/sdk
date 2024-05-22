@@ -3,15 +3,17 @@ use std::collections::HashMap;
 use std::time::{Duration, SystemTime};
 
 use crate::api::auth::{auth_infisical_aws, AccessTokenSuccessResponse, AwsIamRequestData};
+
 use crate::error::{api_error_handler, Error, Result};
 use crate::Client;
 use aws_config::default_provider::credentials::DefaultCredentialsChain;
 use aws_credential_types::provider::ProvideCredentials;
 use aws_sigv4::{
-    http_request::{sign, SignableBody, SignableRequest, SigningInstructions, SigningSettings},
+    http_request::{sign, SignableBody, SignableRequest, SigningSettings},
     sign::v4,
 };
 
+use crate::helper::get_aws_region;
 use log::debug;
 
 pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
@@ -26,53 +28,49 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         });
     }
 
-    let region = "us-east-1";
+    let aws_region = get_aws_region().await?.into_owned();
+    let aws_region_str: &'static str = Box::leak(aws_region.into_boxed_str());
 
     let credentials = DefaultCredentialsChain::builder()
-        .region(region)
+        .region(aws_region_str) // Convert Cow<str> to &str
         .build()
         .await
         .provide_credentials()
         .await
-        .expect("Failed to get credentials");
-
-    debug!("Access key ID {}", credentials.borrow().access_key_id());
-    debug!(
-        "Secret access key {}",
-        credentials.borrow().secret_access_key()
-    );
+        .map_err(|e| Error::AwsCredentialsError {
+            message: e.to_string(),
+        })?;
 
     let identity = credentials.into();
 
     let mut signing_settings = SigningSettings::default();
-    // signing_settings.excluded_headers = None;
-
     signing_settings.expires_in = Some(Duration::from_secs(900));
-    signing_settings.signature_location = aws_sigv4::http_request::SignatureLocation::Headers;
 
     let signing_params = v4::SigningParams::builder()
         .identity(&identity)
-        .region(region)
+        .region(aws_region_str) // Use a reference to the owned String
         .name("sts")
         .time(SystemTime::now())
         .settings(signing_settings)
-        .build();
-
-    if let Err(e) = signing_params {
-        return Err(Error::UnknownErrorWithMessage {
+        .build()
+        .map_err(|e| Error::AwsBuildRequestSignerError {
             message: e.to_string(),
-        });
-    }
-    let signing_params = signing_params.unwrap();
+        })?;
 
-    let iam_request_url = format!("https://sts.{}.amazonaws.com/", region);
+    let iam_request_url = format!("https://sts.{}.amazonaws.com/", aws_region_str);
     let iam_request_body = "Action=GetCallerIdentity&Version=2011-06-15";
 
-    let mut headers = HashMap::<String, String>::new();
-
-    headers.insert("Host".to_string(), format!("sts.{}.amazonaws.com", region));
-    headers.insert("X-Amz-Date".to_string(), "tmp".to_string());
-    headers.insert("X-Amz-Security-Token".to_string(), "tmp".to_string());
+    let headers: HashMap<String, String> = [
+        (
+            "Host".to_string(),
+            format!("sts.{}.amazonaws.com", aws_region_str),
+        ),
+        ("X-Amz-Date".to_string(), "tmp".to_string()),
+        ("X-Amz-Security-Token".to_string(), "tmp".to_string()),
+    ]
+    .iter()
+    .cloned()
+    .collect();
 
     let signable_request = SignableRequest::new(
         "POST",
@@ -80,7 +78,7 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         headers.iter().map(|(k, v)| (k.as_str(), v.as_str())),
         SignableBody::Bytes(iam_request_body.as_bytes()),
     )
-    .map_err(|e| Error::UnknownErrorWithMessage {
+    .map_err(|e| Error::AwsSignRequestError {
         message: e.to_string(),
     })?;
 
@@ -88,29 +86,14 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
         .unwrap()
         .into_parts();
 
-    let mut my_req: http::Request<String> = http::Request::new(iam_request_body.to_string());
-    signing_instructions.apply_to_request_http1x(&mut my_req);
-
-    debug!("THE SIGNATURE IS: {:?}", _signature);
-    debug!("REQUEST HEADERS: {:?}", my_req.headers());
-
-    // headers.insert(
-    //     "Content-Length".to_string(),
-    //     iam_request_body.len().to_string(),
-    // );
-    // headers.insert(
-    //     "Content-Type".to_string(),
-    //     "application/x-www-form-urlencoded; charset=utf-8".to_string(),
-    // );
-
-    // headers.insert("Authorization".to_string(), auth_header);
-
-    // debug!("URL: {}", url);
+    let mut signed_request: http::Request<String> =
+        http::Request::new(iam_request_body.to_string());
+    signing_instructions.apply_to_request_http1x(&mut signed_request);
 
     let iam_data = AwsIamRequestData {
         http_request_method: "POST".to_string(),
         iam_request_body: iam_request_body.to_string(),
-        iam_request_headers: my_req
+        iam_request_headers: signed_request
             .headers()
             .iter()
             .map(|(k, v)| (k.to_string(), v.to_str().unwrap().to_string()))
