@@ -8,8 +8,8 @@ const projectId = "PROJECT_ID";
 const environment = "dev";
 const TEST_SECRET_NAME = "DATABASE_URL";
 
-const MACHINE_IDENTITY_CLIENT_SECRET = "YOUR_CLIENT_SECRET";
-const MACHINE_IDENTITY_CLIENT_ID = "YOUR_CLIENT_ID";
+const MACHINE_IDENTITY_CLIENT_SECRET = "CLIENT_SECRET";
+const MACHINE_IDENTITY_CLIENT_ID = "CLIENT_ID";
 
 const uncachedClient = new InfisicalClient({
 	clientId: MACHINE_IDENTITY_CLIENT_ID,
