@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 use crate::constants::{
     INFISICAL_AWS_IAM_IDENTITY_ID_ENV_NAME, INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME,
     INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH_ENV_NAME,
+    INFISICAL_KUBERNETES_IDENTITY_ID_ENV_NAME,
+    INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH_ENV_NAME,
     INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_ENV_NAME, INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET_ENV_NAME,
 };
 
@@ -41,10 +43,24 @@ pub struct AWSIamAuthMethod {
 }
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
+pub struct KubernetesAuthMethod {
+    #[schemars(
+        description = "The Infisical Identity ID that you want to authenticate to Infisical with."
+    )]
+    pub identity_id: String,
+
+    #[schemars(
+        description = "The path to the Kubernetes Service Account token file.\n\n This is usually located at /var/run/secrets/kubernetes.io/serviceaccount/token."
+    )]
+    pub service_account_token_path: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(default, rename_all = "camelCase")]
 pub struct AuthenticationOptions {
     pub access_token: Option<String>,
     pub universal_auth: Option<UniversalAuthMethod>,
+    pub kubernetes: Option<KubernetesAuthMethod>,
     pub gcp_id_token: Option<GCPIdTokenAuthMethod>,
     pub gcp_iam: Option<GCPIamAuthMethod>,
     pub aws_iam: Option<AWSIamAuthMethod>,
@@ -58,6 +74,7 @@ impl Default for AuthenticationOptions {
             gcp_id_token: None,
             gcp_iam: None,
             aws_iam: None,
+            kubernetes: None,
         }
     }
 }
@@ -65,6 +82,7 @@ impl Default for AuthenticationOptions {
 #[derive(Debug)]
 pub enum AuthMethod {
     UniversalAuth,
+    Kubernetes,
     GcpIdToken,
     GcpIam,
     AwsIam,
@@ -101,6 +119,13 @@ impl AuthenticationOptions {
                 return Ok(AuthMethod::AwsIam);
             }
             return Err("aws_iam is present but identity_id is empty".into());
+        }
+        // KUBERNETES AUTH:
+        else if let Some(ref auth) = self.kubernetes {
+            if !auth.identity_id.is_empty() {
+                return Ok(AuthMethod::Kubernetes);
+            }
+            return Err("kubernetes auth is present but identity_id is empty".into());
         } else {
             debug!("No authentication method is set. Checking environment variables.");
 
@@ -118,6 +143,12 @@ impl AuthenticationOptions {
 
             let aws_iam_identity_id_env =
                 std::env::var(INFISICAL_AWS_IAM_IDENTITY_ID_ENV_NAME).unwrap_or_default();
+
+            let kubernetes_identity_id_env =
+                std::env::var(INFISICAL_KUBERNETES_IDENTITY_ID_ENV_NAME).unwrap_or_default();
+            let kubernetes_service_account_token_path_env =
+                std::env::var(INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH_ENV_NAME)
+                    .unwrap_or_default();
 
             // universal auth env check
             if !universal_auth_client_id_env.is_empty()
@@ -158,6 +189,18 @@ impl AuthenticationOptions {
                 });
 
                 return Ok(AuthMethod::GcpIdToken);
+            }
+
+            // kubernetes auth env check
+            if !kubernetes_identity_id_env.is_empty()
+                && !kubernetes_service_account_token_path_env.is_empty()
+            {
+                self.kubernetes = Some(KubernetesAuthMethod {
+                    identity_id: kubernetes_identity_id_env,
+                    service_account_token_path: kubernetes_service_account_token_path_env,
+                });
+
+                return Ok(AuthMethod::Kubernetes);
             }
 
             return Err("No authentication method is set.".into());
