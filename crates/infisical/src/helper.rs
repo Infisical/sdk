@@ -60,8 +60,6 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
         }
     }
 
-    debug!("New access token token: {}", access_token);
-
     if access_token.is_empty() {
         debug!("No access token obtained");
         return Err(Error::NoAccessTokenObtained);

@@ -51,7 +51,9 @@ class InfisicalClient:
         # Setting the env in Rust is not enough for Python apparently, so we have to do this as well.
         if options.attach_to_process_env:
             for secret in secrets:
-                os.environ[secret.secret_key] = secret.secret_value
+              # we need to check if the env variable is already set, if it is we don't want to overwrite it!
+              if os.environ.get(secret.secret_key) is None:
+                  os.environ[secret.secret_key] = secret.secret_value
 
         return secrets
     

@@ -1,8 +1,6 @@
 use google_iamcredentials1::oauth2::{read_service_account_key, ServiceAccountAuthenticator};
 use google_iamcredentials1::{hyper, hyper_rustls, IAMCredentials};
 use serde::{Deserialize, Serialize};
-// use yup_oauth2::read_service_account_key;
-// use yup_oauth2::ServiceAccountAuthenticator;
 
 use crate::api::auth::auth_infisical_google;
 use crate::{
@@ -75,7 +73,7 @@ pub async fn gcp_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
     let hyper_client = hyper::Client::builder().build(https_connector);
     // let boxed_auth = Box::new(auth) as Box<dyn GetToken>;
 
-    // Create the IAM credentials hub/// THIS PART DOES NOT FUCKIGN WORK pLEASE HELP GPTT!!!!
+    // Create the IAM credentials hub
     let iam_credentials_hub = IAMCredentials::new(hyper_client, auth);
 
     // Call the IAM service to sign the JWT

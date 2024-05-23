@@ -100,7 +100,6 @@ pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResp
             .collect(),
     };
 
-    // this is where we send the request to infisical, just pretend this works as it should
     let response = auth_infisical_aws(client, Some(identity_id), iam_data).await?;
     let status = response.status();
 
