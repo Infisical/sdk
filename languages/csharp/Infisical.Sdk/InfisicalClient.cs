@@ -2,173 +2,173 @@
 
 public sealed class InfisicalClient : IDisposable
 {
-  private readonly CommandRunner _commandRunner;
-  private readonly InfisicalHandle _handle;
+    private readonly CommandRunner _commandRunner;
+    private readonly InfisicalHandle _handle;
 
-  public InfisicalClient(ClientSettings settings)
-  {
-    settings.UserAgent = "Infisical.Sdk";
-
-    _handle = InfisicalLibrary.Init(settings.ToJson());
-    _commandRunner = new CommandRunner(_handle);
-  }
-
-  public GetSecretResponseSecret GetSecret(GetSecretOptions options)
-  {
-
-    var cmd = new Command
+    public InfisicalClient(ClientSettings settings)
     {
-      GetSecret = options
-    };
+        settings.UserAgent = "Infisical.Sdk";
 
-    var result = _commandRunner.RunCommand<ResponseForGetSecretResponse>(cmd);
-
-    if (result is { Success: true })
-    {
-      return result.Data.Secret;
+        _handle = InfisicalLibrary.Init(settings.ToJson());
+        _commandRunner = new CommandRunner(_handle);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-  public SecretElement[] ListSecrets(ListSecretsOptions options)
-  {
-    var cmd = new Command
-    {
-      ListSecrets = options
-    };
-
-    var result = _commandRunner.RunCommand<ResponseForListSecretsResponse>(cmd);
-
-    if (result is { Success: true })
+    public GetSecretResponseSecret GetSecret(GetSecretOptions options)
     {
 
-      if (options.AttachToProcessEnv == true)
-      {
-        foreach (var secret in result.Data.Secrets)
+        var cmd = new Command
         {
-          // before setting the environment variable, check if it already exists
-          if (Environment.GetEnvironmentVariable(secret.SecretKey) == null)
-          {
-            Environment.SetEnvironmentVariable(secret.SecretKey, secret.SecretValue);
-          }
+            GetSecret = options
+        };
+
+        var result = _commandRunner.RunCommand<ResponseForGetSecretResponse>(cmd);
+
+        if (result is { Success: true })
+        {
+            return result.Data.Secret;
         }
-      }
 
-      return result.Data.Secrets;
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-  public CreateSecretResponseSecret CreateSecret(CreateSecretOptions options)
-  {
-    var cmd = new Command
+    public SecretElement[] ListSecrets(ListSecretsOptions options)
     {
-      CreateSecret = options
-    };
+        var cmd = new Command
+        {
+            ListSecrets = options
+        };
 
-    var result = _commandRunner.RunCommand<ResponseForCreateSecretResponse>(cmd);
+        var result = _commandRunner.RunCommand<ResponseForListSecretsResponse>(cmd);
 
-    if (result is { Success: true })
-    {
-      return result.Data.Secret;
+        if (result is { Success: true })
+        {
+
+            if (options.AttachToProcessEnv == true)
+            {
+                foreach (var secret in result.Data.Secrets)
+                {
+                  // before setting the environment variable, check if it already exists
+                  if (Environment.GetEnvironmentVariable(secret.SecretKey) == null)
+                  {
+                    Environment.SetEnvironmentVariable(secret.SecretKey, secret.SecretValue);
+                  }
+                }
+            }
+
+            return result.Data.Secrets;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-  public UpdateSecretResponseSecret UpdateSecret(UpdateSecretOptions options)
-  {
-    var cmd = new Command
+    public CreateSecretResponseSecret CreateSecret(CreateSecretOptions options)
     {
-      UpdateSecret = options
-    };
+        var cmd = new Command
+        {
+            CreateSecret = options
+        };
 
-    var result = _commandRunner.RunCommand<ResponseForUpdateSecretResponse>(cmd);
+        var result = _commandRunner.RunCommand<ResponseForCreateSecretResponse>(cmd);
 
-    if (result is { Success: true })
-    {
-      return result.Data.Secret;
+        if (result is { Success: true })
+        {
+            return result.Data.Secret;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-  public DeleteSecretResponseSecret DeleteSecret(DeleteSecretOptions options)
-  {
-    var cmd = new Command
+    public UpdateSecretResponseSecret UpdateSecret(UpdateSecretOptions options)
     {
-      DeleteSecret = options
-    };
+        var cmd = new Command
+        {
+            UpdateSecret = options
+        };
 
-    var result = _commandRunner.RunCommand<ResponseForDeleteSecretResponse>(cmd);
+        var result = _commandRunner.RunCommand<ResponseForUpdateSecretResponse>(cmd);
 
-    if (result is { Success: true })
-    {
-      return result.Data.Secret;
+        if (result is { Success: true })
+        {
+            return result.Data.Secret;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-  public string CreateSymmetricKey()
-  {
-
-    var cmd = new Command
+    public DeleteSecretResponseSecret DeleteSecret(DeleteSecretOptions options)
     {
-      CreateSymmetricKey = new ArbitraryOptions
-      {
-        Data = ""
-      }
-    };
+        var cmd = new Command
+        {
+            DeleteSecret = options
+        };
 
-    var result = _commandRunner.RunCommand<ResponseForCreateSymmetricKeyResponse>(cmd);
+        var result = _commandRunner.RunCommand<ResponseForDeleteSecretResponse>(cmd);
 
-    if (result is { Success: true })
-    {
-      return result.Data.Key;
+        if (result is { Success: true })
+        {
+            return result.Data.Secret;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
-
-
-  public EncryptSymmetricResponse EncryptSymmetric(EncryptSymmetricOptions options)
-  {
-    var cmd = new Command
+    public string CreateSymmetricKey()
     {
-      EncryptSymmetric = options
-    };
 
-    var result = _commandRunner.RunCommand<ResponseForEncryptSymmetricResponse>(cmd);
+        var cmd = new Command
+        {
+            CreateSymmetricKey = new ArbitraryOptions
+            {
+                Data = ""
+            }
+        };
 
-    if (result is { Success: true })
-    {
-      return result.Data;
+        var result = _commandRunner.RunCommand<ResponseForCreateSymmetricKeyResponse>(cmd);
+
+        if (result is { Success: true })
+        {
+            return result.Data.Key;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
 
-  public string DecryptSymmetric(DecryptSymmetricOptions options)
-  {
-    var cmd = new Command
+    public EncryptSymmetricResponse EncryptSymmetric(EncryptSymmetricOptions options)
     {
-      DecryptSymmetric = options
-    };
+        var cmd = new Command
+        {
+            EncryptSymmetric = options
+        };
 
-    var result = _commandRunner.RunCommand<ResponseForDecryptSymmetricResponse>(cmd);
+        var result = _commandRunner.RunCommand<ResponseForEncryptSymmetricResponse>(cmd);
 
-    if (result is { Success: true })
-    {
-      return result.Data.Decrypted;
+        if (result is { Success: true })
+        {
+            return result.Data;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
     }
 
-    throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
-  }
+    public string DecryptSymmetric(DecryptSymmetricOptions options)
+    {
+        var cmd = new Command
+        {
+            DecryptSymmetric = options
+        };
+
+        var result = _commandRunner.RunCommand<ResponseForDecryptSymmetricResponse>(cmd);
+
+        if (result is { Success: true })
+        {
+            return result.Data.Decrypted;
+        }
+
+        throw new InfisicalException(result == null ? "Unknown error" : result.ErrorMessage);
+    }
 
 
 
-  public void Dispose() => _handle.Dispose();
+    public void Dispose() => _handle.Dispose();
 }
