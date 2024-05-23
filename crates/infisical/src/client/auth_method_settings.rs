@@ -43,6 +43,7 @@ pub struct AWSIamAuthMethod {
 }
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct KubernetesAuthMethod {
     #[schemars(
         description = "The Infisical Identity ID that you want to authenticate to Infisical with."

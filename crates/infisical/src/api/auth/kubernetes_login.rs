@@ -1,3 +1,5 @@
+use log::debug;
+
 use crate::{
     error::{api_error_handler, Error, Result},
     Client,
@@ -18,10 +20,20 @@ pub async fn kubernetes_login(client: &mut Client) -> Result<AccessTokenSuccessR
         });
     }
 
+    debug!(
+        "Reading service account token from path: {}",
+        service_account_token_path
+    );
+
     let account_token = String::from_utf8(tokio::fs::read(service_account_token_path).await?)
         .map_err(|e| Error::UnknownErrorWithMessage {
             message: e.to_string(),
         })?;
+
+    debug!(
+        "First 10 characters of the K8's account token: {:?}",
+        &account_token[0..10]
+    );
 
     let response =
         auth_infisical_kubernetes(client, Some(identity_id), Some(account_token)).await?;
