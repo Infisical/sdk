@@ -13,6 +13,8 @@ pub struct ListSecretsOptions {
     pub project_id: String,
     pub path: Option<String>,
 
+    pub expand_secret_references: Option<bool>,
+    pub recursive: Option<bool>,
     pub attach_to_process_env: Option<bool>,
     pub include_imports: Option<bool>,
 }

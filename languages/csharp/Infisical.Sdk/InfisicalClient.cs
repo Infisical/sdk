@@ -47,7 +47,11 @@ public sealed class InfisicalClient : IDisposable
             {
                 foreach (var secret in result.Data.Secrets)
                 {
+                  // before setting the environment variable, check if it already exists
+                  if (Environment.GetEnvironmentVariable(secret.SecretKey) == null)
+                  {
                     Environment.SetEnvironmentVariable(secret.SecretKey, secret.SecretValue);
+                  }
                 }
             }
 

@@ -18,8 +18,41 @@ pub enum Error {
     #[error("Something unexpected went wrong.")]
     UnknownError,
 
+    #[error("Something went wrong: {}", .message)]
+    UnknownErrorWithMessage { message: String },
+
+    #[error("Failed to get AWS credentials: {}", .message)]
+    AwsCredentialsError { message: String },
+
+    #[error("Failed to build AWS request signer: {}", .message)]
+    AwsBuildRequestSignerError { message: String },
+
+    #[error("Failed to sign AWS request: {}", .message)]
+    AwsSignRequestError { message: String },
+
+    #[error("Failed to get AWS region: {}", .message)]
+    AwsGetRegionError { message: String },
+
     #[error("Failed to create symmetric key: {}", .message)]
     CreateSymmetricKeyError { message: String },
+
+    #[error("Failed to authenticate due to missing parameters: {}", .message)]
+    MissingParametersAuthError { message: String },
+
+    #[error("Failed to obtain metadata from Google Cloud")]
+    GoogleMetadataError,
+
+    #[error("Failed to sign JWT from Google Cloud: {}", .message)]
+    GoogleJwtError { message: String },
+
+    #[error("Failed to get token from Google Cloud Platform: {}", .message)]
+    GoogleTokenError { message: String },
+
+    #[error("Authentication parsing failed: {}", .message)]
+    AuthSanitizationError { message: String },
+
+    #[error("No access token was obtained after authentication.")]
+    NoAccessTokenObtained,
 
     #[error("Failed to encrypt symmetric key: {}", .message)]
     EncryptSymmetricKeyError { message: String },

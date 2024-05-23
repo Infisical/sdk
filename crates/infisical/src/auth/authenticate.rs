@@ -2,9 +2,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    access_token::{access_token_request, AccessTokenSuccessResponse},
-    error::Result,
-    Client,
+    api::auth::universal_auth_login::universal_auth_login, api::auth::AccessTokenSuccessResponse,
+    error::Result, Client,
 };
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
@@ -12,7 +11,7 @@ use crate::{
 pub struct UpdateAccessTokenRequest; // No input. But we have to do this to get a schema for the request.
 
 pub async fn update_access_token(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let res = access_token_request(client).await;
+    let res = universal_auth_login(client).await;
 
     // If the response is ok, then we set the client access token, otherwise we throw an error
     match res {
