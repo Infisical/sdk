@@ -17,3 +17,12 @@ from .schemas import EncryptSymmetricResponse as EncryptSymmetricResponse
 
 from .schemas import DecryptSymmetricOptions as DecryptSymmetricOptions
 from .schemas import DecryptSymmetricResponse as DecryptSymmetricResponse
+
+
+# Auth related
+from .schemas import AuthenticationOptions as AuthenticationOptions
+
+from .schemas import AWSIamAuthMethod as AWSIamAuthMethod
+from .schemas import GCPIamAuthMethod as GCPIamAuthMethod
+from .schemas import GCPIDTokenAuthMethod as GCPIDTokenAuthMethod
+from .schemas import UniversalAuthMethod as UniversalAuthMethod
