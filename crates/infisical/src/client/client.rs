@@ -4,9 +4,9 @@ use crate::{
 };
 use std::sync::{Arc, Mutex};
 
-use super::auth_method_settings::Authentication;
+use super::auth_method_settings::AuthenticationOptions;
 pub struct Client {
-    pub(crate) auth: Authentication,
+    pub(crate) auth: AuthenticationOptions,
 
     pub(crate) cache: Arc<Mutex<Vec<CachedSecret>>>,
     pub(crate) cache_ttl: u64, // No need for a mutex lock here, as we are only reading this value in the cache thread.

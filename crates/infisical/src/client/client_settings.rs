@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use super::auth_method_settings::Authentication;
+use super::auth_method_settings::AuthenticationOptions;
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(default, rename_all = "camelCase")]
@@ -39,7 +39,7 @@ pub struct ClientSettings {
     #[schemars(
         description = "Configure the authentication method to use.\n\nMake sure to only set one one method at a time to avoid conflicts and unexpected behavior."
     )]
-    pub auth: Authentication,
+    pub auth: AuthenticationOptions,
 }
 
 #[allow(deprecated)]
@@ -51,7 +51,7 @@ impl Default for ClientSettings {
             access_token: None,
             site_url: None,
             cache_ttl: None,
-            auth: Authentication::default(),
+            auth: AuthenticationOptions::default(),
             user_agent: Some("infisical-unknown-sdk".to_string()),
         }
     }

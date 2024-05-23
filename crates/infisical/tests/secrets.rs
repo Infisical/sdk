@@ -1,4 +1,4 @@
-use infisical::client::auth_method_settings::Authentication;
+use infisical::client::auth_method_settings::AuthenticationOptions;
 use rand::{distributions::Alphanumeric, Rng};
 
 use dotenv::dotenv;
@@ -112,7 +112,7 @@ fn create_client() -> Client {
         cache_ttl: None,
         user_agent: Some("infisical-secrets-test-sdk".to_string()),
 
-        auth: Authentication::default(),
+        auth: AuthenticationOptions::default(),
     };
 
     let client = Client::new(Some(settings));

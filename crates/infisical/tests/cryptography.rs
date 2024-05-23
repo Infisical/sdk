@@ -1,7 +1,7 @@
 use dotenv::dotenv;
 use infisical::{
     client::{
-        auth_method_settings::{Authentication, UniversalAuthMethod},
+        auth_method_settings::{AuthenticationOptions, UniversalAuthMethod},
         client_settings::ClientSettings,
     },
     Client,
@@ -42,7 +42,7 @@ fn create_client() -> Client {
         client_secret: None,
         access_token: None,
 
-        auth: Authentication {
+        auth: AuthenticationOptions {
             gcp_iam: None,
             gcp_id_token: None,
             aws_iam: None,
