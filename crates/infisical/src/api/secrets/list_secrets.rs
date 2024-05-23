@@ -63,7 +63,7 @@ pub async fn list_secrets_request(
         if input.include_imports.unwrap_or(false) == true {
             let mut response = response.json::<ImportResponse>().await?;
 
-            if input.recursive.unwrap_or(false) == false {
+            if input.recursive.unwrap_or(false) == true {
                 ensure_unique_secrets_by_key(&mut response.secrets);
             }
 
@@ -91,7 +91,7 @@ pub async fn list_secrets_request(
         }
         let mut response = response.json::<ListSecretsResponse>().await?;
 
-        if input.recursive.unwrap_or(false) == false {
+        if input.recursive.unwrap_or(false) == true {
             ensure_unique_secrets_by_key(&mut response.secrets);
         }
 

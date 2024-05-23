@@ -73,16 +73,18 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
 pub fn ensure_unique_secrets_by_key(secrets: &mut Vec<Secret>) {
     let mut secret_map = std::collections::HashMap::new();
 
-    // Iterate over the secrets and insert them into the map
+    // Use the entry API to check and insert if the key does not exist
+    // This will result in the "deepest" secret being kept (e.g like we do in the CLI)
     for secret in std::mem::take(secrets) {
-        secret_map.insert(secret.secret_key.clone(), secret);
+        secret_map
+            .entry(secret.secret_key.clone())
+            .or_insert(secret);
     }
 
     // Clear the original vector and extend it with the unique secrets
     secrets.clear();
     secrets.extend(secret_map.into_iter().map(|(_, v)| v));
 }
-
 pub fn set_env_vars(should_attach_envs: bool, secrets: &Vec<Secret>) {
     if !should_attach_envs {
         return;
