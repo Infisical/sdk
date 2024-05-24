@@ -13,7 +13,12 @@ pub async fn kubernetes_login(client: &mut Client) -> Result<AccessTokenSuccessR
 
     if let Some(kubernetes_auth) = &client.auth.kubernetes {
         identity_id = kubernetes_auth.identity_id.clone();
-        service_account_token_path = kubernetes_auth.service_account_token_path.clone();
+        if kubernetes_auth.service_account_token_path.is_none() {
+            return Err(Error::MissingParametersAuthError {
+                message: "Attempt to authenticate with Kubernetes. Service account token path is missing.".to_string(),
+            });
+        }
+        service_account_token_path = kubernetes_auth.service_account_token_path.clone().unwrap();
     } else {
         return Err(Error::MissingParametersAuthError {
             message: "Attempt to authenticate with Kubernetes. Identity ID and service account token path is missing.".to_string(),

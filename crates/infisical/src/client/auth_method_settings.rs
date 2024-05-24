@@ -10,6 +10,10 @@ use crate::constants::{
     INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_ENV_NAME, INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET_ENV_NAME,
 };
 
+fn default_kubernetes_service_account_token_path() -> Option<String> {
+    Some("/var/run/secrets/kubernetes.io/serviceaccount/token".to_string())
+}
+
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct UniversalAuthMethod {
@@ -53,7 +57,8 @@ pub struct KubernetesAuthMethod {
     #[schemars(
         description = "The path to the Kubernetes Service Account token file.\n\n This is usually located at /var/run/secrets/kubernetes.io/serviceaccount/token."
     )]
-    pub service_account_token_path: String,
+    #[serde(default = "default_kubernetes_service_account_token_path")]
+    pub service_account_token_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
@@ -194,11 +199,12 @@ impl AuthenticationOptions {
 
             // kubernetes auth env check
             if !kubernetes_identity_id_env.is_empty()
-                && !kubernetes_service_account_token_path_env.is_empty()
+            // && !kubernetes_service_account_token_path_env.is_empty()
             {
                 self.kubernetes = Some(KubernetesAuthMethod {
                     identity_id: kubernetes_identity_id_env,
-                    service_account_token_path: kubernetes_service_account_token_path_env,
+                    service_account_token_path: Some(kubernetes_service_account_token_path_env)
+                        .or(default_kubernetes_service_account_token_path()),
                 });
 
                 return Ok(AuthMethod::Kubernetes);
