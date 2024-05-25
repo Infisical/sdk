@@ -168,7 +168,7 @@ impl AuthenticationOptions {
                 return Ok(AuthMethod::UniversalAuth);
             }
 
-            // aws iam auth env check
+            // aws iam auth env check k
             if !aws_iam_identity_id_env.is_empty() {
                 self.aws_iam = Some(AWSIamAuthMethod {
                     identity_id: aws_iam_identity_id_env,
