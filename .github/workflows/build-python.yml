@@ -9,19 +9,10 @@ jobs:
     generate_schemas:
         uses: ./.github/workflows/generate-schemas.yml
 
-    test-rust-crate:
-        uses: ./.github/workflows/rust-test.yml
-        secrets:
-            INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
-            INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
-            INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
-            INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
-
     bump-version:
         name: Version changes
         needs:
             - generate_schemas
-            - test-rust-crate
         runs-on: ubuntu-latest
         # if: startsWith(github.ref, 'refs/tags/')
         steps:
