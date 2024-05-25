@@ -3,7 +3,8 @@ use std::borrow::Cow;
 use crate::{
     api::auth::{
         aws_iam_login::aws_iam_login, gcp_iam_login::gcp_iam_login,
-        gcp_id_token_login::gcp_id_token_login, universal_auth_login::universal_auth_login,
+        gcp_id_token_login::gcp_id_token_login, kubernetes_login::kubernetes_login,
+        universal_auth_login::universal_auth_login,
     },
     client::auth_method_settings::AuthMethod,
     constants::{AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL, AWS_EC2_METADATA_TOKEN_URL},
@@ -56,6 +57,12 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
         AuthMethod::AwsIam => {
             debug!("Auth method is AWS IAM");
             let result = aws_iam_login(client).await?;
+            access_token = result.access_token;
+        }
+
+        AuthMethod::Kubernetes => {
+            debug!("Auth method is Kubernetes");
+            let result = kubernetes_login(client).await?;
             access_token = result.access_token;
         }
     }
