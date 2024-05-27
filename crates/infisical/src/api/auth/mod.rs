@@ -10,6 +10,7 @@ use crate::{
 };
 
 pub mod aws_iam_login;
+pub mod azure_login;
 pub mod gcp_iam_login;
 pub mod gcp_id_token_login;
 pub mod kubernetes_login;
@@ -48,6 +49,32 @@ pub(self) async fn auth_infisical_google(
     let request = request_client
         .post(format!(
             "{}/api/v1/auth/gcp-auth/login",
+            client.site_url.clone()
+        ))
+        .header(reqwest::header::ACCEPT, "application/json")
+        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
+
+    let mut body = HashMap::new();
+    body.insert("identityId", identity_id);
+    body.insert("jwt", jwt);
+
+    let response = request.form(&body).send().await?;
+
+    return Ok(response);
+}
+
+pub(self) async fn auth_infisical_azure(
+    client: &mut Client,
+    identity_id: Option<String>,
+    jwt: Option<String>,
+) -> Result<reqwest::Response> {
+    let request_client = reqwest::Client::builder()
+        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+        .build()?;
+
+    let request = request_client
+        .post(format!(
+            "{}/api/v1/auth/azure-auth/login",
             client.site_url.clone()
         ))
         .header(reqwest::header::ACCEPT, "application/json")

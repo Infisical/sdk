@@ -26,3 +26,4 @@ from .schemas import AWSIamAuthMethod as AWSIamAuthMethod
 from .schemas import GCPIamAuthMethod as GCPIamAuthMethod
 from .schemas import GCPIDTokenAuthMethod as GCPIDTokenAuthMethod
 from .schemas import UniversalAuthMethod as UniversalAuthMethod
+from .schemas import AzureAuthMethod as AzureAuthMethod
