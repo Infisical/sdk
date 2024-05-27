@@ -30,7 +30,7 @@ pub struct Secret {
     pub secret_comment: String,
 
     #[schemars(
-        description = "The path of the secret\n\nNote that this will only be present when using the `list secrets` method."
+        description = "The path of the secret.\n\nNote that this will only be present when using the `list secrets` method."
     )]
     pub secret_path: Option<String>,
 
