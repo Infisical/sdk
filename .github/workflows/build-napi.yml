@@ -11,6 +11,8 @@ permissions:
     #push:
     #    branches:
     #       - "test-workflows"
+    workflow_dispatch:
+
     workflow_call:
 
 defaults:
@@ -19,18 +21,18 @@ defaults:
         working-directory: languages/node
 
 jobs:
-    generate_schemas:
-        name: Generate schemas
-        uses: ./.github/workflows/generate-schemas.yml
+    # generate_schemas:
+    #    name: Generate schemas
+    #    uses: ./.github/workflows/generate-schemas.yml
 
     build:
-        needs:
-            - generate_schemas
+        #needs:
+        #     - generate_schemas
         strategy:
             fail-fast: false
             matrix:
                 settings:
-                    - os: macos-latest
+                    - os: macos-14-large
                       target: x86_64-apple-darwin
                       build: |
                           yarn build && yarn post-build
