@@ -44,6 +44,7 @@ fn create_client() -> Client {
 
         auth: AuthenticationOptions {
             gcp_iam: None,
+            azure: None,
             gcp_id_token: None,
             kubernetes: None,
             aws_iam: None,

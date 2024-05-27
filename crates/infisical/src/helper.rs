@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::{
     api::auth::{
-        aws_iam_login::aws_iam_login, gcp_iam_login::gcp_iam_login,
+        aws_iam_login::aws_iam_login, azure_login::azure_login, gcp_iam_login::gcp_iam_login,
         gcp_id_token_login::gcp_id_token_login, kubernetes_login::kubernetes_login,
         universal_auth_login::universal_auth_login,
     },
@@ -35,45 +35,46 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
     debug!("Auth validation passed");
 
     let auth_method = validation_result.unwrap_or(AuthMethod::UniversalAuth);
-    let access_token;
+
+    let result;
 
     match auth_method {
         AuthMethod::UniversalAuth => {
             debug!("Auth method is Universal Auth");
-            let result = universal_auth_login(client).await?;
-            access_token = result.access_token;
+            result = universal_auth_login(client).await?;
         }
         AuthMethod::GcpIdToken => {
             debug!("Auth method is GCP ID Token");
-            let result = gcp_id_token_login(client).await?;
-            access_token = result.access_token;
+            result = gcp_id_token_login(client).await?;
         }
         AuthMethod::GcpIam => {
             debug!("Auth method is GCP IAM");
-            let result = gcp_iam_login(client).await?;
-            access_token = result.access_token;
+            result = gcp_iam_login(client).await?;
         }
 
         AuthMethod::AwsIam => {
             debug!("Auth method is AWS IAM");
-            let result = aws_iam_login(client).await?;
-            access_token = result.access_token;
+            result = aws_iam_login(client).await?;
         }
 
         AuthMethod::Kubernetes => {
             debug!("Auth method is Kubernetes");
-            let result = kubernetes_login(client).await?;
-            access_token = result.access_token;
+            result = kubernetes_login(client).await?;
+        }
+
+        AuthMethod::Azure => {
+            debug!("Auth method is Azure");
+            result = azure_login(client).await?;
         }
     }
 
-    if access_token.is_empty() {
+    if result.access_token.is_empty() {
         debug!("No access token obtained");
         return Err(Error::NoAccessTokenObtained);
     }
 
     debug!("Setting access token");
-    client.set_access_token(access_token);
+    client.set_access_token(result.access_token);
     Ok(())
 }
 

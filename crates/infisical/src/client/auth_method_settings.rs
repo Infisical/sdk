@@ -3,7 +3,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::constants::{
-    INFISICAL_AWS_IAM_IDENTITY_ID_ENV_NAME, INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME,
+    INFISICAL_AWS_IAM_AUTH_IDENTITY_ID_ENV_NAME, INFISICAL_AZURE_AUTH_IDENTITY_ID_ENV_NAME,
+    INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME,
     INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH_ENV_NAME,
     INFISICAL_KUBERNETES_IDENTITY_ID_ENV_NAME,
     INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH_ENV_NAME,
@@ -55,10 +56,19 @@ pub struct KubernetesAuthMethod {
     pub identity_id: String,
 
     #[schemars(
-        description = "The path to the Kubernetes Service Account token file.\n\n This is usually located at /var/run/secrets/kubernetes.io/serviceaccount/token."
+        description = "The path to the Kubernetes Service Account token file.\n\nIf no path is provided, it will default to /var/run/secrets/kubernetes.io/serviceaccount/token."
     )]
     #[serde(default = "default_kubernetes_service_account_token_path")]
     pub service_account_token_path: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct AzureAuthMethod {
+    #[schemars(
+        description = "The Infisical Identity ID that you want to authenticate to Infisical with."
+    )]
+    pub identity_id: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
@@ -67,6 +77,7 @@ pub struct AuthenticationOptions {
     pub access_token: Option<String>,
     pub universal_auth: Option<UniversalAuthMethod>,
     pub kubernetes: Option<KubernetesAuthMethod>,
+    pub azure: Option<AzureAuthMethod>,
     pub gcp_id_token: Option<GCPIdTokenAuthMethod>,
     pub gcp_iam: Option<GCPIamAuthMethod>,
     pub aws_iam: Option<AWSIamAuthMethod>,
@@ -81,6 +92,7 @@ impl Default for AuthenticationOptions {
             gcp_iam: None,
             aws_iam: None,
             kubernetes: None,
+            azure: None,
         }
     }
 }
@@ -89,6 +101,7 @@ impl Default for AuthenticationOptions {
 pub enum AuthMethod {
     UniversalAuth,
     Kubernetes,
+    Azure,
     GcpIdToken,
     GcpIam,
     AwsIam,
@@ -132,29 +145,43 @@ impl AuthenticationOptions {
                 return Ok(AuthMethod::Kubernetes);
             }
             return Err("kubernetes auth is present but identity_id is empty".into());
+
+        // AZURE AUTH:
+        } else if let Some(ref auth) = self.azure {
+            if !auth.identity_id.is_empty() {
+                return Ok(AuthMethod::Azure);
+            }
+            return Err("azure auth is present but identity_id is empty".into());
         } else {
             debug!("No authentication method is set. Checking environment variables.");
 
+            // universal auth env's
             let universal_auth_client_id_env =
                 std::env::var(INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_ENV_NAME).unwrap_or_default();
             let universal_auth_client_secret_env =
                 std::env::var(INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET_ENV_NAME).unwrap_or_default();
 
+            // gcp auth env's
             let gcp_auth_identity_id_env =
                 std::env::var(INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME).unwrap_or_default();
-
             let gcp_iam_service_account_key_file_path_env =
                 std::env::var(INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH_ENV_NAME)
                     .unwrap_or_default();
 
+            // aws iam auth env's
             let aws_iam_identity_id_env =
-                std::env::var(INFISICAL_AWS_IAM_IDENTITY_ID_ENV_NAME).unwrap_or_default();
+                std::env::var(INFISICAL_AWS_IAM_AUTH_IDENTITY_ID_ENV_NAME).unwrap_or_default();
 
+            // kubernetes auth env's
             let kubernetes_identity_id_env =
                 std::env::var(INFISICAL_KUBERNETES_IDENTITY_ID_ENV_NAME).unwrap_or_default();
             let kubernetes_service_account_token_path_env =
                 std::env::var(INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH_ENV_NAME)
                     .unwrap_or_default();
+
+            // azure auth env's
+            let azure_auth_identity_id_env =
+                std::env::var(INFISICAL_AZURE_AUTH_IDENTITY_ID_ENV_NAME).unwrap_or_default();
 
             // universal auth env check
             if !universal_auth_client_id_env.is_empty()
@@ -198,9 +225,7 @@ impl AuthenticationOptions {
             }
 
             // kubernetes auth env check
-            if !kubernetes_identity_id_env.is_empty()
-            // && !kubernetes_service_account_token_path_env.is_empty()
-            {
+            if !kubernetes_identity_id_env.is_empty() {
                 self.kubernetes = Some(KubernetesAuthMethod {
                     identity_id: kubernetes_identity_id_env,
                     service_account_token_path: Some(kubernetes_service_account_token_path_env)
@@ -208,6 +233,15 @@ impl AuthenticationOptions {
                 });
 
                 return Ok(AuthMethod::Kubernetes);
+            }
+
+            // azure auth env check
+            if !azure_auth_identity_id_env.is_empty() {
+                self.azure = Some(AzureAuthMethod {
+                    identity_id: azure_auth_identity_id_env,
+                });
+
+                return Ok(AuthMethod::Azure);
             }
 
             return Err("No authentication method is set.".into());
