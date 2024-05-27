@@ -182,6 +182,7 @@ pub fn get_fallback_env_secret(key: &str) -> Option<Secret> {
         secret_comment: "".to_string(),
         r#type: "".to_string(),
         environment: "".to_string(),
+        secret_path: None,
 
         secret_key: key.to_string(),
         secret_value: "".to_string(),

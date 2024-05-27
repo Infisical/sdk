@@ -45,6 +45,7 @@ pub async fn update_secret_request(
             &response.secret.secret_key,
             &response.secret.r#type,
             &response.secret.environment,
+            input.path.as_ref().unwrap_or(&"/".to_string()),
         );
 
         Ok(response)
