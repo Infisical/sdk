@@ -22,13 +22,13 @@ defaults:
         working-directory: languages/node
 
 jobs:
-    # generate_schemas:
-    #    name: Generate schemas
-    #    uses: ./.github/workflows/generate-schemas.yml
+    generate_schemas:
+        name: Generate schemas
+        uses: ./.github/workflows/generate-schemas.yml
 
     build:
-        #needs:
-        #     - generate_schemas
+        needs:
+            - generate_schemas
         strategy:
             fail-fast: false
             matrix:
