@@ -24,17 +24,30 @@ fn get_sys_time_in_ms() -> Result<u64, SystemTimeError> {
     return Ok(sec * 1000);
 }
 
-pub fn create_cache_key(secret_key: &str, secret_type: &str, environment: &str) -> String {
-    return format!("{}-{}-{}", secret_key, environment, secret_type);
+pub fn create_cache_key(
+    secret_key: &str,
+    secret_type: &str,
+    environment: &str,
+    secret_path: &str,
+) -> String {
+    return format!(
+        "{}-{}-{}-{}",
+        secret_key, environment, secret_type, secret_path
+    );
 }
 
-pub fn add_to_cache(client: &mut Client, secret: &Secret) {
+pub fn add_to_cache(client: &mut Client, secret: &Secret, secret_path: &str) {
     if client.cache_ttl == 0 {
         debug!("[CACHE]: Cache TTL is set to 0, not adding secret to cache.");
         return;
     }
 
-    let key = create_cache_key(&secret.secret_key, &secret.r#type, &secret.environment);
+    let key = create_cache_key(
+        &secret.secret_key,
+        &secret.r#type,
+        &secret.environment,
+        secret_path,
+    );
 
     let existing_secret = get_secret_from_cache(client, &key);
 
@@ -72,13 +85,14 @@ pub fn remove_from_cache(
     secret_key: &str,
     secret_type: &str,
     environment: &str,
+    secret_path: &str,
 ) {
     if client.cache_ttl == 0 {
         debug!("[CACHE]: Cache TTL is set to 0, not removing secret from cache.");
         return;
     }
 
-    let key = create_cache_key(&secret_key, &secret_type, &environment);
+    let key = create_cache_key(secret_key, secret_type, environment, secret_path);
 
     let mut cache = client.cache.lock().unwrap();
 

@@ -28,9 +28,20 @@ pub async fn get_secret_request(
         Some(r#type) => r#type,
         None => "shared",
     };
+
+    let secret_path = match input.path.as_ref() {
+        Some(path) => path,
+        None => "/",
+    };
+
     let cached_secret = get_secret_from_cache(
         client,
-        &create_cache_key(&input.secret_name, secret_type, &input.environment),
+        &create_cache_key(
+            &input.secret_name,
+            secret_type,
+            &input.environment,
+            secret_path,
+        ),
     );
 
     if cached_secret.is_some() {
@@ -65,7 +76,11 @@ pub async fn get_secret_request(
     if status == StatusCode::OK {
         let response = response.json::<GetSecretResponse>().await?;
 
-        add_to_cache(client, &response.secret);
+        add_to_cache(
+            client,
+            &response.secret,
+            input.path.as_ref().unwrap_or(&"/".to_string()),
+        );
 
         Ok(response)
     } else {

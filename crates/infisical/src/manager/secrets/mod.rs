@@ -29,6 +29,11 @@ pub struct Secret {
     pub secret_value: String,
     pub secret_comment: String,
 
+    #[schemars(
+        description = "The path of the secret.\n\nNote that this will only be present when using the `list secrets` method."
+    )]
+    pub secret_path: Option<String>,
+
     #[serde(default = "default_as_false")]
     pub is_fallback: bool,
 }
