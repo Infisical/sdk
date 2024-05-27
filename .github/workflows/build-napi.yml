@@ -7,10 +7,11 @@ env:
 permissions:
     contents: write
     id-token: write
-"on":
-    #push:
-    #    branches:
-    #       - "test-workflows"
+
+on:
+    push:
+        branches:
+            - "daniel/fix-x64-darwin-release"
     workflow_dispatch:
 
     workflow_call:
