@@ -2,6 +2,11 @@ name: Build Rust Cross Platform
 
 on:
     workflow_call:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+    pull_request:
 
 jobs:
     build_rust:
@@ -17,31 +22,53 @@ jobs:
                       target: aarch64-apple-darwin
                     - os: windows-2022
                       target: x86_64-pc-windows-msvc
+                    - os: windows-2022
+                      target: x86_64-pc-windows-gnu
                     - os: ubuntu-22.04
                       target: x86_64-unknown-linux-gnu
+                    - os: ubuntu-22.04
+                      target: x86_64-unknown-linux-musl
+                    - os: ubuntu-22.04
+                      target: aarch64-unknown-linux-musl
 
         steps:
             - name: Checkout
-              uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+              uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
 
             - name: Install rust
-              uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7 # stable
+              uses: dtolnay/rust-toolchain@d8352f6b1d2e870bc5716e7a6d9b65c4cc244a1a # stable
               with:
                   toolchain: stable
 
             - name: Cache cargo registry
-              uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
+              uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
+
+            - uses: goto-bus-stop/setup-zig@7ab2955eb728f5440978d5824358023be3a2802d # v2.2.0
+              if: ${{ contains(matrix.settings.target, 'musl') }}
+              with:
+                  version: 0.12.0
+
+            - name: Install Zigbuild
+              if: ${{ contains(matrix.settings.target, 'musl') }}
+              run: cargo install cargo-zigbuild --locked --git https://github.com/rust-cross/cargo-zigbuild --rev 6f7e1336c9cd13cf1b3704f93c40fcf84caaed6b # 0.18.4
 
             - name: Add build architecture
               run: rustup target add ${{ matrix.settings.target }}
 
-            - name: Build Rust
+            - name: Build Rust for - ${{ matrix.settings.target }}
+              if: ${{ contains(matrix.settings.target, 'musl') }}
               env:
                   RUSTFLAGS: "-D warnings"
-              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py # We have to exclude python due to a bug in pyo3 causing the build to fail on macos. We don't need the python bindings for the CI anyways.
+              run: cargo zigbuild -p infisical-c --target ${{ matrix.settings.target }} --release
+
+            - name: Build Rust for - ${{ matrix.settings.target }}
+              if: ${{ !contains(matrix.settings.target, 'musl') }}
+              env:
+                  RUSTFLAGS: "-D warnings"
+              run: cargo build -p infisical-c --target ${{ matrix.settings.target }} --release
 
             - name: Upload Artifact
-              uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+              uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
               with:
                   name: libinfisical_c_files-${{ matrix.settings.target }}
                   path: |
