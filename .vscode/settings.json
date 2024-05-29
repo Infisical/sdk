@@ -1,32 +1,49 @@
 {
-    "rust-analyzer.linkedProjects": [
-        "crates/infisical-json/Cargo.toml",
-        "crates/infisical-napi/Cargo.toml",
-        "crates/infisical/Cargo.toml",
-        "./crates/infisical/Cargo.toml",
-        "./crates/infisical/Cargo.toml",
-        "./crates/sdk-schemas/Cargo.toml",
-        "./crates/infisical-wasm/Cargo.toml",
-        "./crates/infisical-napi/Cargo.toml",
-        "./crates/infisical-c/Cargo.toml",
-        "./crates/infisical-py/Cargo.toml"
-    ],
-    "cSpell.words": [
-        "Cdecl",
-        "ciphertext",
-        "dotenv",
-        "indicies",
-        "infisical",
-        "libinfisical",
-        "msvc",
-        "napi",
-        "openapi",
-        "openapitools",
-        "pyclass",
-        "pymethods",
-        "quicktype",
-        "reqwest",
-        "rngs"
-    ],
-    "java.configuration.updateBuildConfiguration": "interactive"
+	"rust-analyzer.linkedProjects": [
+		"crates/infisical-json/Cargo.toml",
+		"crates/infisical-napi/Cargo.toml",
+		"crates/infisical/Cargo.toml",
+		"crates/sdk-schemas/Cargo.toml",
+		"crates/infisical-wasm/Cargo.toml",
+		"crates/infisical-c/Cargo.toml",
+		"crates/infisical-py/Cargo.toml"
+	],
+
+	"go.inferGopath": false,
+	"go.toolsEnvVars": {
+		"GO111MODULE": "on"
+	},
+	"go.lintOnSave": "workspace",
+	"go.testFlags": ["-v"],
+	"go.buildTags": "",
+	"go.buildFlags": [],
+	"go.vetFlags": [],
+	"go.formatTool": "goreturns",
+	"go.coverOnSave": false,
+	"go.coverageDecorator": {
+		"type": "highlight"
+	},
+	"go.lintTool": "golint",
+	"go.lintFlags": [],
+	"go.languageServerFlags": [],
+
+	"cSpell.words": [
+		"Cdecl",
+		"ciphertext",
+		"dotenv",
+		"indicies",
+		"infisical",
+		"libinfisical",
+		"msvc",
+		"napi",
+		"openapi",
+		"openapitools",
+		"pyclass",
+		"pymethods",
+		"quicktype",
+		"reqwest",
+		"rngs"
+	],
+	"java.configuration.updateBuildConfiguration": "interactive",
+	"gopls": {}
 }
