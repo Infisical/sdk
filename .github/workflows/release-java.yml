@@ -13,13 +13,13 @@ jobs:
     build_rust:
         uses: ./.github/workflows/build-c-bindings.yml
 
-    # test-rust-crate:
-    #     uses: ./.github/workflows/rust-test.yml
-    #     secrets:
-    #         INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
-    #         INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
-    #         INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
-    #         INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
+    test-rust-crate:
+        uses: ./.github/workflows/rust-test.yml
+        secrets:
+            INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
+            INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
+            INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
+            INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
 
     build_java:
         name: Build Java
@@ -27,7 +27,7 @@ jobs:
         needs:
             - generate_schemas
             - build_rust
-            # - test-rust-crate
+            - test-rust-crate
 
         steps:
             - name: Checkout Repository
