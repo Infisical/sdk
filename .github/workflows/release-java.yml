@@ -2,6 +2,8 @@ name: Release Java SDK
 run-name: Release Java SDK
 
 on:
+    workflow_dispatch:
+
     push:
         tags:
             - "*.*.*" # version, e.g. 1.0.0
@@ -63,16 +65,27 @@ jobs:
                   name: libinfisical_c_files-x86_64-unknown-linux-gnu
                   path: languages/java/src/main/resources/linux-x86-64
 
+            - name: Download aarch64-unknown-linux-gnu files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-aarch64-unknown-linux-gnu
+                  path: languages/java/src/main/resources/linux-aarch64
+
             - name: Download x86_64-pc-windows-msvc files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-x86_64-pc-windows-msvc
                   path: languages/java/src/main/resources/win32-x86-64
 
-            - name: Publish Maven
-              uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
-              with:
-                  arguments: publish
-                  build-root-directory: languages/java
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: List files in resources folders
+              run: |
+                  echo "Listing files in languages/java/src/main/resources:"
+                  ls -R languages/java/src/main/resources
+
+            # - name: Publish Maven
+            #   uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
+            #   with:
+            #       arguments: publish
+            #       build-root-directory: languages/java
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
