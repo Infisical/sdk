@@ -2,8 +2,6 @@ name: Release Java SDK
 run-name: Release Java SDK
 
 on:
-    workflow_dispatch:
-
     push:
         tags:
             - "*.*.*" # version, e.g. 1.0.0
