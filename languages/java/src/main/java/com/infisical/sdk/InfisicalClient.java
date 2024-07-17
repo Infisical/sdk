@@ -27,11 +27,11 @@ public class InfisicalClient implements AutoCloseable {
 
         if (os.contains("linux") && arch.equals("aarch64")) {
           if (isMusl()) {
-              libraryName = "/linux-aarch64-musl/libinfisical_c";
+              libraryName = "infisical_c_musl";
           } else {
-              libraryName = "/linux-aarch64-gnu/libinfisical_c";
+              libraryName = "infisical_c_gnu";
           }
-        }
+        } 
 
         library = Native.load(libraryName, InfisicalLibrary.class);
 
