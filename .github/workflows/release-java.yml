@@ -83,6 +83,14 @@ jobs:
                   name: libinfisical_c_files-x86_64-pc-windows-msvc
                   path: languages/java/src/main/resources/win32-x86-64
 
+            - name: Organize and rename Linux ARM64 libraries
+              run: |
+                  mkdir -p languages/java/src/main/resources/linux-aarch64
+                  mv languages/java/src/main/resources/linux-aarch64-gnu/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_gnu.so
+                  mv languages/java/src/main/resources/linux-aarch64-musl/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_musl.so
+                  rm -rf languages/java/src/main/resources/linux-aarch64-musl
+                  rm -rf languages/java/src/main/resources/linux-aarch64-gnu
+
             - name: List files in resources folders
               run: |
                   echo "Listing files in languages/java/src/main/resources:"
