@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.function.Function;
 
 public class InfisicalClient implements AutoCloseable {
@@ -18,7 +21,19 @@ public class InfisicalClient implements AutoCloseable {
 
         settings.setUserAgent("infisical-java-sdk");
 
-        library = Native.load("infisical_c", InfisicalLibrary.class);
+        String libraryName = "infisical_c";
+        String arch = System.getProperty("os.arch");
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("linux") && arch.equals("aarch64")) {
+          if (isMusl()) {
+              libraryName = "/linux-aarch64-musl/libinfisical_c";
+          } else {
+              libraryName = "/linux-aarch64-gnu/libinfisical_c";
+          }
+        }
+
+        library = Native.load(libraryName, InfisicalLibrary.class);
 
         try {
             client = library.init(Converter.ClientSettingsToJsonString(settings));
@@ -28,6 +43,19 @@ public class InfisicalClient implements AutoCloseable {
 
         commandRunner = new CommandRunner(library, client);
         isClientOpen = true;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean isMusl() {
+        try {
+            Process process = Runtime.getRuntime().exec("ldd --version");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line = reader.readLine();
+            return line != null && line.contains("musl");
+        } catch (IOException e) {
+            // If we can't determine, assume it's not musl
+            return false;
+        }
     }
 
     public GetSecretResponseSecret getSecret(GetSecretOptions options) {

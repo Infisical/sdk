@@ -21,6 +21,8 @@ jobs:
                       target: x86_64-unknown-linux-gnu
                     - os: ubuntu-22.04
                       target: aarch64-unknown-linux-gnu
+                    - os: ubuntu-22.04
+                      target: aarch64-unknown-linux-musl
 
         steps:
             - name: Checkout
@@ -37,16 +39,26 @@ jobs:
             - name: Add build architecture
               run: rustup target add ${{ matrix.settings.target }}
 
-            - name: Install cross-compilation tools for aarch64
+            - name: Install cross-compilation tools for aarch64-gnu
               if: matrix.settings.target == 'aarch64-unknown-linux-gnu'
               run: |
                   sudo apt-get update
                   sudo apt-get install -y gcc-aarch64-linux-gnu
 
+            - name: Install cross-compilation tools for aarch64-musl
+              if: matrix.settings.target == 'aarch64-unknown-linux-musl'
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y musl-tools
+                  wget https://musl.cc/aarch64-linux-musl-cross.tgz
+                  tar -xzf aarch64-linux-musl-cross.tgz
+                  echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+
             - name: Build Rust
               env:
                   RUSTFLAGS: "-D warnings"
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+                  CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
               run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
 
             - name: Upload Artifact

@@ -69,7 +69,13 @@ jobs:
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-aarch64-unknown-linux-gnu
-                  path: languages/java/src/main/resources/linux-aarch64
+                  path: languages/java/src/main/resources/linux-aarch64-gnu
+
+            - name: Download aarch64-unknown-linux-musl files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-aarch64-unknown-linux-musl
+                  path: languages/java/src/main/resources/linux-aarch64-musl
 
             - name: Download x86_64-pc-windows-msvc files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
