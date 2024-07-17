@@ -66,7 +66,7 @@ jobs:
               env:
                   RUSTFLAGS: "-D warnings -C target-feature=-crt-static"
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
-              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py --features "cdylib"
+              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
 
             - name: Upload Artifact
               uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
