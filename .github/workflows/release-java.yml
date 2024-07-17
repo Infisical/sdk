@@ -15,13 +15,13 @@ jobs:
     build_rust:
         uses: ./.github/workflows/build-c-bindings.yml
 
-    # test-rust-crate:
-    #     uses: ./.github/workflows/rust-test.yml
-    #     secrets:
-    #         INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
-    #         INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
-    #         INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
-    #         INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
+    test-rust-crate:
+        uses: ./.github/workflows/rust-test.yml
+        secrets:
+            INFISICAL_UNIVERSAL_CLIENT_SECRET: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_SECRET }}
+            INFISICAL_UNIVERSAL_CLIENT_ID: ${{ secrets.INFISICAL_UNIVERSAL_CLIENT_ID }}
+            INFISICAL_PROJECT_ID: ${{ secrets.INFISICAL_PROJECT_ID }}
+            INFISICAL_SITE_URL: ${{ secrets.INFISICAL_SITE_URL }}
 
     build_java:
         name: Build Java
@@ -29,7 +29,7 @@ jobs:
         needs:
             - generate_schemas
             - build_rust
-            # - test-rust-crate
+            - test-rust-crate
 
         steps:
             - name: Checkout Repository
@@ -96,10 +96,10 @@ jobs:
                   echo "Listing files in languages/java/src/main/resources:"
                   ls -R languages/java/src/main/resources
 
-            # - name: Publish Maven
-            #   uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
-            #   with:
-            #       arguments: publish
-            #       build-root-directory: languages/java
-            #   env:
-            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Publish Maven
+              uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
+              with:
+                  arguments: publish
+                  build-root-directory: languages/java
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
