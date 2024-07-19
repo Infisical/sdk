@@ -63,7 +63,15 @@ async function main() {
     });
     await ensureDir("./languages/csharp/Infisical.Sdk");
     writeToFile("./languages/csharp/Infisical.Sdk/schemas.cs", csharp.lines);
-    
+
+    const ruby = await quicktype({
+      inputData,
+      lang: "ruby",
+      rendererOptions: {
+        "ruby-version": "3.0",
+      },
+    });
+    writeToFile("./languages/ruby/lib/schemas.rb", ruby.lines);  
 
     const java = await quicktypeMultiFile({
         inputData,
