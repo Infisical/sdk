@@ -2,18 +2,16 @@ name: Release Java SDK
 run-name: Release Java SDK
 
 on:
-    workflow_dispatch:
-
     push:
-        tags:
-            - "*.*.*" # version, e.g. 1.0.0
+        branches:
+            - daniel/move-java-sdk
 
 jobs:
-    generate_schemas:
-        uses: ./.github/workflows/generate-schemas.yml
+    # generate_schemas:
+    #     uses: ./.github/workflows/generate-schemas.yml
 
-    build_rust:
-        uses: ./.github/workflows/build-c-bindings.yml
+    # build_rust:
+    #     uses: ./.github/workflows/build-c-bindings.yml
 
     test-rust-crate:
         uses: ./.github/workflows/rust-test.yml
@@ -27,19 +25,19 @@ jobs:
         name: Build Java
         runs-on: ubuntu-22.04
         needs:
-            - generate_schemas
-            - build_rust
+            # - generate_schemas
+            # - build_rust
             - test-rust-crate
 
         steps:
             - name: Checkout Repository
               uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-            - name: Download Java schemas artifact
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: sdk-schemas-java
-                  path: languages/java/src/main/java/infisical/sdk/schema/
+            # - name: Download Java schemas artifact
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: sdk-schemas-java
+            #       path: languages/java/src/main/java/infisical/sdk/schema/
 
             - name: Setup Java
               uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3.13.0
@@ -47,49 +45,49 @@ jobs:
                   distribution: temurin
                   java-version: 21
 
-            - name: Download x86_64-apple-darwin files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-x86_64-apple-darwin
-                  path: languages/java/src/main/resources/darwin-x86-64
+            # - name: Download x86_64-apple-darwin files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-x86_64-apple-darwin
+            #       path: languages/java/src/main/resources/darwin-x86-64
 
-            - name: Download aarch64-apple-darwin files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-aarch64-apple-darwin
-                  path: languages/java/src/main/resources/darwin-aarch64
+            # - name: Download aarch64-apple-darwin files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-aarch64-apple-darwin
+            #       path: languages/java/src/main/resources/darwin-aarch64
 
-            - name: Download x86_64-unknown-linux-gnu files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-x86_64-unknown-linux-gnu
-                  path: languages/java/src/main/resources/linux-x86-64
+            # - name: Download x86_64-unknown-linux-gnu files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-x86_64-unknown-linux-gnu
+            #       path: languages/java/src/main/resources/linux-x86-64
 
-            - name: Download aarch64-unknown-linux-gnu files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-aarch64-unknown-linux-gnu
-                  path: languages/java/src/main/resources/linux-aarch64-gnu
+            # - name: Download aarch64-unknown-linux-gnu files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-aarch64-unknown-linux-gnu
+            #       path: languages/java/src/main/resources/linux-aarch64-gnu
 
-            - name: Download aarch64-unknown-linux-musl files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-aarch64-unknown-linux-musl
-                  path: languages/java/src/main/resources/linux-aarch64-musl
+            # - name: Download aarch64-unknown-linux-musl files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-aarch64-unknown-linux-musl
+            #       path: languages/java/src/main/resources/linux-aarch64-musl
 
-            - name: Download x86_64-pc-windows-msvc files
-              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-              with:
-                  name: libinfisical_c_files-x86_64-pc-windows-msvc
-                  path: languages/java/src/main/resources/win32-x86-64
+            # - name: Download x86_64-pc-windows-msvc files
+            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+            #   with:
+            #       name: libinfisical_c_files-x86_64-pc-windows-msvc
+            #       path: languages/java/src/main/resources/win32-x86-64
 
-            - name: Organize and rename Linux ARM64 libraries
-              run: |
-                  mkdir -p languages/java/src/main/resources/linux-aarch64
-                  mv languages/java/src/main/resources/linux-aarch64-gnu/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_gnu.so
-                  mv languages/java/src/main/resources/linux-aarch64-musl/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_musl.so
-                  rm -rf languages/java/src/main/resources/linux-aarch64-musl
-                  rm -rf languages/java/src/main/resources/linux-aarch64-gnu
+            # - name: Organize and rename Linux ARM64 libraries
+            #   run: |
+            #       mkdir -p languages/java/src/main/resources/linux-aarch64
+            #       mv languages/java/src/main/resources/linux-aarch64-gnu/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_gnu.so
+            #       mv languages/java/src/main/resources/linux-aarch64-musl/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_musl.so
+            #       rm -rf languages/java/src/main/resources/linux-aarch64-musl
+            #       rm -rf languages/java/src/main/resources/linux-aarch64-gnu
 
             - name: List files in resources folders
               run: |
