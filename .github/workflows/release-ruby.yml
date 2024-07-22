@@ -37,7 +37,7 @@ jobs:
             - name: Download Ruby schemas artifact
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
-                  name: sdk-schemas-java
+                  name: sdk-schemas-ruby
                   path: languages/ruby/infisical-sdk/lib/
 
             # x64 Apple Darwin
