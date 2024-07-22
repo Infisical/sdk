@@ -84,7 +84,7 @@ jobs:
                   mkdir -p languages/ruby/infisical-sdk/lib/windows-x64
 
                   platforms=("macos-arm64" "linux-x64" "linux-arm64" "macos-x64" "windows-x64")
-                  files=("libinfisical_c.dylib" "libinfisical_c.so" "libinfisical_c.so" "libinfisical_c.dylib" "libinfisical_c.dll")
+                  files=("libinfisical_c.dylib" "libinfisical_c.so" "libinfisical_c.so" "libinfisical_c.dylib" "infisical_c.dll")
 
                   for ((i=0; i<${#platforms[@]}; i++)); do
                     cp "temp/${platforms[$i]}/${files[$i]}" "languages/ruby/infisical-sdk/lib/${platforms[$i]}/${files[$i]}"
