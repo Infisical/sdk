@@ -103,3 +103,5 @@ jobs:
                   build-root-directory: languages/java
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  MVN_USERNAME: ${{ secrets.MVN_USERNAME }}
+                  MVN_TOKEN: ${{ secrets.MVN_TOKEN }}
