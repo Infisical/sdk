@@ -24,10 +24,10 @@ jobs:
     build_java:
         name: Build Java
         runs-on: ubuntu-22.04
-        needs:
-            # - generate_schemas
-            # - build_rust
-            # - test-rust-crate
+        # needs:
+        # - generate_schemas
+        # - build_rust
+        # - test-rust-crate
 
         steps:
             - name: Checkout Repository
