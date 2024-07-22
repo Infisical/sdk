@@ -3,8 +3,8 @@ run-name: Release Java SDK
 
 on:
     push:
-        branches:
-            - daniel/move-java-sdk
+        tags:
+            - "*.*.*" # version, e.g. 1.0.0
 
 jobs:
     generate_schemas:
