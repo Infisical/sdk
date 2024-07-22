@@ -89,10 +89,10 @@ jobs:
             #       rm -rf languages/java/src/main/resources/linux-aarch64-musl
             #       rm -rf languages/java/src/main/resources/linux-aarch64-gnu
 
-            - name: List files in resources folders
-              run: |
-                  echo "Listing files in languages/java/src/main/resources:"
-                  ls -R languages/java/src/main/resources
+            # - name: List files in resources folders
+            #   run: |
+            #       echo "Listing files in languages/java/src/main/resources:"
+            #       ls -R languages/java/src/main/resources
 
             - name: Publish Maven
               uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
