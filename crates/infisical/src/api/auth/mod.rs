@@ -20,11 +20,15 @@ fn base64_encode(plain: String) -> String {
     return base64::engine::general_purpose::STANDARD.encode(plain);
 }
 
-#[derive(Serialize, Deserialize, Debug, JsonSchema)]
+#[derive(Serialize, Deserialize, Debug, JsonSchema, Clone)]
 #[serde(rename_all = "camelCase")]
 
 pub struct AccessTokenSuccessResponse {
     pub access_token: String,
+    pub expires_in: i64,
+    #[serde(rename = "accessTokenMaxTTL")]
+    pub access_token_max_ttl: i64,
+    pub token_type: String,
 }
 
 #[derive(Serialize)]

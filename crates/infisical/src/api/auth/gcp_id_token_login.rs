@@ -6,18 +6,10 @@ use crate::{
 
 use super::AccessTokenSuccessResponse;
 
-pub async fn gcp_id_token_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let identity_id;
-
-    if let Some(gcp_id_token_auth) = &client.auth.gcp_id_token {
-        identity_id = gcp_id_token_auth.identity_id.clone();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-            message: "Attempt to authenticate with GCP ID Token failed. Identity ID is missing."
-                .to_string(),
-        });
-    }
-
+pub async fn gcp_id_token_login(
+    client: &mut Client,
+    identity_id: String,
+) -> Result<AccessTokenSuccessResponse> {
     let request_client = reqwest::Client::builder()
         .use_preconfigured_tls(rustls_platform_verifier::tls_config())
         .build()
