@@ -87,3 +87,5 @@ puts "Plaintext: #{plaintext_data}\n"
 puts "Encryption key: #{key}\n"
 puts "Encrypted ciphertext: #{encrypted_data['ciphertext']}\n"
 puts "Decrypted text: #{decrypted_data}\n"
+
+infisical.free_mem
