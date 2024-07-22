@@ -2,8 +2,6 @@ name: Release Java SDK
 run-name: Release Java SDK
 
 on:
-    workflow_dispatch:
-
     push:
         tags:
             - "*.*.*" # version, e.g. 1.0.0
@@ -97,9 +95,12 @@ jobs:
                   ls -R languages/java/src/main/resources
 
             - name: Publish Maven
-              uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
-              with:
-                  arguments: publish
-                  build-root-directory: languages/java
+              working-directory: languages/java
+              run: |
+                  ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+                  ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }} # Last 8 characters of the full key ID
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
