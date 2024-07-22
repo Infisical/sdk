@@ -99,8 +99,8 @@ jobs:
               run: |
                   ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
               env:
-                  ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-                  ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-                  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.INFISICAL_GDP_KEY }}
-                  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.INFISICAL_GDP_KEY_ID }} # Last 8 characters of the full key ID
-                  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.INFISICAL_GDP_KEY_PASSWORD }}
+                  ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+                  ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }} # Last 8 characters of the full key ID
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
