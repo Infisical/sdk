@@ -1,0 +1,110 @@
+name: Release Ruby SDK
+run-name: Release Ruby SDK
+
+on:
+    workflow_dispatch:
+
+    push:
+        tags:
+            - "*.*.*" # version, e.g. 1.0.0
+
+permissions:
+    contents: read
+    id-token: write
+
+jobs:
+    generate_schemas:
+        uses: ./.github/workflows/generate-schemas.yml
+
+    build_rust:
+        uses: ./.github/workflows/build-c-bindings.yml
+
+    release_ruby:
+        name: Release Ruby
+        runs-on: ubuntu-22.04
+        needs:
+            - generate_schemas
+            - build_rust
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+
+            - name: Set up Ruby
+              uses: ruby/setup-ruby@cacc9f1c0b3f4eb8a16a6bb0ed10897b43b9de49 # v1.176.0
+              with:
+                  ruby-version: 3.2
+
+            - name: Download Ruby schemas artifact
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: sdk-schemas-java
+                  path: languages/ruby/infisical-sdk/lib/
+
+            # x64 Apple Darwin
+            - name: Download x86_64-apple-darwin files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-x86_64-apple-darwin
+                  path: temp/macos-x64
+
+            # ARM64 Apple Darwin
+            - name: Download aarch64-apple-darwin files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-aarch64-apple-darwin
+                  path: temp/macos-arm64
+
+            # x64 Linux GNU
+            - name: Download x86_64-unknown-linux-gnu files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-x86_64-unknown-linux-gnu
+                  path: temp/linux-x64
+
+            # ARM64 Linux GNU
+            - name: Download aarch64-unknown-linux-gnu files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-aarch64-unknown-linux-gnu
+                  path: temp/linux-arm64
+
+            # MSVC x86/x64 Windows
+            - name: Download x86_64-pc-windows-msvc files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-x86_64-pc-windows-msvc
+                  path: temp/windows-x64
+
+            - name: Copy lib files
+              run: |
+                  mkdir -p languages/ruby/infisical-sdk/lib/macos-arm64
+                  mkdir -p languages/ruby/infisical-sdk/lib/linux-x64
+                  mkdir -p languages/ruby/infisical-sdk/lib/linux-arm64
+                  mkdir -p languages/ruby/infisical-sdk/lib/macos-x64
+                  mkdir -p languages/ruby/infisical-sdk/lib/windows-x64
+
+                  platforms=("macos-arm64" "linux-x64" "linux-arm64" "macos-x64" "windows-x64")
+                  files=("libinfisical_c.dylib" "libinfisical_c.so" "libinfisical_c.so" "libinfisical_c.dylib" "libinfisical_c.dll")
+
+                  for ((i=0; i<${#platforms[@]}; i++)); do
+                    cp "temp/${platforms[$i]}/${files[$i]}" "languages/ruby/infisical-sdk/lib/${platforms[$i]}/${files[$i]}"
+                  done
+
+            - name: bundle install
+              run: bundle install
+              working-directory: languages/ruby/infisical-sdk
+
+            - name: Build gem
+              run: gem build infisical-sdk.gemspec
+              working-directory: languages/ruby/infisical-sdk
+
+            - name: Push gem to Rubygems
+              run: |
+                  mkdir -p $HOME/.gem
+                  touch $HOME/.gem/credentials
+                  chmod 0600 $HOME/.gem/credentials
+                  printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+                  gem push *.gem
+              env:
+                  GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+              working-directory: languages/ruby/infisical-sdk
