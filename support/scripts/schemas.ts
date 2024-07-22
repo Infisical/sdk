@@ -88,20 +88,9 @@ async function main() {
 }
 
 main();
-function writeToFile(
-	filename: string,
-	lines: string[],
-	replacement?: {
-		regexp: RegExp;
-		replace: string;
-	}
-) {
+function writeToFile(filename: string, lines: string[]) {
 	const output = fs.createWriteStream(filename);
 	lines.forEach(line => {
-		if (replacement) {
-			output.write(line.replace(replacement.regexp, replacement.replace) + "\n");
-			return;
-		}
 		output.write(line + "\n");
 	});
 	output.close();
