@@ -1,0 +1,15 @@
+module InfisicalSDK
+  class EncryptionClient
+    @command_runner: CommandRunner
+    def initialize: (CommandRunner) -> void
+
+    def create_symmetric_key: -> String
+    def decrypt_symmetric: (ciphertext: String, iv: String, tag: String, key: String) -> String
+    def encrypt_symmetric: (data: String, key: String) -> EncryptedData
+
+    private
+      def error_handler: (untyped) -> void
+      def run_command: (untyped) -> untyped
+
+  end
+end

@@ -1,0 +1,20 @@
+module InfisicalSDK
+  class AuthClient
+    @command_runner: untyped
+
+    def initialize: (CommandRunner) -> void
+
+    def universal_auth: (client_id: String, client_secret: String) -> MachineIdentityLogin
+    def kubernetes_auth: (identity_id: String, service_account_token_path: String?) -> MachineIdentityLogin
+    def azure_auth: (identity_id: String) -> MachineIdentityLogin
+    def gcp_id_token_auth: (identity_id: String) ->  MachineIdentityLogin
+    def gcp_iam_auth: (identity_id: String, service_account_key_file_path: String) -> MachineIdentityLogin
+    def aws_iam_auth: (identity_id: String) -> MachineIdentityLogin
+
+    private
+
+    def error_handler: (untyped) -> void
+    def handle_auth_response: (untyped) -> MachineIdentityLogin
+    def run_command: (untyped) -> untyped
+  end
+end

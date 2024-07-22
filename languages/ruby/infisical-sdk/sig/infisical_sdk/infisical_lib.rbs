@@ -1,0 +1,7 @@
+module InfisicalSDK
+  module InfisicalLib
+
+    def self.linux_arm64?: -> bool
+    def self.mac_with_intel?: -> bool
+  end
+end

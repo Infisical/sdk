@@ -1,0 +1,10 @@
+module InfisicalSDK
+  class CommandRunner
+    @handle: untyped
+    @infisical_sdk: InfisicalModule
+
+
+    def initialize: (untyped, untyped) -> String
+    def run: (untyped) -> String
+  end
+end

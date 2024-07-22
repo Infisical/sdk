@@ -1,0 +1,30 @@
+module InfisicalSDK
+  class InfisicalClient
+    @handle: untyped
+    @infisical: InfisicalModule
+    @auth: AuthClient
+    @secrets: SecretsClient
+    @command_runner: CommandRunner
+
+    attr_reader command_runner: CommandRunner
+    attr_reader infisical: InfisicalModule
+
+    attr_reader auth: AuthClient
+    attr_reader encryption: EncryptionClient
+    attr_reader secrets: SecretsClient
+
+    def initialize: (String?, Integer?) -> untyped
+
+    def free_mem: -> void
+  end
+end
+
+module InfisicalSDK
+  class InfisicalModule < Module
+
+    def free_mem: (untyped) -> void
+    def run_command: (untyped, untyped) -> String
+    def init: (untyped) -> untyped
+
+  end
+end
