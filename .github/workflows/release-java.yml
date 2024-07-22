@@ -94,12 +94,14 @@ jobs:
             #       echo "Listing files in languages/java/src/main/resources:"
             #       ls -R languages/java/src/main/resources
 
+            # ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
             - name: Publish Maven
-              uses: gradle/gradle-build-action@b5126f31dbc19dd434c3269bf8c28c315e121da2 # v2.8.1
-              with:
-                  arguments: publish
-                  build-root-directory: languages/java
+              working-directory: languages/java
+              run: |
+                  ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  MVN_USERNAME: ${{ secrets.MVN_USERNAME }}
-                  MVN_TOKEN: ${{ secrets.MVN_TOKEN }}
+                  ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+                  ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.INFISICAL_GDP_KEY }}
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.INFISICAL_GDP_KEY_ID }} # Last 8 characters of the full key ID
+                  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.INFISICAL_GDP_KEY_PASSWORD }}
