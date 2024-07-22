@@ -34,6 +34,14 @@ jobs:
               with:
                   ruby-version: 3.2
 
+            - name: Update version in version.rb
+              run: |
+                  VERSION_FILE="languages/ruby/infisical-sdk/lib/version.rb"
+                  sed -i.bak "s/VERSION = .*$/VERSION = '${{ github.ref_name }}'/" "$VERSION_FILE"
+                  if [ -f "${VERSION_FILE}.bak" ]; then
+                    rm "${VERSION_FILE}.bak"
+                  fi
+
             - name: Download Ruby schemas artifact
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
