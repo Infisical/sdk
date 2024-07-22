@@ -1,0 +1,37 @@
+
+class InfisicalSecret
+  attr_reader environment:    String?
+  attr_reader isFallback:     bool?
+  attr_reader secretComment:  String
+  attr_reader secretKey:      String
+  attr_reader secretPath:     String?
+  attr_reader secretValue:    String
+  attr_reader type:           String
+  attr_reader version:        Integer
+  attr_reader workspace:      String
+
+  def initialize: (
+      environment:    String,
+      secretComment:  String,
+      secretKey:      String,
+      secretValue:    String,
+      type:           String,
+      version:        Integer,
+      workspace:      String,
+      ?isFallback:    bool?,
+      ?secretPath:    String?
+    ) -> void
+end
+
+class MachineIdentityLogin
+  attr_reader accessToken:        String
+  attr_reader accessTokenMaxTTL:  Integer
+  attr_reader expiresIn:          Integer
+  attr_reader tokenType:          String
+end
+
+class EncryptedData
+  attr_reader ciphertext: String
+  attr_reader iv:         String
+  attr_reader tag:        String
+end

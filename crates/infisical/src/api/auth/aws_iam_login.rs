@@ -15,18 +15,10 @@ use aws_sigv4::{
 use crate::helper::get_aws_region;
 use log::debug;
 
-pub async fn aws_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let identity_id;
-
-    if let Some(aws_iam_auth) = &client.auth.aws_iam {
-        identity_id = aws_iam_auth.identity_id.clone();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-            message: "Attempt to authenticate with AWS IAM failed. Identity ID is missing."
-                .to_string(),
-        });
-    }
-
+pub async fn aws_iam_login(
+    client: &mut Client,
+    identity_id: String,
+) -> Result<AccessTokenSuccessResponse> {
     let aws_region = get_aws_region().await?.into_owned();
     let aws_region_str: &'static str = Box::leak(aws_region.into_boxed_str());
 

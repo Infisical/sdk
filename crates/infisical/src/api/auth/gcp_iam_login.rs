@@ -17,19 +17,11 @@ struct JwtPayload {
 
 use super::AccessTokenSuccessResponse;
 
-pub async fn gcp_iam_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let service_account_key_path;
-    let identity_id;
-
-    if let Some(gcp_iam_auth) = &client.auth.gcp_iam {
-        service_account_key_path = gcp_iam_auth.service_account_key_file_path.clone();
-        identity_id = gcp_iam_auth.identity_id.clone();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-          message: "Attempt to authenticate with GCP IAM failed. Identity ID or service account key path is missing.".to_string(),
-      });
-    }
-
+pub async fn gcp_iam_login(
+    client: &mut Client,
+    identity_id: String,
+    service_account_key_path: String,
+) -> Result<AccessTokenSuccessResponse> {
     let service_account_key = &read_service_account_key(service_account_key_path).await?;
 
     // Create an authenticator

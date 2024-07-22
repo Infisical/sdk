@@ -198,4 +198,8 @@ languages/node/npm/**/*.node
 languages/node/artifacts
 languages/node/package/**/*
 
+
+languages/ruby/infisical-sdk/Gemfile.lock
+languages/ruby/infisical-sdk/pkg
+
 languages/java/gradle.properties

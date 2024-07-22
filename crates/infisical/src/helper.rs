@@ -41,30 +41,109 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
     match auth_method {
         AuthMethod::UniversalAuth => {
             debug!("Auth method is Universal Auth");
-            result = universal_auth_login(client).await?;
+
+            let client_id;
+            let client_secret;
+
+            if let Some(universal_auth) = &client.auth.universal_auth {
+                client_id = universal_auth.client_id.clone();
+                client_secret = universal_auth.client_secret.clone();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                  message: "Attempt to authenticate with Universal Auth failed. Universal auth credentials are missing.".to_string(),
+              });
+            }
+
+            result = universal_auth_login(client, client_id, client_secret).await?;
         }
         AuthMethod::GcpIdToken => {
             debug!("Auth method is GCP ID Token");
-            result = gcp_id_token_login(client).await?;
+
+            let identity_id;
+            if let Some(gcp_id_token_auth) = &client.auth.gcp_id_token {
+                identity_id = gcp_id_token_auth.identity_id.clone();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                    message:
+                        "Attempt to authenticate with GCP ID Token failed. Identity ID is missing."
+                            .to_string(),
+                });
+            }
+
+            result = gcp_id_token_login(client, identity_id).await?;
         }
         AuthMethod::GcpIam => {
             debug!("Auth method is GCP IAM");
-            result = gcp_iam_login(client).await?;
+
+            let service_account_key_path;
+            let identity_id;
+
+            if let Some(gcp_iam_auth) = &client.auth.gcp_iam {
+                service_account_key_path = gcp_iam_auth.service_account_key_file_path.clone();
+                identity_id = gcp_iam_auth.identity_id.clone();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                  message: "Attempt to authenticate with GCP IAM failed. Identity ID or service account key path is missing.".to_string(),
+              });
+            }
+
+            result = gcp_iam_login(client, identity_id, service_account_key_path).await?;
         }
 
         AuthMethod::AwsIam => {
             debug!("Auth method is AWS IAM");
-            result = aws_iam_login(client).await?;
+
+            let identity_id;
+
+            if let Some(aws_iam_auth) = &client.auth.aws_iam {
+                identity_id = aws_iam_auth.identity_id.clone();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                    message: "Attempt to authenticate with AWS IAM failed. Identity ID is missing."
+                        .to_string(),
+                });
+            }
+
+            result = aws_iam_login(client, identity_id).await?;
         }
 
         AuthMethod::Kubernetes => {
             debug!("Auth method is Kubernetes");
-            result = kubernetes_login(client).await?;
+
+            let identity_id;
+            let service_account_token_path;
+
+            if let Some(kubernetes_auth) = &client.auth.kubernetes {
+                identity_id = kubernetes_auth.identity_id.clone();
+                if kubernetes_auth.service_account_token_path.is_none() {
+                    return Err(Error::MissingParametersAuthError {
+                        message: "Attempt to authenticate with Kubernetes. Service account token path is missing.".to_string(),
+                    });
+                }
+                service_account_token_path =
+                    kubernetes_auth.service_account_token_path.clone().unwrap();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                    message: "Attempt to authenticate with Kubernetes. Identity ID and service account token path is missing.".to_string(),
+                });
+            }
+
+            result = kubernetes_login(client, identity_id, service_account_token_path).await?;
         }
 
         AuthMethod::Azure => {
             debug!("Auth method is Azure");
-            result = azure_login(client).await?;
+
+            let identity_id;
+            if let Some(azure_auth) = &client.auth.azure {
+                identity_id = azure_auth.identity_id.clone();
+            } else {
+                return Err(Error::MissingParametersAuthError {
+                    message: "Attempt to authenticate with Azure. Identity ID is missing."
+                        .to_string(),
+                });
+            }
+            result = azure_login(client, identity_id).await?;
         }
     }
 

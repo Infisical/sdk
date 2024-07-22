@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     constants::AZURE_METADATA_SERVICE_URL,
-    error::{api_error_handler, Error, Result},
+    error::{api_error_handler, Result},
     Client,
 };
 
@@ -13,17 +13,10 @@ struct AzureSuccessResponse {
     access_token: String,
 }
 
-pub async fn azure_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let identity_id;
-
-    if let Some(azure_auth) = &client.auth.azure {
-        identity_id = azure_auth.identity_id.clone();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-            message: "Attempt to authenticate with Azure. Identity ID is missing.".to_string(),
-        });
-    }
-
+pub async fn azure_login(
+    client: &mut Client,
+    identity_id: String,
+) -> Result<AccessTokenSuccessResponse> {
     let request_client = reqwest::Client::builder()
         .use_preconfigured_tls(rustls_platform_verifier::tls_config())
         .build()

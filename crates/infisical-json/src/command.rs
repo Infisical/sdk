@@ -5,6 +5,11 @@ use infisical::manager::secrets::{
 
 use infisical::manager::cryptography::{DecryptSymmetricOptions, EncryptSymmetricOptions};
 
+use infisical::client::auth_method_settings::{
+    AWSIamAuthMethod, AzureAuthMethod, GCPIamAuthMethod, GCPIdTokenAuthMethod,
+    KubernetesAuthMethod, UniversalAuthMethod,
+};
+
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -28,4 +33,11 @@ pub enum Command {
     CreateSymmetricKey(ArbitraryOptions),
     EncryptSymmetric(EncryptSymmetricOptions),
     DecryptSymmetric(DecryptSymmetricOptions),
+
+    UniversalAuthLogin(UniversalAuthMethod),
+    KubernetesAuthLogin(KubernetesAuthMethod),
+    AzureAuthLogin(AzureAuthMethod),
+    GcpIdTokenAuthLogin(GCPIdTokenAuthMethod),
+    GcpIamAuthLogin(GCPIamAuthMethod),
+    AwsIamAuthLogin(AWSIamAuthMethod),
 }

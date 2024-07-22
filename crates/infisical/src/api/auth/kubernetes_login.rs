@@ -7,24 +7,11 @@ use crate::{
 
 use super::{auth_infisical_kubernetes, AccessTokenSuccessResponse};
 
-pub async fn kubernetes_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let identity_id;
-    let service_account_token_path;
-
-    if let Some(kubernetes_auth) = &client.auth.kubernetes {
-        identity_id = kubernetes_auth.identity_id.clone();
-        if kubernetes_auth.service_account_token_path.is_none() {
-            return Err(Error::MissingParametersAuthError {
-                message: "Attempt to authenticate with Kubernetes. Service account token path is missing.".to_string(),
-            });
-        }
-        service_account_token_path = kubernetes_auth.service_account_token_path.clone().unwrap();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-            message: "Attempt to authenticate with Kubernetes. Identity ID and service account token path is missing.".to_string(),
-        });
-    }
-
+pub async fn kubernetes_login(
+    client: &mut Client,
+    identity_id: String,
+    service_account_token_path: String,
+) -> Result<AccessTokenSuccessResponse> {
     debug!(
         "Reading service account token from path: {}",
         service_account_token_path

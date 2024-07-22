@@ -1,5 +1,5 @@
 use crate::{
-    error::{api_error_handler, Error, Result},
+    error::{api_error_handler, Result},
     Client,
 };
 use log::debug;
@@ -8,19 +8,11 @@ use std::collections::HashMap;
 
 use super::AccessTokenSuccessResponse;
 
-pub async fn universal_auth_login(client: &mut Client) -> Result<AccessTokenSuccessResponse> {
-    let client_id;
-    let client_secret;
-
-    if let Some(universal_auth) = &client.auth.universal_auth {
-        client_id = universal_auth.client_id.clone();
-        client_secret = universal_auth.client_secret.clone();
-    } else {
-        return Err(Error::MissingParametersAuthError {
-            message: "Attempt to authenticate with Universal Auth failed. Universal auth credentials are missing.".to_string(),
-        });
-    }
-
+pub async fn universal_auth_login(
+    client: &mut Client,
+    client_id: String,
+    client_secret: String,
+) -> Result<AccessTokenSuccessResponse> {
     let mut body = HashMap::new();
     body.insert("clientId", Some(client_id));
     body.insert("clientSecret", Some(client_secret));

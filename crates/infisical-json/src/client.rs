@@ -46,6 +46,20 @@ impl Client {
             Command::CreateSymmetricKey(_) => {
                 self.0.cryptography().create_symmetric_key().into_string()
             }
+
+            // Authentication
+            Command::UniversalAuthLogin(req) => {
+                self.0.auth().universal_login(&req).await.into_string()
+            }
+            Command::KubernetesAuthLogin(req) => {
+                self.0.auth().kubernetes_login(&req).await.into_string()
+            }
+            Command::AzureAuthLogin(req) => self.0.auth().azure_login(&req).await.into_string(),
+            Command::GcpIdTokenAuthLogin(req) => {
+                self.0.auth().gcp_id_token_login(&req).await.into_string()
+            }
+            Command::GcpIamAuthLogin(req) => self.0.auth().gcp_iam_login(&req).await.into_string(),
+            Command::AwsIamAuthLogin(req) => self.0.auth().aws_iam_login(&req).await.into_string(),
         }
     }
 
