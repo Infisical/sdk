@@ -51,9 +51,9 @@ mavenPublishing {
     url = "https://github.com/infisical/sdk"
     licenses {
       license {
-        name = "The Apache License, Version 2.0"
-        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-        distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+          name = "MIT License"
+          url = "https://opensource.org/license/MIT"
+          distribution = "repo"
       }
     }
     developers {
