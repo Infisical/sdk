@@ -33,11 +33,11 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
-            # - name: Download Java schemas artifact
-            #   uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
-            #   with:
-            #       name: sdk-schemas-java
-            #       path: languages/java/src/main/java/infisical/sdk/schema/
+            - name: Download Java schemas artifact
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: sdk-schemas-java
+                  path: languages/java/src/main/java/infisical/sdk/schema/
 
             - name: Setup Java
               uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # v3.13.0
