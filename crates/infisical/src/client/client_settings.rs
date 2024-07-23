@@ -1,6 +1,8 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+use crate::constants::INFISICAL_SSL_CERTIFICATE_ENV_NAME;
+
 use super::auth_method_settings::AuthenticationOptions;
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
@@ -37,6 +39,11 @@ pub struct ClientSettings {
     pub user_agent: Option<String>, // We use this to identity which SDK/language was used to make a request.
 
     #[schemars(
+        description = "The SSL certificate path is an optional field that allows you to specify a custom SSL certificate to use for requests made to Infisical."
+    )]
+    pub ssl_certificate_path: Option<String>, // Path to the SSL certificate file.
+
+    #[schemars(
         description = "Configure the authentication method to use.\n\nMake sure to only set one one method at a time to avoid conflicts and unexpected behavior."
     )]
     pub auth: AuthenticationOptions,
@@ -46,6 +53,7 @@ pub struct ClientSettings {
 impl Default for ClientSettings {
     fn default() -> Self {
         Self {
+            ssl_certificate_path: None,
             client_secret: None,
             client_id: None,
             access_token: None,
