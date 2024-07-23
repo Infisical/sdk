@@ -239,7 +239,7 @@ pub async fn build_base_request(
         println!("cert: {:?}", certificate);
         request_client = reqwest::Client::builder()
             .use_rustls_tls()
-            // .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+            .use_preconfigured_tls(rustls_platform_verifier::tls_config())
             .add_root_certificate(certificate)
             .build()
             .map_err(|e| Error::UnknownErrorWithMessage {
