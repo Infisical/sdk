@@ -23,12 +23,7 @@ pub async fn delete_secret_request(
         "secretPath": input.path.as_ref().unwrap_or(&"/".to_string()),
     });
 
-    let base_request = build_base_request(client, &base_url, reqwest::Method::DELETE);
-
-    let request = match base_request {
-        Ok(request) => request,
-        Err(e) => return Err(e),
-    };
+    let base_request = build_base_request(client, &base_url, reqwest::Method::DELETE).await?;
 
     let token = match client.auth.access_token {
         Some(ref token) => format!("Bearer {}", token),
@@ -39,7 +34,7 @@ pub async fn delete_secret_request(
     debug!("Creating secret with JSON body: {:?}", json);
     debug!("Creating secret with url: {}", base_url);
 
-    let response = request.json(json).send().await?;
+    let response = base_request.json(json).send().await?;
     let status = response.status();
 
     if status == StatusCode::OK {
