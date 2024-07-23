@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.files += Dir.glob('lib/windows-x64/**/*')
   spec.files += Dir.glob('lib/macos-arm64/**/*')
   spec.files += Dir.glob('lib/schemas.rb')
+  spec.files += Dir.glob('lib/extended_schemas/schemas.rb')
 
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
