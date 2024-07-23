@@ -1,5 +1,6 @@
 use crate::{
     error::{api_error_handler, Result},
+    helper::build_base_request,
     Client,
 };
 use log::debug;
@@ -23,12 +24,9 @@ pub async fn universal_auth_login(
         client.site_url.clone()
     );
 
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let request = request_client
-        .post(url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
