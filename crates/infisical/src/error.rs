@@ -18,6 +18,12 @@ pub enum Error {
     #[error("Something unexpected went wrong.")]
     UnknownError,
 
+    #[error("Failed to find SSL/TLS certificate")]
+    SSLCertificateNotFound,
+
+    #[error("Invalid SSL/TLS certificate, {}", .message)]
+    InvalidSSLCertificate { message: String },
+
     #[error("Something went wrong: {}", .message)]
     UnknownErrorWithMessage { message: String },
 
