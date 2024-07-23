@@ -39,13 +39,7 @@ pub async fn list_secrets_request(
     });
 
     let url = &build_url(base_url, json);
-
-    let base_request = build_base_request(client, url, reqwest::Method::GET);
-
-    let request = match base_request {
-        Ok(request) => request,
-        Err(e) => return Err(e),
-    };
+    let base_request = build_base_request(client, url, reqwest::Method::GET).await?;
 
     let token = match client.auth.access_token {
         Some(ref token) => format!("Bearer {}", token),
@@ -56,7 +50,7 @@ pub async fn list_secrets_request(
     debug!("Creating secret with JSON body: {:?}", json);
     debug!("Creating secret with url: {}", url);
 
-    let response = request.json(json).send().await?;
+    let response = base_request.json(json).send().await?;
     let status = response.status();
 
     if status == StatusCode::OK {
