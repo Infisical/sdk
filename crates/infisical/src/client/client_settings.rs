@@ -1,8 +1,6 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::constants::INFISICAL_SSL_CERTIFICATE_ENV_NAME;
-
 use super::auth_method_settings::AuthenticationOptions;
 
 #[derive(Serialize, Deserialize, Debug, JsonSchema)]
