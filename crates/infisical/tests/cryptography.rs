@@ -41,6 +41,7 @@ fn create_client() -> Client {
         client_id: None,
         client_secret: None,
         access_token: None,
+        ssl_certificate_path: None,
 
         auth: AuthenticationOptions {
             gcp_iam: None,
