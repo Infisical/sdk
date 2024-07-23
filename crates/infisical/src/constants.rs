@@ -29,3 +29,5 @@ pub const AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL: &str =
 // Azure Metadata Service:
 pub const AZURE_METADATA_SERVICE_URL: &str =
     "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F";
+
+pub const INFISICAL_SSL_CERTIFICATE_ENV_NAME: &str = "INFISICAL_SSL_CERTIFICATE";
