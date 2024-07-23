@@ -1,5 +1,5 @@
 module InfisicalSDK
-  class EncryptionClient
+  class CryptographyClient
     @command_runner: CommandRunner
     def initialize: (CommandRunner) -> void
 

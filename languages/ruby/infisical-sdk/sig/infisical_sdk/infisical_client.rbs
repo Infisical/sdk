@@ -10,7 +10,7 @@ module InfisicalSDK
     attr_reader infisical: InfisicalModule
 
     attr_reader auth: AuthClient
-    attr_reader encryption: EncryptionClient
+    attr_reader cryptography: CryptographyClient
     attr_reader secrets: SecretsClient
 
     def initialize: (String?, Integer?) -> untyped

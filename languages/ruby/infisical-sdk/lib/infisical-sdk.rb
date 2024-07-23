@@ -10,11 +10,11 @@ require_relative 'infisical_error'
 require_relative 'command_runner'
 require_relative 'clients/secrets'
 require_relative 'clients/auth'
-require_relative 'clients/encryption'
+require_relative 'clients/cryptography'
 
 module InfisicalSDK
   class InfisicalClient
-    attr_reader :infisical, :command_runner, :secrets, :auth, :encryption
+    attr_reader :infisical, :command_runner, :secrets, :auth, :cryptography
 
     def initialize(site_url = nil, cache_ttl = 300)
       settings = ClientSettings.new(
@@ -34,7 +34,7 @@ module InfisicalSDK
       @command_runner = CommandRunner.new(@infisical, @handle)
       @secrets = SecretsClient.new(@command_runner)
       @auth = AuthClient.new(@command_runner)
-      @encryption = EncryptionClient.new(@command_runner)
+      @cryptography = CryptographyClient.new(@command_runner)
     end
 
     def free_mem

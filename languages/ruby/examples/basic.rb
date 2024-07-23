@@ -72,11 +72,11 @@ puts "Deleted Secret: #{deleted_secret}\n\n"
 
 ### Encryption tests:
 plaintext_data = 'Hello World'
-key = infisical.encryption.create_symmetric_key
+key = infisical.cryptography.create_symmetric_key
 
-encrypted_data = infisical.encryption.encrypt_symmetric(data: plaintext_data, key: key)
+encrypted_data = infisical.cryptography.encrypt_symmetric(data: plaintext_data, key: key)
 
-decrypted_data = infisical.encryption.decrypt_symmetric(
+decrypted_data = infisical.cryptography.decrypt_symmetric(
   ciphertext: encrypted_data['ciphertext'],
   iv: encrypted_data['iv'],
   tag: encrypted_data['tag'],

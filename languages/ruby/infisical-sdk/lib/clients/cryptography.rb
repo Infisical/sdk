@@ -11,7 +11,7 @@ require_relative '../extended_schemas/schemas'
 
 module InfisicalSDK
   # Perform encryption
-  class EncryptionClient
+  class CryptographyClient
     def initialize(command_runner)
       @command_runner = command_runner
     end
