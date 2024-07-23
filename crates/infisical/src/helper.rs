@@ -236,7 +236,6 @@ pub async fn build_base_request(
     {
         let certificate = get_ssl_certificate(client).await?;
 
-        println!("cert: {:?}", certificate);
         request_client = reqwest::Client::builder()
             .use_rustls_tls()
             .use_preconfigured_tls(rustls_platform_verifier::tls_config())
