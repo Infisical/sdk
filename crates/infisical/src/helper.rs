@@ -7,13 +7,16 @@ use crate::{
         universal_auth_login::universal_auth_login,
     },
     client::auth_method_settings::AuthMethod,
-    constants::{AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL, AWS_EC2_METADATA_TOKEN_URL},
+    constants::{
+        AWS_EC2_INSTANCE_IDENTITY_DOCUMENT_URL, AWS_EC2_METADATA_TOKEN_URL,
+        INFISICAL_SSL_CERTIFICATE_ENV_NAME,
+    },
     error::{Error, Result},
     manager::secrets::Secret,
     Client,
 };
 use log::debug;
-use reqwest::{self, header::HeaderValue};
+use reqwest::{self, header::HeaderValue, Certificate};
 use serde::{Deserialize, Serialize};
 pub async fn handle_authentication(client: &mut Client) -> Result<()> {
     if client.auth.access_token.is_some() {
@@ -184,16 +187,7 @@ pub fn set_env_vars(should_attach_envs: bool, secrets: &Vec<Secret>) {
     }
 }
 
-pub fn build_base_request(
-    client: &mut Client,
-    url: &str,
-    method: reqwest::Method,
-) -> Result<reqwest::RequestBuilder> {
-    let token = match client.auth.access_token {
-        Some(ref token) => format!("Bearer {}", token),
-        None => Err(Error::MissingAccessToken)?,
-    };
-
+pub fn build_minimal_base_request() -> Result<reqwest::Client> {
     let request_client = reqwest::Client::builder()
         .use_preconfigured_tls(rustls_platform_verifier::tls_config())
         .build();
@@ -202,7 +196,58 @@ pub fn build_base_request(
         return Err(Error::Reqwest(request_client.err().unwrap()))?;
     }
 
-    let base_request = request_client?
+    return Ok(request_client.unwrap());
+}
+
+async fn get_ssl_certificate(client: &Client) -> Result<Certificate, Error> {
+    let cert_string = if let Some(path) = &client.ssl_certificate_path {
+        let cert_file_content = String::from_utf8(tokio::fs::read(path).await?).map_err(|e| {
+            Error::UnknownErrorWithMessage {
+                message: e.to_string(),
+            }
+        })?;
+
+        cert_file_content
+    } else if let Ok(cert_variable) = std::env::var(INFISICAL_SSL_CERTIFICATE_ENV_NAME) {
+        cert_variable
+    } else {
+        return Err(Error::SSLCertificateNotFound);
+    };
+
+    Certificate::from_pem(&cert_string.as_bytes()).map_err(|e| Error::InvalidSSLCertificate {
+        message: e.to_string(),
+    })
+}
+
+pub async fn build_base_request(
+    client: &mut Client,
+    url: &str,
+    method: reqwest::Method,
+) -> Result<reqwest::RequestBuilder> {
+    let token = match client.auth.access_token {
+        Some(ref token) => format!("Bearer {}", token),
+        None => "".to_string(),
+    };
+
+    let mut request_client = build_minimal_base_request()?;
+
+    if client.ssl_certificate_path.is_some()
+        || std::env::var(INFISICAL_SSL_CERTIFICATE_ENV_NAME).is_ok()
+    {
+        let certificate = get_ssl_certificate(client).await?;
+
+        println!("cert: {:?}", certificate);
+        request_client = reqwest::Client::builder()
+            .use_rustls_tls()
+            // .use_preconfigured_tls(rustls_platform_verifier::tls_config())
+            .add_root_certificate(certificate)
+            .build()
+            .map_err(|e| Error::UnknownErrorWithMessage {
+                message: e.to_string(),
+            })?;
+    }
+
+    let base_request = request_client
         .request(method, url)
         // Setting JSON as the content type is OK since we only work with JSON.
         .header(reqwest::header::CONTENT_TYPE, "application/json")
@@ -285,9 +330,7 @@ async fn get_aws_ec2_identity_document(timeout: u64) -> Result<IdentityDocumentR
         HeaderValue::from_str("21600").unwrap(),
     );
 
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let request_client = build_minimal_base_request()?;
 
     // Get the token from the metadata service. This is required to fetch the identity document.
     let token_response = request_client
