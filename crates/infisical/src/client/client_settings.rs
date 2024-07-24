@@ -37,7 +37,8 @@ pub struct ClientSettings {
     pub user_agent: Option<String>, // We use this to identity which SDK/language was used to make a request.
 
     #[schemars(
-        description = "The SSL certificate path is an optional field that allows you to specify a custom SSL certificate to use for requests made to Infisical."
+        description = "The SSL certificate path is an optional field that allows you to specify a custom SSL certificate to use for requests made to Infisical.
+        This option can be substituted with the `INFISICAL_SSL_CERTIFICATE` environment variable, which should contain the certificate as a string, not the path."
     )]
     pub ssl_certificate_path: Option<String>, // Path to the SSL certificate file.
 
