@@ -1,6 +1,7 @@
 use crate::{
     api::auth::auth_infisical_google,
     error::{api_error_handler, Error, Result},
+    helper::build_minimal_base_request,
     Client,
 };
 
@@ -10,10 +11,7 @@ pub async fn gcp_id_token_login(
     client: &mut Client,
     identity_id: String,
 ) -> Result<AccessTokenSuccessResponse> {
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()
-        .unwrap();
+    let request_client = build_minimal_base_request()?;
 
     let metadata_request = request_client
         .get(format!(

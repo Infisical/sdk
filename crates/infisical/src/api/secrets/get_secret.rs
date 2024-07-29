@@ -52,7 +52,7 @@ pub async fn get_secret_request(
 
     let url = build_url(base_url, json);
 
-    let base_request = build_base_request(client, &url, reqwest::Method::GET);
+    let base_request = build_base_request(client, &url, reqwest::Method::GET).await?;
 
     let token = match client.auth.access_token {
         Some(ref token) => format!("Bearer {}", token),
@@ -64,12 +64,7 @@ pub async fn get_secret_request(
     debug!("Getting secret with body: {:?}", input);
     debug!("Getting secret with url: {}", url);
 
-    let request = match base_request {
-        Ok(request) => request,
-        Err(e) => return Err(e),
-    };
-
-    let response = request.send().await?;
+    let response = base_request.send().await?;
 
     let status = response.status();
 

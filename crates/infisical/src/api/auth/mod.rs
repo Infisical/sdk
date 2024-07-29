@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     error::{Error, Result},
+    helper::build_base_request,
     Client,
 };
 
@@ -46,15 +47,10 @@ pub(self) async fn auth_infisical_google(
     identity_id: Option<String>,
     jwt: Option<String>,
 ) -> Result<reqwest::Response> {
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let url = format!("{}/api/v1/auth/gcp-auth/login", client.site_url.clone());
+    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let request = request_client
-        .post(format!(
-            "{}/api/v1/auth/gcp-auth/login",
-            client.site_url.clone()
-        ))
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
@@ -72,15 +68,10 @@ pub(self) async fn auth_infisical_azure(
     identity_id: Option<String>,
     jwt: Option<String>,
 ) -> Result<reqwest::Response> {
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let url = format!("{}/api/v1/auth/azure-auth/login", client.site_url.clone());
+    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let request = request_client
-        .post(format!(
-            "{}/api/v1/auth/azure-auth/login",
-            client.site_url.clone()
-        ))
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
@@ -98,15 +89,13 @@ pub(self) async fn auth_infisical_kubernetes(
     identity_id: Option<String>,
     jwt: Option<String>,
 ) -> Result<reqwest::Response> {
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let url = format!(
+        "{}/api/v1/auth/kubernetes-auth/login",
+        client.site_url.clone()
+    );
+    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let request = request_client
-        .post(format!(
-            "{}/api/v1/auth/kubernetes-auth/login",
-            client.site_url.clone()
-        ))
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
@@ -133,9 +122,8 @@ pub(self) async fn auth_infisical_aws(
     let iam_headers = base64_encode(header_json);
     let request_body = base64_encode(iam_data.iam_request_body.clone());
 
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()?;
+    let url = format!("{}/api/v1/auth/aws-auth/login", client.site_url.clone());
+    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let mut form_data = HashMap::new();
 
@@ -145,10 +133,6 @@ pub(self) async fn auth_infisical_aws(
     form_data.insert("iamRequestHeaders", Some(iam_headers));
 
     let request = request_client
-        .post(format!(
-            "{}/api/v1/auth/aws-auth/login",
-            client.site_url.clone()
-        ))
         .header(reqwest::header::ACCEPT, "application/json")
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 

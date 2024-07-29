@@ -107,6 +107,7 @@ fn create_client() -> Client {
         client_id: Some(environment.client_id),
         client_secret: Some(environment.client_secret),
         access_token: None,
+        ssl_certificate_path: None,
 
         site_url: Some(environment.site_url),
         cache_ttl: None,

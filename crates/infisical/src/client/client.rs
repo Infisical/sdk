@@ -10,6 +10,7 @@ pub struct Client {
 
     pub(crate) cache: Arc<Mutex<Vec<CachedSecret>>>,
     pub(crate) cache_ttl: u64, // No need for a mutex lock here, as we are only reading this value in the cache thread.
+    pub(crate) ssl_certificate_path: Option<String>,
 
     pub site_url: String,
     pub user_agent: String,
@@ -35,6 +36,7 @@ impl Client {
 
         let client: Client = Self {
             auth: settings.auth,
+            ssl_certificate_path: settings.ssl_certificate_path,
             site_url: settings
                 .site_url
                 .unwrap_or("https://app.infisical.com".to_string()),

@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     constants::AZURE_METADATA_SERVICE_URL,
     error::{api_error_handler, Result},
+    helper::build_minimal_base_request,
     Client,
 };
 
@@ -17,10 +18,7 @@ pub async fn azure_login(
     client: &mut Client,
     identity_id: String,
 ) -> Result<AccessTokenSuccessResponse> {
-    let request_client = reqwest::Client::builder()
-        .use_preconfigured_tls(rustls_platform_verifier::tls_config())
-        .build()
-        .unwrap();
+    let request_client = build_minimal_base_request()?;
 
     let metadata_request = request_client
         .get(AZURE_METADATA_SERVICE_URL)

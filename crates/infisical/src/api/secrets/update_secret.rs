@@ -26,14 +26,9 @@ pub async fn update_secret_request(
 
     });
 
-    let base_request = build_base_request(client, &base_url, reqwest::Method::PATCH);
+    let base_request = build_base_request(client, &base_url, reqwest::Method::PATCH).await?;
 
-    let request = match base_request {
-        Ok(request) => request,
-        Err(e) => return Err(e),
-    };
-
-    let response = request.json(json).send().await?;
+    let response = base_request.json(json).send().await?;
     let status = response.status();
 
     if status == StatusCode::OK {
