@@ -24,12 +24,7 @@ pub async fn universal_auth_login(
         client.site_url.clone()
     );
 
-    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
-
-    let request = request_client
-        .header(reqwest::header::CONTENT_TYPE, "application/json")
-        .header(reqwest::header::ACCEPT, "application/json")
-        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
+    let request = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let response = request.body(request_body).send().await?;
 

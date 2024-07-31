@@ -251,7 +251,7 @@ pub async fn build_base_request(
         // Setting JSON as the content type is OK since we only work with JSON.
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .header(reqwest::header::ACCEPT, "application/json")
-        .header("Authorization", token)
+        .header(reqwest::header::AUTHORIZATION, token)
         .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
     Ok(base_request)
