@@ -48,11 +48,7 @@ pub(self) async fn auth_infisical_google(
     jwt: Option<String>,
 ) -> Result<reqwest::Response> {
     let url = format!("{}/api/v1/auth/gcp-auth/login", client.site_url.clone());
-    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
-
-    let request = request_client
-        .header(reqwest::header::ACCEPT, "application/json")
-        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
+    let request = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let mut body = HashMap::new();
     body.insert("identityId", identity_id);
@@ -69,11 +65,7 @@ pub(self) async fn auth_infisical_azure(
     jwt: Option<String>,
 ) -> Result<reqwest::Response> {
     let url = format!("{}/api/v1/auth/azure-auth/login", client.site_url.clone());
-    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
-
-    let request = request_client
-        .header(reqwest::header::ACCEPT, "application/json")
-        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
+    let request = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let mut body = HashMap::new();
     body.insert("identityId", identity_id);
@@ -93,11 +85,7 @@ pub(self) async fn auth_infisical_kubernetes(
         "{}/api/v1/auth/kubernetes-auth/login",
         client.site_url.clone()
     );
-    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
-
-    let request = request_client
-        .header(reqwest::header::ACCEPT, "application/json")
-        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
+    let request = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let mut body = HashMap::new();
     body.insert("identityId", identity_id);
@@ -123,7 +111,7 @@ pub(self) async fn auth_infisical_aws(
     let request_body = base64_encode(iam_data.iam_request_body.clone());
 
     let url = format!("{}/api/v1/auth/aws-auth/login", client.site_url.clone());
-    let request_client = build_base_request(client, &url, reqwest::Method::POST).await?;
+    let request = build_base_request(client, &url, reqwest::Method::POST).await?;
 
     let mut form_data = HashMap::new();
 
@@ -131,10 +119,6 @@ pub(self) async fn auth_infisical_aws(
     form_data.insert("iamHttpRequestMethod", Some(iam_data.http_request_method));
     form_data.insert("iamRequestBody", Some(request_body));
     form_data.insert("iamRequestHeaders", Some(iam_headers));
-
-    let request = request_client
-        .header(reqwest::header::ACCEPT, "application/json")
-        .header(reqwest::header::USER_AGENT, client.user_agent.clone());
 
     let response = request.form(&form_data).send().await?;
 
