@@ -42,7 +42,8 @@ public class InfisicalClient implements AutoCloseable {
             } else {
               // We build the default bindings for x86_64, so no need to specify a custom
               // library path for this.
-              libraryName = "infisical_c";
+              // Therefore there's no need to set the libraryName variable here, because it defaults to "infisical_c".
+              // libraryName = "infisical_c";
             }
           }
         }
