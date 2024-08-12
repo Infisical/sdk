@@ -23,6 +23,8 @@ jobs:
                       target: aarch64-unknown-linux-gnu
                     - os: ubuntu-22.04
                       target: aarch64-unknown-linux-musl
+                    - os: ubuntu-22.04
+                      target: x86_64-unknown-linux-musl
 
         steps:
             - name: Checkout
@@ -54,15 +56,21 @@ jobs:
                   tar -xzf aarch64-linux-musl-cross.tgz
                   echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
 
-            - name: Build Rust (Normal)
-              if: matrix.settings.target != 'aarch64-unknown-linux-musl'
+            - name: Install cross-compilation tools for x86_64-musl
+              if: matrix.settings.target == 'x86_64-unknown-linux-musl'
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y musl-tools
+
+            - name: Build Rust (GNU/Others)
+              if: ${{ !endsWith(matrix.settings.target, '-linux-musl') }}
               env:
                   RUSTFLAGS: "-D warnings"
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
               run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
 
             - name: Build Rust (Musl)
-              if: matrix.settings.target == 'aarch64-unknown-linux-musl'
+              if: endsWith(matrix.settings.target, '-linux-musl')
               env:
                   RUSTFLAGS: "-D warnings -C target-feature=-crt-static"
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
