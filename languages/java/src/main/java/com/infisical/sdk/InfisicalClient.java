@@ -38,7 +38,7 @@ public class InfisicalClient implements AutoCloseable {
           // x86_64 specific bindings (gnu/musl determinations)
           else if (arch.equals("amd64") || arch.equals("x86_64")) {
             if (isMusl()) {
-              libraryName = "libinfisical_c_x64_musl";
+              libraryName = "infisical_c_x64_musl";
             } else {
               // We build the default bindings for x86_64, so no need to specify a custom
               // library path for this.
