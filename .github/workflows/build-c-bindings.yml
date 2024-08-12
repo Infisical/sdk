@@ -68,6 +68,7 @@ jobs:
             - name: Build Rust for Non-MUSL - ${{ matrix.settings.target }}
               if: ${{ !contains(matrix.settings.target, 'musl') }}
               env:
+                  CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
                   RUSTFLAGS: "-D warnings -C target-feature=-crt-static"
               run: cargo build -p infisical-c --target ${{ matrix.settings.target }} --release
 
