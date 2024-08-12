@@ -56,11 +56,26 @@ jobs:
                   tar -xzf aarch64-linux-musl-cross.tgz
                   echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
 
-            - name: Install cross-compilation tools for x86_64-musl
+            - name: Install MUSL (x86 Linux) toolchains
               if: matrix.settings.target == 'x86_64-unknown-linux-musl'
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y musl-tools
+
+                  sudo apt-get install -y \
+                      wget \
+                      build-essential \
+                      musl-tools
+
+                  mkdir -p ${HOME}/musl_toolchains
+                  cd ${HOME}/musl_toolchains
+
+                  wget https://musl.cc/x86_64-linux-musl-cross.tgz
+                  tar -xzf x86_64-linux-musl-cross.tgz
+                  rm x86_64-linux-musl-cross.tgz
+
+                  echo "${HOME}/musl_toolchains/x86_64-linux-musl-cross/bin" >> $GITHUB_PATH
+
+                  x86_64-linux-musl-gcc --version
 
             - name: Build Rust (GNU/Others)
               if: ${{ !endsWith(matrix.settings.target, '-linux-musl') }}
@@ -74,6 +89,7 @@ jobs:
               env:
                   RUSTFLAGS: "-D warnings -C target-feature=-crt-static"
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
+                  CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER: x86_64-linux-musl-gcc
               run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
 
             - name: Upload Artifact
