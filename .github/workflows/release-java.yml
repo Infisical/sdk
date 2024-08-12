@@ -45,36 +45,49 @@ jobs:
                   distribution: temurin
                   java-version: 21
 
+            # x86/x64 GNU bindings (MacOS)
             - name: Download x86_64-apple-darwin files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-x86_64-apple-darwin
                   path: languages/java/src/main/resources/darwin-x86-64
 
+            # Aarch64 GNU bindings (MacOS)
             - name: Download aarch64-apple-darwin files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-aarch64-apple-darwin
                   path: languages/java/src/main/resources/darwin-aarch64
 
+            # x86/x64 GNU bindings (LINUX)
             - name: Download x86_64-unknown-linux-gnu files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-x86_64-unknown-linux-gnu
                   path: languages/java/src/main/resources/linux-x86-64
 
+            # Aarch64 GNU bindings (LINUX)
             - name: Download aarch64-unknown-linux-gnu files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-aarch64-unknown-linux-gnu
                   path: languages/java/src/main/resources/linux-aarch64-gnu
 
+            # Aarch64 Musl bindings (LINUX)
             - name: Download aarch64-unknown-linux-musl files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
                   name: libinfisical_c_files-aarch64-unknown-linux-musl
                   path: languages/java/src/main/resources/linux-aarch64-musl
 
+            # x86/x64 Musl bindings (LINUX)
+            - name: Download x86_64-unknown-linux-musl files
+              uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+              with:
+                  name: libinfisical_c_files-x86_64-unknown-linux-musl
+                  path: languages/java/src/main/resources/linux-x86-64-musl
+
+            # x86/x64 Musl bindings (Windows)
             - name: Download x86_64-pc-windows-msvc files
               uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
               with:
@@ -84,9 +97,13 @@ jobs:
             - name: Organize and rename Linux ARM64 libraries
               run: |
                   mkdir -p languages/java/src/main/resources/linux-aarch64
-                  mv languages/java/src/main/resources/linux-aarch64-gnu/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_gnu.so
-                  mv languages/java/src/main/resources/linux-aarch64-musl/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_musl.so
+                  mv languages/java/src/main/resources/linux-aarch64-gnu/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_aarch64_gnu.so
+                  mv languages/java/src/main/resources/linux-aarch64-musl/libinfisical_c.so languages/java/src/main/resources/linux-aarch64/libinfisical_c_aarch64_musl.so
+
+                  mv languages/java/src/main/resources/linux-x86-64-musl/libinfisical_c.so languages/java/src/main/resources/linux-x86-64/libinfisical_c_x64_musl.so
+
                   rm -rf languages/java/src/main/resources/linux-aarch64-musl
+                  rm -rf languages/java/src/main/resources/linux-x86-64-musl
                   rm -rf languages/java/src/main/resources/linux-aarch64-gnu
 
             - name: List files in resources folders

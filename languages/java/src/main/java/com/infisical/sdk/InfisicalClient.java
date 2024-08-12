@@ -25,13 +25,28 @@ public class InfisicalClient implements AutoCloseable {
         String arch = System.getProperty("os.arch");
         String os = System.getProperty("os.name").toLowerCase();
 
-        if (os.contains("linux") && arch.equals("aarch64")) {
-          if (isMusl()) {
-              libraryName = "infisical_c_musl";
-          } else {
-              libraryName = "infisical_c_gnu";
+        if (os.contains("linux")) {
+
+          // Aarch64 specific bindings (gnu/musl determinations)
+          if (arch.equals("aarch64")) {
+            if (isMusl()) {
+              libraryName = "infisical_c_aarch64_musl";
+            } else {
+              libraryName = "infisical_c_aarch64_gnu";
+            }
           }
-        } 
+          // x86_64 specific bindings (gnu/musl determinations)
+          else if (arch.equals("amd64") || arch.equals("x86_64")) {
+            if (isMusl()) {
+              libraryName = "libinfisical_c_x64_musl";
+            } else {
+              // We build the default bindings for x86_64, so no need to specify a custom
+              // library path for this.
+              // Therefore there's no need to set the libraryName variable here, because it defaults to "infisical_c".
+              // libraryName = "infisical_c";
+            }
+          }
+        }
 
         library = Native.load(libraryName, InfisicalLibrary.class);
 
