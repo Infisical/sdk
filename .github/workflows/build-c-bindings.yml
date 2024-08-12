@@ -81,4 +81,6 @@ jobs:
               with:
                   name: libinfisical_c_files-${{ matrix.settings.target }}
                   path: |
-                      target/${{ matrix.settings.target }}/release/*infisical_c*
+                      target/${{ matrix.settings.target }}/release/*infisical_c*.so
+                      target/${{ matrix.settings.target }}/release/*infisical_c*.dll
+                      target/${{ matrix.settings.target }}/release/*infisical_c*.dylib
