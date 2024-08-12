@@ -47,34 +47,30 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y gcc-aarch64-linux-gnu
 
-            - name: Install cross-compilation tools for aarch64-musl
-              if: matrix.settings.target == 'aarch64-unknown-linux-musl'
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y musl-tools
-                  wget https://musl.cc/aarch64-linux-musl-cross.tgz
-                  tar -xzf aarch64-linux-musl-cross.tgz
-                  echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+            - uses: goto-bus-stop/setup-zig@7ab2955eb728f5440978d5824358023be3a2802d # v2.2.0
+              if: ${{ contains(matrix.settings.target, 'musl') }}
+              with:
+                  version: 0.12.0
 
-            - name: Install cross-compilation tools for x86_64-musl
-              if: matrix.settings.target == 'x86_64-unknown-linux-musl'
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y musl-tools
+            - name: Install Zigbuild
+              if: ${{ contains(matrix.settings.target, 'musl') }}
+              run: cargo install cargo-zigbuild --locked --git https://github.com/rust-cross/cargo-zigbuild --rev 6f7e1336c9cd13cf1b3704f93c40fcf84caaed6b # 0.18.4
 
-            - name: Build Rust (GNU/Others)
-              if: ${{ !endsWith(matrix.settings.target, '-linux-musl') }}
+            - name: Add build architecture
+              run: rustup target add ${{ matrix.settings.target }}
+
+            - name: Build Rust for MUSL - ${{ matrix.settings.target }}
+              if: ${{ contains(matrix.settings.target, 'musl') }}
               env:
-                  RUSTFLAGS: "-D warnings"
+                  RUSTFLAGS: "-D warnings  -C target-feature=-crt-static"
+              run: cargo zigbuild -p infisical-c --target ${{ matrix.settings.target }} --release
+
+            - name: Build Rust for Non-MUSL - ${{ matrix.settings.target }}
+              if: ${{ !contains(matrix.settings.target, 'musl') }}
+              env:
                   CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
-              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
-
-            - name: Build Rust (Musl)
-              if: endsWith(matrix.settings.target, '-linux-musl')
-              env:
                   RUSTFLAGS: "-D warnings -C target-feature=-crt-static"
-                  CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER: aarch64-linux-musl-gcc
-              run: cargo build --target ${{ matrix.settings.target }} --release --workspace --exclude infisical-py
+              run: cargo build -p infisical-c --target ${{ matrix.settings.target }} --release
 
             - name: Upload Artifact
               uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3

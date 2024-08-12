@@ -3,8 +3,8 @@ run-name: Release Java SDK
 
 on:
     push:
-        tags:
-            - "*.*.*" # version, e.g. 1.0.0
+        # tags:
+        # - "*.*.*" # version, e.g. 1.0.0
 
 jobs:
     generate_schemas:
@@ -111,13 +111,13 @@ jobs:
                   echo "Listing files in languages/java/src/main/resources:"
                   ls -R languages/java/src/main/resources
 
-            - name: Publish Maven
-              working-directory: languages/java
-              run: |
-                  ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
-              env:
-                  ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
-                  ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
-                  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
-                  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }} # Last 8 characters of the full key ID
-                  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
+            # - name: Publish Maven
+            #   working-directory: languages/java
+            #   run: |
+            #       ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+            #   env:
+            #       ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+            #       ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+            #       ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+            #       ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }} # Last 8 characters of the full key ID
+            #       ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
