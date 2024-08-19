@@ -24,7 +24,9 @@ impl Client {
         // Move the deprecated fields to the new auth object for backwards compatibility.
         #[allow(deprecated)]
         {
-            settings.auth.access_token = settings.access_token;
+            if settings.auth.access_token.is_none() {
+                settings.auth.access_token = settings.access_token;
+            }
 
             if settings.client_id.is_some() && settings.client_secret.is_some() {
                 settings.auth.universal_auth = Some(UniversalAuthMethod {

@@ -183,6 +183,7 @@ mod tests {
             project_id: variables.project_id.to_string(),
             path: None,
             r#type: None,
+            expand_secret_references: None,
             include_imports: None,
         };
 
