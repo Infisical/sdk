@@ -13,9 +13,8 @@ pub struct GetSecretOptions {
     pub environment: String,
     pub project_id: String,
     pub path: Option<String>,
-
+    pub expand_secret_references: Option<bool>,
     pub r#type: Option<String>,
-
     pub include_imports: Option<bool>,
 }
 
