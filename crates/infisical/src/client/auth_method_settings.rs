@@ -3,8 +3,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::constants::{
-    INFISICAL_AWS_IAM_AUTH_IDENTITY_ID_ENV_NAME, INFISICAL_AZURE_AUTH_IDENTITY_ID_ENV_NAME,
-    INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME,
+    INFISICAL_ACCESS_TOKEN_ENV_NAME, INFISICAL_AWS_IAM_AUTH_IDENTITY_ID_ENV_NAME,
+    INFISICAL_AZURE_AUTH_IDENTITY_ID_ENV_NAME, INFISICAL_GCP_AUTH_IDENTITY_ID_ENV_NAME,
     INFISICAL_GCP_IAM_SERVICE_ACCOUNT_KEY_FILE_PATH_ENV_NAME,
     INFISICAL_KUBERNETES_IDENTITY_ID_ENV_NAME,
     INFISICAL_KUBERNETES_SERVICE_ACCOUNT_TOKEN_PATH_ENV_NAME,
@@ -105,11 +105,20 @@ pub enum AuthMethod {
     GcpIdToken,
     GcpIam,
     AwsIam,
+    AccessToken,
 }
 
 // Custom validation to ensure that if universal_auth or gcp_auth are present, their fields are populated
 impl AuthenticationOptions {
     pub fn validate(&mut self) -> Result<AuthMethod, String> {
+        // ACCESS TOKEN:
+        if let Some(ref access_token) = self.access_token {
+            if !access_token.is_empty() {
+                return Ok(AuthMethod::AccessToken);
+            }
+            return Err("access_token is present but is empty".into());
+        }
+
         // UNIVERSAL AUTH:
         if let Some(ref auth) = self.universal_auth {
             if !auth.client_id.is_empty() && !auth.client_secret.is_empty() {
@@ -155,6 +164,10 @@ impl AuthenticationOptions {
         } else {
             debug!("No authentication method is set. Checking environment variables.");
 
+            // access token env
+            let access_token_env =
+                std::env::var(INFISICAL_ACCESS_TOKEN_ENV_NAME).unwrap_or_default();
+
             // universal auth env's
             let universal_auth_client_id_env =
                 std::env::var(INFISICAL_UNIVERSAL_AUTH_CLIENT_ID_ENV_NAME).unwrap_or_default();
@@ -182,6 +195,12 @@ impl AuthenticationOptions {
             // azure auth env's
             let azure_auth_identity_id_env =
                 std::env::var(INFISICAL_AZURE_AUTH_IDENTITY_ID_ENV_NAME).unwrap_or_default();
+
+            // access token env check
+            if !access_token_env.is_empty() {
+                self.access_token = Some(access_token_env);
+                return Ok(AuthMethod::AccessToken);
+            }
 
             // universal auth env check
             if !universal_auth_client_id_env.is_empty()

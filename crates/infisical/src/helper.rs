@@ -38,10 +38,14 @@ pub async fn handle_authentication(client: &mut Client) -> Result<()> {
     debug!("Auth validation passed");
 
     let auth_method = validation_result.unwrap_or(AuthMethod::UniversalAuth);
-
     let result;
 
     match auth_method {
+        AuthMethod::AccessToken => {
+            // Special case, since we don't need to do any authentication with Infisical.
+            client.set_access_token(client.auth.access_token.clone().unwrap_or("".to_string()));
+            return Ok(());
+        }
         AuthMethod::UniversalAuth => {
             debug!("Auth method is Universal Auth");
 
