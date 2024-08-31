@@ -57,7 +57,7 @@ async function main() {
 		rendererOptions: {
 			namespace: "Infisical.Sdk",
 			framework: "SystemTextJson",
-			"csharp-version": "6"
+			"csharp-version": "5"
 		}
 	});
 	await ensureDir("./languages/csharp/Infisical.Sdk");
