@@ -20,6 +20,7 @@ pub async fn get_secret_request(
         "workspaceId": input.project_id,
         "environment": input.environment,
         "secretPath": input.path.clone().unwrap_or("/".to_string()), // default is "/"
+        "expandSecretReferences": input.expand_secret_references.unwrap_or(true).to_string(),
         "type": input.r#type.clone().unwrap_or("shared".to_string()), // default is shared
         "include_imports": input.include_imports.unwrap_or(false).to_string(),
     });
