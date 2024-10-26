@@ -4,7 +4,7 @@ require 'json'
 require 'dry-types'
 
 require_relative 'schemas'
-# require_relative 'extended_schemas/schemas'
+require_relative 'extended_schemas/schemas'
 require_relative 'infisical_lib'
 require_relative 'infisical_error'
 require_relative 'command_runner'
