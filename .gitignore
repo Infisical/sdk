@@ -154,6 +154,8 @@ languages/node/examples/lambda-node/**/*
 # Schemas, no reason having these on github because they're auto generated
 crates/infisical-napi/**/schemas.ts
 languages/*/**/schemas.*
+!languages/*/**/extended_schemas/schemas.rb
+
 
 .DS_Store
 

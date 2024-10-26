@@ -17,6 +17,7 @@ module InfisicalSDK
       secret_name:,
       project_id:,
       environment:,
+      expand_secret_references: true,
       path: nil,
       include_imports: nil,
       type: nil
@@ -28,6 +29,7 @@ module InfisicalSDK
         environment: environment,
         path: path,
         include_imports: include_imports,
+        expand_secret_references: expand_secret_references,
         get_secret_options_type: type
       ))
 

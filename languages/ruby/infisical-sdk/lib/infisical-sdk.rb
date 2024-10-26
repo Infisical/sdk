@@ -23,6 +23,7 @@ module InfisicalSDK
         client_secret: nil,
         client_id: nil,
         auth: nil,
+        ssl_certificate_path: nil,
         user_agent: 'infisical-ruby-sdk',
         cache_ttl: cache_ttl,
         site_url: site_url
