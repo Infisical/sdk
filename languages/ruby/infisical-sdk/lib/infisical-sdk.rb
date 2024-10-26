@@ -16,7 +16,7 @@ module InfisicalSDK
   class InfisicalClient
     attr_reader :infisical, :command_runner, :secrets, :auth, :cryptography
 
-    def initialize(site_url = "https://app.infisical.com", cache_ttl = 300)
+    def initialize(site_url = nil, cache_ttl = 300)
       settings = ClientSettings.new(
         # We preset these values or we'll get type validation errors (thanks Quicktype!)
         access_token: nil,

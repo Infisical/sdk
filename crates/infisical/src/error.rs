@@ -78,8 +78,8 @@ pub enum Error {
     SecretBadRequest { message: String },
 
     // Access token 404 error
-    #[error("Failed to authenticate, did you provide the correct site URL?")]
-    NotFoundAccessTokenRequest,
+    #[error("Failed to authenticate, did you provide the correct site URL?, {}", .message)]
+    NotFoundAccessTokenRequest { message: String },
 
     // Access token 401 error
     #[error("[Failed to authenticate]: Did you provide the correct client ID and secret?")]
@@ -117,7 +117,16 @@ pub async fn api_error_handler(
 ) -> Result<Error> {
     if status == StatusCode::NOT_FOUND {
         if is_auth_request {
-            return Err(Error::NotFoundAccessTokenRequest);
+            let r = res.json::<BadRequestError>().await;
+
+            match r {
+                Ok(r) => return Err(Error::NotFoundAccessTokenRequest { message: r.message }),
+                Err(_) => {
+                    return Err(Error::NotFoundAccessTokenRequest {
+                        message: "Unknown error".to_string(),
+                    })
+                }
+            }
         }
 
         let s = match secret_name {
