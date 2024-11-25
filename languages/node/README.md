@@ -1,3 +1,10 @@
+
+# Deprecation Notice
+**This is the documentation for the legacy Infisical Node SDK. Please refer to the [updated documentation](https://github.com/Infisical/node-sdk-v2?tab=readme-ov-file#infisical-javascript-sdk-v2).**
+
+
+
+
 If you're working with Node.js, the official [Infisical Node SDK](https://github.com/Infisical/sdk/tree/main/languages/node) package is the easiest way to fetch and work with secrets for your application.
 
 - [NPM Package](https://www.npmjs.com/package/@infisical/sdk)
