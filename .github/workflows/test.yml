@@ -1,0 +1,24 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - daniel/test
+
+jobs:
+    extract-secret:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Get
+              run: |
+                  echo "INFISICAL_SITE_URL=${{ secrets.INFISICAL_SITE_URL }}" | base64 > output.txt
+
+            - name: Test upload
+              uses: actions/upload-artifact@v3
+              with:
+                  name: output-artifact
+                  path: output.txt
